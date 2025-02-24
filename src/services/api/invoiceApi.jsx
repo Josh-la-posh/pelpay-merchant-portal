@@ -13,7 +13,7 @@ class InvoiceService {
           `api/Invoices/${merchantCode}`,
           JSON.stringify({data})
         );
-        console.log('Invoice created ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -32,7 +32,7 @@ class InvoiceService {
           `api/Invoice?merchantCode=${merchantCode}&pageNumber=${pageNumber}&pageSize=${pageSize}`
         );
         const data = response.data.responseData.data;
-        console.log('invoice data, ', data);
+        
         dispatch(invoiceSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -50,7 +50,7 @@ class InvoiceService {
         const response = await this.axiosPrivate.get(
           `api/Invoice/${invoiceNumber}?merchantCode=${merchantCode}`
         );
-        console.log('This is the invoice data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -68,7 +68,7 @@ class InvoiceService {
         const response = await this.axiosPrivate.delete(
           `api/Invoice/cancel/${invoiceNumber}?merchantCode=${merchantCode}`
         );
-        console.log('Invoice deleted sucessfully: ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {

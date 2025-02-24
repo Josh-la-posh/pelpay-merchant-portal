@@ -35,7 +35,6 @@ function CustomersPage() {
     setModalMode(name);
     setSelectedCustomerData(val);
     setIsModalOpen(true);
-    console.log(val)
   };
 
   const handleCloseModal = () => {

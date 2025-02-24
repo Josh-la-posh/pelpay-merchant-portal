@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AuthInputField from '@/components/AuthInptField';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import { Lock } from 'lucide-react';
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{7,24}$/;
 const EMPTY_FIELD = '';
@@ -74,7 +74,7 @@ function ChangePassword() {
                 <AuthInputField
                     label="Currenct Password"
                     type='password'
-                    icon={faLock}
+                    icon={<Lock size='15px' />}
                     placeholder='Current Password'
                     validName={validCurrentPassword}
                     valueName={formData.currentPassword}
@@ -86,7 +86,7 @@ function ChangePassword() {
                 <AuthInputField
                     label="New Password"
                     type='password'
-                    icon={faLock}
+                    icon={<Lock size='15px' />}
                     placeholder='New Password'
                     validName={validNewPassword}
                     valueName={formData.newPassword}
@@ -111,7 +111,7 @@ function ChangePassword() {
                 <AuthInputField
                     label="Current Password"
                     type='password'
-                    icon={faLock}
+                    icon={<Lock size='15px' />}
                     placeholder='Confirm Password'
                     validName={validConfirmPassword}
                     valueName={formData.confirmPassword}

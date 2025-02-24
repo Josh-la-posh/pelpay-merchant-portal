@@ -15,7 +15,7 @@ function TransactionPage() {
   const { setAppTitle } = useTitle();
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
-  const { transactions, transactionLoading, transactionError } = useSelector((state) => state.transaction);
+  const { transactions, transactionPageNumber, transactionPageSize, transactionTotalSize, transactionLoading, transactionError } = useSelector((state) => state.transaction);
   const [filteredData, setFilteredData] = useState(transactions);
   const [isLoading, setIsLoading] = useState(transactionLoading);
   const [errMsg, setErrMsg] = useState(transactionError);
@@ -23,10 +23,10 @@ function TransactionPage() {
   const merchantCode = auth?.merchant.merchantCode;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
-  const [isExportPopupOpen, setIsExportPopupOpen] = useState(false);
   const transactionService = new TransactionService(axiosPrivate, auth);
-  const pageNumber = 1;
-  const pageSize = 40;
+  const [pageNumber, setPageNumber] = useState(transactionPageNumber);
+  const [pageSize, setPageSize] = useState(transactionPageSize);
+  const [totalSize, setTotalSize] = useState(transactionTotalSize);
   const env = 'Test';
 
   useEffect(() => {
@@ -40,6 +40,18 @@ function TransactionPage() {
   useEffect(() => {
       setErrMsg(transactionError);
   }, [transactionError]);
+        
+    useEffect(() => {
+      setPageNumber(transactionPageNumber);
+    }, [transactionPageNumber]);
+        
+    useEffect(() => {
+      setPageSize(transactionPageSize);
+    }, [transactionPageSize]);
+        
+    useEffect(() => {
+      setTotalSize(transactionTotalSize);
+    }, [transactionTotalSize]);
 
   useEffect(() => {
     loadData();
@@ -86,7 +98,15 @@ function TransactionPage() {
         ? <div className='h-[40vh] w-full'>
             <Spinner />
         </div>
-        : <TransactionTable isExportPopupOpen={isExportPopupOpen} setIsExportPopupOpen={setIsExportPopupOpen} filteredData={filteredDataResult} handleOpenModal={handleOpenModal} />
+        : <TransactionTable
+            filteredData={filteredDataResult}
+            handleOpenModal={handleOpenModal}
+            totalSize={totalSize}
+            currentPage={pageNumber}
+            setCurrentPage={setPageNumber}
+            rowsPerPage={pageSize}
+            setRowsPerPage={setPageSize}
+          />
       }
     </div>
   )

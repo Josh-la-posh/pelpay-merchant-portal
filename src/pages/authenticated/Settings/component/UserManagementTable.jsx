@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { CheckCircle, ToggleLeft, ToggleRight, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const UserManagementTable = ({filteredData}) => {
+const UserManagementTable = ({filteredData, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
     const [selectedIndex, setSelectedIndex] = useState(null);
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
@@ -66,12 +66,15 @@ const UserManagementTable = ({filteredData}) => {
             header: 'Action',
             accessor: 'isActive',
             render: (isActive, row) => (
-                 <button
-                    onClick={() => handleAction(row)}
-                    className={`${isActive === true ? 'text-green-700' : 'text-red-700'} text-xs`}
-                >
-                    {isActive === true ? <ToggleRight size='32px' /> : <ToggleLeft size='32px' />}
-                </button>
+                <div>
+                    {row.isAdmin === false && 
+                    <button
+                        onClick={() => handleAction(row)}
+                        className={`${isActive === true ? 'text-green-700' : 'text-red-700'} text-xs`}
+                    >
+                        {isActive === true ? <ToggleRight size='32px' /> : <ToggleLeft size='32px' />}
+                    </button>}
+                </div>
             ),
         },
     ];
@@ -110,11 +113,11 @@ const UserManagementTable = ({filteredData}) => {
             <DataTable
                 columns={columns}
                 data={filteredData}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                onIndexChange={handleSelectedRow}
-                selectedIndex={selectedIndex}
-                displayActionButton={false}
-                elementId='UserManagementTable'
+                totalSize={totalSize}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
             />
         </div>
     );

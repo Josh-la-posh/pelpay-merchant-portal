@@ -2,11 +2,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
   --color-priColor: #00A049;
+  --color-secColor: #23BF76;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* @layer utilities {
+@layer utilities {
   .scrollbar-none::-webkit-scrollbar {
       display: none;
   }
@@ -14,7 +15,10 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
   }
-} */
+}
+ 
+/* 'priColor': '#00A049',
+'secColoor': '#23BF76' */
 
 body {
   font-family: Arial, sans-serif;

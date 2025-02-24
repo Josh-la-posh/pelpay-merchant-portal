@@ -38,7 +38,6 @@ const RoleAssignmentTable = ({
     }
 
     const updateFormData = (name, value) => {
-        console.log(formData)
         setFormData((prev) => ({
             ...prev,
             [name]: value
@@ -168,7 +167,7 @@ const RoleAssignmentTable = ({
             <DataTable
                 columns={columns}
                 data={filteredData}
-                rowsPerPageOptions={[10, 20, 40]}
+                drpp=''
             />
         </div>
     );

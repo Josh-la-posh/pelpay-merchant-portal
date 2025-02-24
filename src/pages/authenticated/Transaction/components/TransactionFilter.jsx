@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { ArrowDownWideNarrow, ArrowLeft, CalendarDays, Cloud, Search } from 'lucide-react';
-import { ReactComponent as MastercardIcon } from '@/assets/Mastercard.svg';
-import { ReactComponent as StanbicIcon } from '@/assets/Stanbic.svg';
-import { ReactComponent as VerveIcon } from '@/assets/verve.svg';
-import { ReactComponent as WemaIcon } from '@/assets/wema.svg';
-import { ReactComponent as VisaIcon } from '@/assets/Visa.svg';
-import { ReactComponent as AfrigoIcon } from '@/assets/Afrigo.svg';
+// import { ReactComponent as MastercardIcon } from '@/assets/Mastercard.svg';
+// import { ReactComponent as StanbicIcon } from '@/assets/Stanbic.svg';
+// import { ReactComponent as VerveIcon } from '@/assets/verve.svg';
+// import { ReactComponent as WemaIcon } from '@/assets/wema.svg';
+// import { ReactComponent as VisaIcon } from '@/assets/Visa.svg';
+// import { ReactComponent as AfrigoIcon } from '@/assets/Afrigo.svg';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from 'react-router-dom';
@@ -167,20 +167,20 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
             <button onClick={() => navigate(-1)} className='text-priColor flex items-center gap-2 text-xs'><ArrowLeft size={'14px'}/> Go Back</button>
             <div className="flex">
                 <button onClick={handleRefreshAllTransctions}
-                    className={`${searchMode === 'All' ? 'text-white bg-priColor font-[600]' : 'text-gray-400 border border-gray bg-white'} text-xs w-20 py-2 px-2 rounded-sm`}>
+                    className={`${searchMode === 'All' ? 'text-white bg-priColor font-[600]' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 py-2 px-2 rounded-sm`}>
                         All
                 </button>
                 {
                     searchMode !== 'Date' && 
                     <button onClick={() => setSearchMode('Date')}
-                        className={`${searchMode === 'Date' ? 'text-white bg-priColor font-[600]' : 'text-gray-400 border border-gray bg-white'} text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center gap-2`}>
+                        className={`${searchMode === 'Date' ? 'text-white bg-priColor font-[600]' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center gap-2`}>
                             <CalendarDays size='14' />
                             Date
                     </button>
                 }
                 { searchMode !== 'Filter' &&
                     <button onClick={() => setSearchMode('Filter')}
-                        className={`${searchMode === 'Filter' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray bg-white'} text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center`}>
+                        className={`${searchMode === 'Filter' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center`}>
                             <ArrowDownWideNarrow size='14' />
                             Filter
                     </button>
@@ -217,13 +217,13 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
                             placeholderText='Start Date'
-                            className='text-gray-400 border border-gray bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
+                            className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
                         />
                         <DatePicker
                             selected={endDate}
                             onChange={(date) => setEndDate(date)}
                             placeholderText='End Date'
-                            className='text-gray-400 border border-gray bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
+                            className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
                         />
                         <button onClick={handleFilter}
                             className='text-white bg-priColor text-xs w-20 py-2 px-2 rounded-sm flex justify-center items-center'>
@@ -267,13 +267,13 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
                             placeholderText='Start Date'
-                            className='text-gray-400 border border-gray bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
+                            className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
                         />
                         <DatePicker
                             selected={endDate}
                             onChange={(date) => setEndDate(date)}
                             placeholderText='End Date'
-                            className='text-gray-400 border border-gray bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
+                            className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
                         />
                         <select
                             id="status" 
@@ -292,7 +292,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                     </div>
                     <div className="flex gap-5">
                         <button
-                            className='text-white border border-gray bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2'
+                            className='text-white border border-gray-300 bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2'
                             onClick={searchByData}
                             >
                                 Search
@@ -311,7 +311,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                 canSearch === false &&
                 <button
                     onClick={() => setCanSearch(true)}
-                    className={`text-white border border-gray bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
+                    className={`text-white border border-gray-300 bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
                     >
                         <Search size='14' />
                         Search
@@ -320,46 +320,46 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
         </div>
         <div className="h-32 bg-[#F0F2F5] my-4 p-4">
             <div className="bg-white h-full flex justify-center items-center gap-5">
-                <div className="h-[60px] flex-1">
-                    <MastercardIcon width='100%' height='100%' />
+                <div className="flex-1">
+                    <img src='/assets/Visa.svg' alt='Visa'/>
                 </div>
-                <div className="h-[60px] flex-1">
-                    <VerveIcon width='100%' height='100%' />
+                <div className="flex-1">
+                    <img src='/assets/Afrigo.svg' alt='Afrigo'/>
                 </div>
-                <div className="h-[60px] flex-1">
-                    <StanbicIcon width='100%' height='100%' />
+                <div className="flex-1">
+                    <img src='/assets/Mastercard.svg' alt='Master Card'/>
                 </div>
-                <div className="h-[60px] flex-1">
-                    <AfrigoIcon width='100%' height='100%' />
+                <div className="flex-1">
+                    <img src='/assets/Stanbic.svg' alt='Stanbic'/>
                 </div>
-                <div className="h-[60px] flex-1">
-                    <VisaIcon width='100%' height='100%' />
+                <div className="flex-1">
+                    <img src='/assets/verve.svg' alt='Verve'/>
                 </div>
-                <div className="h-[60px] flex-1">
-                    <WemaIcon width='100%' height='100%' />
+                <div className="flex-1">
+                    <img src='/assets/wema.svg' alt='Wema'/>
                 </div>
             </div>
         </div>
         <div className="w-full flex justify-between">
             <div className="flex py-2">
                 <button onClick={() => handleFilteredDataChange('All')}
-                    className={`${filterStatus === 'All' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'All' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
                         All
                 </button>
                 <button onClick={() => handleFilteredDataChange('Successful')}
-                    className={`${filterStatus === 'Successful' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'Successful' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
                         Successful
                 </button>
                 <button onClick={() => handleFilteredDataChange('Pending')}
-                    className={`${filterStatus === 'Pending' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'Pending' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
                         Pending
                 </button>
                 <button onClick={() => handleFilteredDataChange('Failed')}
-                    className={`${filterStatus === 'Failed' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'Failed' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
                         Failed
                 </button>
             </div>
-            <button onClick={downloadTransaction} className='text-priColor text-xs rounded-md flex items-center justify-center gap-2 hover:bg-priColor hover:bg-opacity-[0.56] p-3 hover:text-[#121212]'><Cloud size={'15px'}/> Download</button>
+            <button onClick={downloadTransaction} className='text-priColor text-xs rounded-md flex items-center justify-center gap-2 hover:bg-priColor/56 p-3 hover:text-[#121212]'><Cloud size={'15px'}/> Download</button>
         </div>
     </div>
   )

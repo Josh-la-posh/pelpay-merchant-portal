@@ -2,7 +2,7 @@ import React from 'react'
 
 function ErrorLayout({errMsg, handleRefresh}) {
   return (
-    <div className="h-full w-full flex items-center justify-center bg-gray-200 bg-opacity-50 z-50">
+    <div className="h-full w-full flex items-center justify-center bg-gray-200/50 z-50">
         <div className="flex flex-col items-center">
             <p className="mt-4 text-black text-lg md:text-xl font-[700]">{errMsg}</p>
             <button

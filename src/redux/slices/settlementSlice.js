@@ -5,9 +5,15 @@ const initialState = {
   settlementLoading: false,
   settlementError: null,
   settlement: [],
+  settlementPageSize: 10,
+  settlementPageNumber: 1,
+  settlementTotalSize: 0,
   settlementTransactionLoading: false,
   settlementTransactionError: null,
   settlementTransaction: [],
+  batchSettlementPageSize: 10,
+  batchSettlementPageNumber: 1,
+  batchSettlementTotalSize: 0,
   settlementConfigurationLoading: false,
   settlementConfigurationError: null,
   settlementConfiguration: [],
@@ -26,7 +32,10 @@ const settlementSlice = createSlice({
     },
     settlementSuccess: (state, action) => {
       state.settlementLoading = false;
-      state.settlement = action.payload;
+      state.settlement = action.payload.data;
+      state.settlementPageNumber = action.payload.pageNumber;
+      state.settlementPageSize = action.payload.pageSize;
+      state.settlementTotalSize = action.payload.totalSize;
     },
     settlementFailure: (state, action) => {
       state.settlementLoading = false;
@@ -38,7 +47,10 @@ const settlementSlice = createSlice({
     },
     settlementTransactionSuccess: (state, action) => {
       state.settlementLoading = false;
-      state.settlement = action.payload;
+      state.settlementTransaction = action.payload.data;
+      state.batchSettlementPageNumber = action.payload.pageNumber;
+      state.batchSettlementPageSize = action.payload.pageSize;
+      state.batchSettlementTotalSize = action.payload.totalSize;
     },
     settlementTransactionFailure: (state, action) => {
       state.settlementLoading = false;

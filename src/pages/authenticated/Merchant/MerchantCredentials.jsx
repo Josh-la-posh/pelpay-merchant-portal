@@ -104,11 +104,11 @@ function MerchantCredential() {
     <div>
       <div className="bg-white p-4">
         <div className="">
-          <div className="flex border-b py-4">
+          <div className="flex border-b border-b-gray-300 py-4">
             <p className='text-xs w-32 mr-32'>Client ID</p>
             <p className='text-xs'>Client Secret</p>
           </div>
-          <div className="flex border-b py-4 text-xs">
+          <div className="flex border-b border-b-gray-300 py-4 text-xs">
             <p className='w-32 mr-32'>{merchantCredentials?.clientId}</p>
             <div className='flex items-center gap-5'>
               {merchantCredentials?.clientSecret && viewSecret === true ? merchantCredentials?.clientSecret : '************'}
@@ -120,7 +120,7 @@ function MerchantCredential() {
           Integration Settings
         </div>
         <div className="">   
-          <div className="flex border-b py-4">
+          <div className="flex border-b border-b-gray-300 py-4">
             <p className='text-xs w-32 mr-32'>Environment</p>
             <p className='text-xs w-32'>Integration Key</p>
           </div>
@@ -128,7 +128,7 @@ function MerchantCredential() {
 
         { userData &&
           userData.map((data, index) => (
-            <div key={index} className="flex border-b py-4 text-xs">
+            <div key={index} className="flex border-b border-b-gray-300 py-4 text-xs">
               <p className='w-32 mr-32'>{data?.env === 'Test' ? 'Sandbox' : 'Production'}</p>
               <div className='flex items-center gap-5 mr-auto'>
                 {viewKey[index] === true ? data?.integrationKey : '************'}

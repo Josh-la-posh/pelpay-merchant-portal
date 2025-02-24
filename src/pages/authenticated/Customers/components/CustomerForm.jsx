@@ -67,7 +67,6 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
       ...formData,
       status: title === 'View' ? formData.status : formData.status === false ? true : false,
     });
-    console.log(formData.status);
   };
 
   const handleSubmit = async (e) => {
@@ -79,13 +78,11 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
     //     if (updateRequest.status === 200) {
     //       const response = await axiosPrivate.get(`${CUSTOMER_URL}/${merchantData.merchantCode}`);
     //       const result = response.data.responseData;
-    //       console.log('result came ', result.length)
     //       dispatch(customerData(result));
     //       setLoading(false);
     //       toast.success('Customer updated successfully');
     //       handleOpenModal();
     //     } else {
-    //       console.log('Problem dey occur')
     //     }
     //   } else {
     //     const addRequest = await axiosPrivate.post(`${CUSTOMER_URL}/${ADD_CUSTOMER_URL}`, JSON.stringify(formData));
@@ -150,7 +147,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
             placeholder="Enter first name"
             value={formData.customerFirstName}
             onChange={handleChange}
-            className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+            className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
             disabled={title === 'View' ? true : false}
           />
         </div>
@@ -165,7 +162,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
             placeholder="Enter last name"
             value={formData.customerLastName}
             onChange={handleChange}
-            className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+            className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
             disabled={title === 'View' ? true : false}
           />
         </div>
@@ -180,7 +177,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
             placeholder="Enter email address"
             value={formData.customerEmail}
             onChange={handleChange}
-            className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+            className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
             disabled={title === 'View' ? true : false}
           />
         </div>
@@ -195,7 +192,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
             placeholder="Enter phone number"
             value={formData.customerPhoneNumber}
             onChange={handleChange}
-            className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+            className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
             disabled={title === 'View' ? true : false}
           />
         </div>
@@ -210,7 +207,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
             placeholder="Enter Address"
             value={formData.customerAddress}
             onChange={handleChange}
-            className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+            className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
             disabled={title === 'View' ? true : false}
           />
         </div>
@@ -227,7 +224,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
               placeholder="Enter City"
               value={formData.customerCity}
               onChange={handleChange}
-              className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+              className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
             disabled={title === 'View' ? true : false}
             />
           </div>
@@ -242,7 +239,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
               placeholder="Enter Country"
               value={formData.customerCountryCode}
               onChange={handleChange}
-              className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+              className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
               disabled={title === 'View' ? true : false}
             />
           </div>
@@ -257,7 +254,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
               placeholder="Enter State"
               value={formData.customerStateCode}
               onChange={handleChange}
-              className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+              className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
               disabled={title === 'View' ? true : false}
             />
           </div>
@@ -274,7 +271,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
               placeholder="Enter Postal Code"
               value={formData.customerPostalCode}
               onChange={handleChange}
-              className="w-full px-3 py-2 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+              className="w-full px-3 py-2 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
               disabled={title === 'View' ? true : false}
             />
           </div>
@@ -288,7 +285,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
               name="status"
               value={formData.status}
               onChange={handleToggle}
-              className="w-full px-3 py-2 bg-white text-sm border border-gray rounded-lg focus:outline-none"
+              className="w-full px-3 py-2 bg-white text-sm border border-gray-300 rounded-lg focus:outline-none"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '@/services/hooks/useAuth';
-import Logo from '@/assets/logo.jpg';
 import AuthService from '@/services/api/authApi';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import TextButton from '@/components/ui/text-button';
@@ -10,7 +9,7 @@ import TextButton from '@/components/ui/text-button';
 const LoginForm = () => {
   const { setAuth } = useAuth();
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
   const userRef = useRef();
@@ -20,10 +19,19 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [errMsg, setErrMsg] = useState(error);
 
   useEffect(() => {
     userRef.current.focus();
   }, [])
+
+  useEffect(() => {
+    setErrMsg(error);
+
+    setTimeout(() => {
+      setErrMsg('');
+    }, 5000);
+  }, [error])
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -35,18 +43,22 @@ const LoginForm = () => {
   };
 
   return (
-    <section className="pt-8">
+    <section className="pt-8 space-y-4">
       <div className="lg:flex justify-center">
-        <img src={Logo} />
+        <img src='/assets/logo.jpg' />
       </div>
-      <h2 className="text-2xl font-semibold mt-6 mb-4">Login</h2>
-      <h2 className="text-[15px] text-black text-opacity-60 mb-6">Kindly fill the field below to login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="mb-6">
+      <div className="space-y-2">
+        <h2 className="text-2xl font-semibold">Login</h2>
+        <h2 className="text-[15px] text-black/60">Kindly fill the field below to login</h2>
+      </div>
+
+      {errMsg && <p className='text-xs text-red-600'>{errMsg}</p>}
+      <form onSubmit={handleLogin} className='space-y-6'>
+        <div className="">
           <label className="block text-black text-[13px] mb-1 lg:mb-2" htmlFor="email">
             Email
           </label>
-          <div className="relative w-full pl-9 pr-3 py-2 border border-gray rounded-lg">            
+          <div className="relative w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg">            
             <Lock size='15px' className='absolute top-3 left-3 text-gray-500' />
             <input
               type="email"
@@ -59,11 +71,11 @@ const LoginForm = () => {
             />
           </div>
         </div>
-        <div className="mb-6">
+        <div className="">
           <label className="block text-black text-[13px] mb-1 lg:mb-2" htmlFor="password">
             Password
           </label>
-          <div className="relative w-full pl-9 pr-12 py-2 border border-gray rounded-lg">            
+          <div className="relative w-full pl-9 pr-12 py-2 border border-gray-300 rounded-lg">            
             <Lock size='15px' className='absolute top-3 left-3 text-gray-500' />
             <input
               type={!showPassword ? 'password' : 'text'}
@@ -75,17 +87,19 @@ const LoginForm = () => {
             />
             <TextButton 
               onClick={handleShowPassword}
+              variant= "custom"
+              className="absolute top-3 right-3 text-gray-500"
             >
               {!showPassword 
-                ? <EyeOff size='15px' className='absolute top-3 left-3 text-gray-500' />
-                : <Eye size='15px' className='absolute top-3 left-3 text-gray-500' />
+                ? <EyeOff size='15px' />
+                : <Eye size='15px' />
               }
 
             </TextButton>
           </div>
         </div>
-        <div className="flex items-center justify-between mb-6">
-          <label className="text-black text-[11px] sm:text-xs mb-1 lg:mb-2 flex items-center">
+        <div className="flex items-center justify-end">
+          {/* <label className="text-black text-[11px] sm:text-xs mb-1 lg:mb-2 flex items-center">
             <input
               type="checkbox"
               checked={rememberMe}
@@ -93,7 +107,7 @@ const LoginForm = () => {
               className="mr-2"
             />
             Remember me
-          </label>
+          </label> */}
           <Link to="/forgot-password" className="text-xs lg:text-sm text-priColor hover:underline">Forgot password?</Link>
         </div>
         <button

@@ -1,6 +1,6 @@
-import { ArrowLeft, Plus, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import MerchantService from '@/services/api/merchantApi';
 import { useDispatch } from 'react-redux';
@@ -65,7 +65,7 @@ function MerchantFilter() {
                         placeholder="Merchant code"
                     />
                     <button
-                        className={`text-white border border-gray bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
+                        className={`text-white border border-gray-300 bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
                         onClick={handleSearch}
                         >
                             Search
@@ -76,7 +76,7 @@ function MerchantFilter() {
                 canSearch === false &&
                 <button
                     onClick={() => setCanSearch(true)}
-                    className={`text-white border border-gray bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
+                    className={`text-white border border-gray-300 bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
                     >
                         <Search size='14' />
                         Search

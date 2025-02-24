@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
 import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, Warehouse } from 'lucide-react';
-import Logo from "../assets/logo.jpg";
+// import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
 
 const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
@@ -65,7 +65,7 @@ const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
             <div className='bg-[#f7f7f7] w-full h-16 flex items-center'>
-                <img src={Logo} alt="Logo" className="max-h-fit max-w-[85%]" />
+                <img src='/assets/logo.jpg' alt="Logo" className="max-h-fit max-w-[85%]" />
             </div>
             <nav className={`flex-1 my-2 ${isSidebarTextVisible ? 'pl-6' : ''} overflow-y-auto scrollbar-none`}>
                 {

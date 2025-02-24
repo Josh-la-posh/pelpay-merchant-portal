@@ -37,7 +37,6 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
     });
 
     useEffect(() => {
-        console.log('Printed data: ', auth?.data)
     }, [])
 
     const handleCloseModal = () => {
@@ -68,7 +67,6 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
         window.open(data.paymentUrl, '_blank');
         // window.location.href = data.paymentUrl;
       } catch (e) {
-        console.log('The error is: ', e)
         const errMsg = e.response.data.message;
         toast(errMsg);
       }
@@ -77,7 +75,7 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
     return (
         <CustomModal handleOpenModal={handleCloseModal} width='w-[95%] md:w-[75%]'>
             <div className="mb-8">
-                <div className='text-sm font-[500] pb-3 border-b border-b-black'>Create Advice</div>
+                <div className='text-sm font-[500] pb-3 border-b border-b-gray-300'>Create Advice</div>
             </div>
             <div className="grid grid-cols-3 gap-5 md:gap-10">
                 <UpdateInputField 

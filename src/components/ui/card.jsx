@@ -11,7 +11,7 @@ const Card = ({
 }) => {
 
     return(
-        <div className={`p-3 md:p-2 md:mb-2 rounded-[8px] border border-[#E4E7EC] text-white bg-priColor bg-opacity-5 flex flex-col justify-between ${className}`}>
+        <div className={`p-3 md:p-2 md:mb-2 rounded-[8px] border border-[#E4E7EC] text-white bg-priColor/5 flex flex-col justify-between ${className}`}>
             <div className={`h-12 w-12 rounded-full ${color || 'bg-priColor'} flex justify-center items-center md:hidden mb-2`}>
                 <div className={`text-[#1761D9] text-xl flex justify-center items-center ${iconClassName}`}>{icon}</div>
             </div>

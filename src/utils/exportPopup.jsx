@@ -17,7 +17,7 @@ const ExportPopup = ({ isOpen, onClose, data, elementId }) => {
     const exportToPDF = async () => {
         const table = document.getElementById(elementId);
         if (!table) {
-            console.error('Element not found');
+            
             return;
         }
         try {
@@ -27,7 +27,7 @@ const ExportPopup = ({ isOpen, onClose, data, elementId }) => {
             pdf.addImage(imgData, 'PNG', 0, 0);
             pdf.save('table.pdf');
         } catch (error) {
-            console.error('Error generating PDF', error);
+            
         }
     };
 
@@ -41,7 +41,7 @@ const ExportPopup = ({ isOpen, onClose, data, elementId }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg relative w-80">
                 <button onClick={onClose} className="absolute top-2 right-2 text-gray-500">
                     <X size='15px' />

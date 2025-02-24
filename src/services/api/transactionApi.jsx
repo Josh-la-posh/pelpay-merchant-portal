@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { transactionFailure, transactionStart, transactionSuccess } from "@/redux/slices/transactionSlice";
 import { saveAs } from "file-saver";
+import { transactionSecondSuccess } from "../../redux/slices/transactionSlice";
 
 class TransactionService {
     constructor(axiosPrivate, auth) {
@@ -29,16 +30,13 @@ class TransactionService {
 
         const encryptedData = new Uint8Array(response.data);
         const decryptedData = decryptData(encryptedData);
-
         const fileBlob = new Blob([decryptedData], {type: 'application/pdf'});
         
         const fileName = `Pelpay_transactions_${Date.now()}.pdf`;
-
         saveAs(fileBlob, fileName);
         
         toast('Transations downloaded successfully');
       } catch (err) {
-        console.log('The response is: ', err)
         if (!err.response) {
             toast('No response from server');
         } else {
@@ -54,8 +52,10 @@ class TransactionService {
         const response = await this.axiosPrivate.get(
           `api/Transaction/bypayemtreference/${paymentReference}?merchantCode=${merchantCode}&env=${env}`
         );
-        const data = response.data.responseData;
-        dispatch(transactionSuccess(data));
+        const data = response.data;
+        console.log('Response data is: ', data)
+        dispatch(transactionSuccess(data.responseData));
+        dispatch(transactionSecondSuccess(data));
       } catch (err) {
         if (!err.response) {
             dispatch(transactionFailure('No response from server'));
@@ -72,8 +72,9 @@ class TransactionService {
         const response = await this.axiosPrivate.get(
           `api/Transaction/bydate/${startDate}/${endDate}?merchantCode=${merchantCode}&pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`
         );
-        const data = response.data.data;
-        dispatch(transactionSuccess(data));
+        const data = response.data;
+        dispatch(transactionSuccess(data.data));
+        dispatch(transactionSecondSuccess(data));
       } catch (err) {
         if (!err.response) {
             dispatch(transactionFailure('No response from server'));
@@ -91,8 +92,9 @@ class TransactionService {
           `api/Transaction/search?merchantCode=${merchantCode}&pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
           JSON.stringify(formData)
         );
-        const data = response.data.data;
-        dispatch(transactionSuccess(data));
+        const data = response.data;
+        dispatch(transactionSuccess(data.data));
+        dispatch(transactionSecondSuccess(data));
       } catch (err) {
         if (!err.response) {
             dispatch(transactionFailure('No response from server'));
@@ -109,8 +111,9 @@ class TransactionService {
         const response = await this.axiosPrivate.get(
           `api/Transaction/bycustomeremail/${customerEmail}?merchantCode=${merchantCode}`
         );
-        const data = response.data.data;
-        dispatch(transactionSuccess(data));
+        const data = response.data;
+        dispatch(transactionSuccess(data.data));
+        dispatch(transactionSecondSuccess(data));
       } catch (err) {
         if (!err.response) {
             dispatch(transactionFailure('No response from server'));
@@ -127,8 +130,9 @@ class TransactionService {
         const response = await this.axiosPrivate.get(
           `api/Transaction/paginated/${pageNumber}/${pageSize}?merchantCode=${merchantCode}&env=${env}`
         );
-        const data = response.data.data;
-        dispatch(transactionSuccess(data));
+        const data = response.data;
+        dispatch(transactionSuccess(data.data));
+        dispatch(transactionSecondSuccess(data));
       } catch (err) {
         if (!err.response) {
             dispatch(transactionFailure('No response from server'));

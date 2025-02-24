@@ -15,15 +15,15 @@ function UserManagement() {
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const dispatch = useDispatch();
-  const { aggregatorUser, aggregatorUserLoading, aggregatorUserError } = useSelector((state) => state.users);
+  const { aggregatorUser, aggregatorUserPageSize, aggregatorUserPageNumber, aggregatorUserTotalSize, aggregatorUserLoading, aggregatorUserError } = useSelector((state) => state.users);
   const [filteredData, setFilteredData] = useState(aggregatorUser);
   const [isLoading, setIsLoading] = useState(aggregatorUserLoading);
   const [errMsg, setErrMsg] = useState(aggregatorUserError);
   const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
   const userService = new UserService(axiosPrivate, auth);
-  const pageNumber = 1;
-  const pageSize = 20;
-
+  const [pageNumber, setPageNumber] = useState(aggregatorUserPageNumber);
+  const [pageSize, setPageSize] = useState(aggregatorUserPageSize);
+  const [totalSize, setTotalSize] = useState(aggregatorUserTotalSize);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -41,6 +41,18 @@ function UserManagement() {
   useEffect(() => {
       setErrMsg(aggregatorUserError);
   }, [aggregatorUserError]);
+        
+  useEffect(() => {
+    setPageNumber(aggregatorUserPageNumber);
+  }, [aggregatorUserPageNumber]);
+      
+  useEffect(() => {
+    setPageSize(aggregatorUserPageSize);
+  }, [aggregatorUserPageSize]);
+      
+  useEffect(() => {
+    setTotalSize(aggregatorUserTotalSize);
+  }, [aggregatorUserTotalSize]);
 
   useEffect(() => {
     loadData();
@@ -51,7 +63,6 @@ function UserManagement() {
   }
   
   const loadData = async () => {
-    console.log(auth)
     if (aggregatorCode) {
       await userService.fetchUserByAggregatorCode(aggregatorCode, pageNumber, pageSize, dispatch);
     }
@@ -86,7 +97,14 @@ function UserManagement() {
             </button>
             {isModalOpen === true && <AddUserForm handleModalClose={handleModalClose} />}
         </div>
-        <UserManagementTable filteredData={filteredData}/>
+        <UserManagementTable
+          filteredData={filteredData}
+          totalSize={totalSize}
+          currentPage={pageNumber}
+          setCurrentPage={setPageNumber}
+          rowsPerPage={pageSize}
+          setRowsPerPage={setPageSize}
+        />
     </div>
   )
 }

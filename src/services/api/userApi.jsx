@@ -16,7 +16,7 @@ class userService {
           `api/Users/createuser/${merchantCode}`,
           JSON.stringify({data})
         );
-        console.log('User created ', response.data);
+        
       } catch (err) {
         if (!err.response) {
             dispatch(usersFailure('No response from server'));
@@ -69,7 +69,7 @@ class userService {
         const response = await this.axiosPrivate.get(
           `api/Users/${userId}/merchant/${aggregatorCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
         );
-        console.log('This is the user data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -87,7 +87,7 @@ class userService {
         const response = await this.axiosPrivate.get(
           `api/Users/byaggregator/${aggregatorCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
         );
-        const data = response.data.responseData.data;
+        const data = response.data.responseData;
         dispatch(aggregatorUserSuccess(data));
       } catch (err) {
         if (!err.response) {

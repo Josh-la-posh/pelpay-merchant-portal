@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../auth.css';
 import axios from '@/services/api/axios';
 import AuthInputField from '@/components/AuthInptField';
-import Logo from '@/assets/logo.jpg';
 import { CheckCircle, Lock } from 'lucide-react';
 
 const RESET_PASSWORD_URL = '/api/account/reset-password';
@@ -11,9 +10,9 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{7,24}$/;
 
 const ResetPasswordForm = () => {
     const errRef = useRef();
-    const [newPassword, setNewPassword] = useState('');
-    const [validNewPassword, setValidNewPassword] = useState(false);
-    const [NewPasswordFocus, setNewPasswordFocus] = useState(false);
+    const [password, setPassword] = useState('');
+    const [validPassword, setValidPassword] = useState(false);
+    const [passwordFocus, setPasswordFocus] = useState(false);
 
     const [confirmPassword, setConfirmPassword] = useState('');
     const [validConfirmPassword, setValidConfirmPassword] = useState(false);
@@ -25,24 +24,24 @@ const ResetPasswordForm = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const result = PWD_REGEX.test(newPassword);
-        setValidNewPassword(result);
-    }, [newPassword])
+        const result = PWD_REGEX.test(password);
+        setValidPassword(result);
+    }, [password])
 
     useEffect(() => {
-        const result = confirmPassword === newPassword;
+        const result = confirmPassword === password;
         setValidConfirmPassword(result);
-    }, [confirmPassword, newPassword])
+    }, [confirmPassword, password])
 
     useEffect(() => {
         setErrMsg('');
-    }, [newPassword, confirmPassword])
+    }, [password, confirmPassword])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const v1 = PWD_REGEX.test(newPassword);
-        const v2 = confirmPassword === newPassword;
+        const v1 = PWD_REGEX.test(password);
+        const v2 = confirmPassword === password;
 
         // getting the token from the url
         const currentUrl = window.location.href;
@@ -65,7 +64,7 @@ const ResetPasswordForm = () => {
 
         try {
             const response = await axios.post(RESET_PASSWORD_URL,
-                JSON.stringify({token, newPassword, confirmPassword}),
+                JSON.stringify({token, password, confirmPassword}),
                  {
                     headers: {
                         'Accept': '*/*',
@@ -74,7 +73,6 @@ const ResetPasswordForm = () => {
                 }
             );
             const data = response.data;
-            console.log(data);
 
             if (data.message === 'Successful') {
                 setSuccess(true);
@@ -94,57 +92,55 @@ const ResetPasswordForm = () => {
                 (
                     <div className="">
                         <div className="flex justify-center">
-                            <img src={Logo} />
+                            <img src='/assets/logo.jpg' />
                         </div>
                         <h2 className="text-2xl font-semibold mt-6 mb-4">Reset Password</h2>
                         <p ref={errRef} className={errMsg ? "errmsg" :
                             "offscreen"} aria-live='asserive'>{errMsg}</p>
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <AuthInputField
-                                    label="New Password"
-                                    type='text'
-                                    icon={<Lock size='15px' />}
-                                    validName={validNewPassword}
-                                    valueName={newPassword}
-                                    id="newPassword"
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    setOnFocus={setNewPasswordFocus}
-                                    nameFocus={NewPasswordFocus}
-                                    errNote={(
-                                        <>
-                                            Password must be 7 and 24 characters
-                                            <br />
-                                            Password should contain a capital letter
-                                            <br />
-                                            Password should contain a small letter
-                                            <br />
-                                            Password should contain a number
-                                            <br />
-                                            Password should contain a special character
-                                        </>
-                                    )}
-                                />
-                                <AuthInputField
-                                    label="Confirm Password"
-                                    type='password'
-                                    icon={<Lock size='15px' />}
-                                    validName={validConfirmPassword}
-                                    valueName={confirmPassword}
-                                    id="confirmPassword"
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    setOnFocus={setConfirmPasswordFocus}
-                                    nameFocus={ConfirmPasswordFocus}
-                                    errNote={(
-                                        <>
-                                            Password does not match
-                                        </>
-                                    )}
-                                />
-                            </div>
+                        <form onSubmit={handleSubmit} className='space-y-6'>
+                            <AuthInputField
+                                label="New Password"
+                                type='text'
+                                icon={<Lock size='15px' />}
+                                validName={validPassword}
+                                valueName={password}
+                                id="password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                setOnFocus={setPasswordFocus}
+                                nameFocus={passwordFocus}
+                                errNote={(
+                                    <>
+                                        Password must be 7 and 24 characters
+                                        <br />
+                                        Password should contain a capital letter
+                                        <br />
+                                        Password should contain a small letter
+                                        <br />
+                                        Password should contain a number
+                                        <br />
+                                        Password should contain a special character
+                                    </>
+                                )}
+                            />
+                            <AuthInputField
+                                label="Confirm Password"
+                                type='password'
+                                icon={<Lock size='15px' />}
+                                validName={validConfirmPassword}
+                                valueName={confirmPassword}
+                                id="confirmPassword"
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                setOnFocus={setConfirmPasswordFocus}
+                                nameFocus={ConfirmPasswordFocus}
+                                errNote={(
+                                    <>
+                                        Password does not match
+                                    </>
+                                )}
+                            />
                             <button
                                 type="submit"
-                                className="w-full bg-priColor text-white py-2 rounded-lg mt-5"
+                                className="w-full bg-priColor text-white py-2 rounded-lg"
                                 disabled={loading}
                             >
                                 {loading ? 'Loading...' : 'Submit'}

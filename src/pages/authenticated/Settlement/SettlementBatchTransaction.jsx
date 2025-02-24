@@ -15,22 +15,23 @@ function SettlementBatchTransaction() {
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const settlementService = new SettlementService(axiosPrivate);
-  const { settlement, settlementLoading, settlementError } = useSelector(state => state.settlement);
-  const [filteredData, setFilteredData] = useState(settlement);
+  const { settlementTransaction, batchSettlementPageSize, batchSettlementPageNumber, batchSettlementTotalSize, settlementLoading, settlementError } = useSelector(state => state.settlement);
+  const [filteredData, setFilteredData] = useState(settlementTransaction);
   const [isLoading, setIsLoading] = useState(settlementLoading);
   const [errMsg, setErrMsg] = useState(settlementError);
   const navigate = useNavigate();
   const merchantCode = auth?.merchant.merchantCode;
-  const pageNumber = 1;
-  const pageSize = 40;
+    const [pageNumber, setPageNumber] = useState(batchSettlementPageNumber);
+    const [pageSize, setPageSize] = useState(batchSettlementPageSize);
+    const [totalSize, setTotalSize] = useState(batchSettlementTotalSize);
 
   useEffect(() => {
     loadSettlementTransaction();
   }, [])
 
   useEffect(() => {
-    setFilteredData(settlement);
-  }, [settlement])
+    setFilteredData(settlementTransaction);
+  }, [settlementTransaction])
             
   useEffect(() => {
     setIsLoading(settlementLoading);
@@ -39,6 +40,18 @@ function SettlementBatchTransaction() {
   useEffect(() => {
       setErrMsg(settlementError);
   }, [settlementError]);
+        
+    useEffect(() => {
+        setPageNumber(batchSettlementPageNumber);
+    }, [batchSettlementPageNumber]);
+        
+    useEffect(() => {
+        setPageSize(batchSettlementPageSize);
+    }, [batchSettlementPageSize]);
+        
+    useEffect(() => {
+        setTotalSize(batchSettlementTotalSize);
+    }, [batchSettlementTotalSize]);
 
   const handleRefresh = () => {
     loadSettlementTransaction();
@@ -64,7 +77,15 @@ function SettlementBatchTransaction() {
     <div className='space-y-4'>
     
       <button onClick={() => navigate(-1)} className='text-priColor mb-5 flex items-center gap-2 text-xs'><ArrowLeft size={'14px'}/> Go Back</button>
-      <SettlementBatchTransactionTable filteredData={filteredData} merchantCode={merchantCode}/>
+      <SettlementBatchTransactionTable
+        filteredData={filteredData}
+        merchantCode={merchantCode}
+        totalSize={totalSize}
+        currentPage={pageNumber}
+        setCurrentPage={setPageNumber}
+        rowsPerPage={pageSize}
+        setRowsPerPage={setPageSize}
+      />
     </div>
   )
 }

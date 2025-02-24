@@ -152,7 +152,6 @@ class AggregatorService {
         const response = await this.axiosPrivate.put(
           `api/AggregatorBank/deactivate/${id}`
         );
-        console.log('Deactivated bank data ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -172,7 +171,6 @@ class AggregatorService {
         const response = await this.axiosPrivate.put(
           `api/AggregatorBank/activate/${id}`
         );
-        console.log('activated bank data ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -193,7 +191,6 @@ class AggregatorService {
           `api/AggregatorBank/set-primary-account/${id}`,
           JSON.stringify({data})
         );
-        console.log('set bank as primary: ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -216,7 +213,6 @@ class AggregatorService {
         const response = await this.axiosPrivate.get(
           'api/AggregatorDocuments/document-types',
         );
-        console.log('This are the aggregator document types ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -236,7 +232,6 @@ class AggregatorService {
         const response = await this.axiosPrivate.get(
           'api/AggregatorDocuments',
         );
-        console.log('This are the aggregator documents ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -276,7 +271,6 @@ class AggregatorService {
           `api/AggregatorDocuments/document/${documentId}`,
           JSON.stringify({data})
         );
-        console.log('Uploading aggregator download ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {

@@ -88,11 +88,7 @@ const MerchantDocumentTable = ({filteredData, merchantCode}) => {
             <DataTable
                 columns={columns}
                 data={filteredData}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                onIndexChange={handleSelectedRow}
-                selectedIndex={selectedIndex}
-                displayActionButton={false}
-                elementId='MerchantDocumentTable'
+                drpp=''
             />
         </div>
     );

@@ -14,7 +14,7 @@ class RoleService {
         const response = await this.axiosPrivate.get(
           `api/Roles/user/${aggregatorCode}`
         );
-        console.log('This is the role of the user ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -52,7 +52,7 @@ class RoleService {
         const response = await this.axiosPrivate.get(
           `api/Roles/${merchantCode}?aggregatorCode=${aggregatorCode}`
         );
-        console.log('This is the role of the users ', response.data);
+        
         const data = response.data.responseData;
         dispatch(rolesSuccess(data));
       } catch (err) {
@@ -125,7 +125,7 @@ class RoleService {
         const response = await this.axiosPrivate.put(
           `api/Roles/${id}/deactivate/${aggregatorCode}`
         );
-        console.log('role deactivated ', response.data);
+        
         toast('Role deactivated successfully');
         await this.fetchRoles(aggregatorCode, merchantCode, dispatch);
       } catch (err) {
@@ -148,7 +148,7 @@ class RoleService {
         if (!err.response) {
             // dispatch(invoiceFailure('No response from server'));
         } else {
-          console.log('The error is: ', err.response)
+          
             // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
         }
       } finally {
@@ -163,7 +163,7 @@ class RoleService {
           const response = await this.axiosPrivate.get(
             `api/UserRoles/all/${merchantCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
           );
-          console.log('fetched all user roles ', response.data);
+          
           return response.data;
         } catch (err) {
           if (!err.response) {
@@ -187,7 +187,7 @@ class RoleService {
           if (!err.response) {
               toast('No response from server');
           } else {
-            console.log(err.response)
+            
             toast(err.response.data.message)
           }
         } finally {
@@ -215,7 +215,7 @@ class RoleService {
             const response = await this.axiosPrivate.get(
               `api/UserRoles/${merchantCode}`
             );
-            console.log('fetched user roles ', response.data);
+            
             return response.data;
           } catch (err) {
             if (!err.response) {

@@ -67,7 +67,6 @@ const DisputeTable = ({filteredData, handleOpenModal, isExportPopupOpen, setIsEx
     //         const response = await axiosPrivate.post('',
     //             JSON.stringify({paymentReference, description})
     //         );
-    //         console.log(response);
     //         const data = response.status;
     //         if (data === 201) {
     //             toast('Sent Successfully');

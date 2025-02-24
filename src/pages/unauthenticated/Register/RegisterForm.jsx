@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import AuthInputField from '@/components/AuthInptField';
 import axios from '@/services/api/axios';
 import { toast } from 'react-toastify';
-import Logo from '@/assets/logo.jpg';
+// import Logo from '@/assets/logo.jpg';
 import { CheckCircle, Home, Mail, Phone, User } from 'lucide-react';
 
 const BUSINESS_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
@@ -75,7 +75,6 @@ const RegisterForm = () => {
                 setShowCountryListReload(true);
             }
         } catch (err) {
-            console.log('Error printing country ', err.response);
             setShowCountryListReload(true);
         }
     }
@@ -91,7 +90,6 @@ const RegisterForm = () => {
                 setShowIndustryListReload(true);
             }
         } catch (err) {
-            console.log('Error printing industry ', err.response);
             setShowIndustryListReload(true);
         }
     }
@@ -106,7 +104,6 @@ const RegisterForm = () => {
                 setShowIndustryCategoryListReload(true);
             }
         } catch (err) {
-            console.log('Error printing industry categories ', err.response);
             setShowIndustryCategoryListReload(true);
         }
     }
@@ -236,10 +233,10 @@ const RegisterForm = () => {
                             "offscreen"} aria-live='asserive'>{errMsg}</p>
 
                         <div className="lg:flex justify-center mb-8">
-                            <img src={Logo} />
+                            <img src='/assets/logo.jpg' />
                         </div>
                         <h2 className="text-2xl font-semibold mt-6 mb-4">Register</h2>
-                        <h2 className="text-[15px] text-black text-opacity-60 mb-6">Kindly fill the field below to login</h2>
+                        <h2 className="text-[15px] text-black/60 mb-6">Kindly fill the field below to login</h2>
                         <form onSubmit={handleSubmit}>
                             <AuthInputField
                                 label="Business Name"
@@ -357,7 +354,7 @@ const RegisterForm = () => {
                                         name="country"
                                         value={formData.country}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 text-sm border border-gray rounded-lg focus:outline-none bg-transparent"
+                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                         required
                                     >
                                         {countryList.map((country) => (
@@ -379,7 +376,7 @@ const RegisterForm = () => {
                                         name="industry"
                                         value={formData.industry}
                                         onChange={(e) => handleCategoryChange(e)}
-                                        className="w-full px-3 py-2 text-sm border border-gray rounded-lg focus:outline-none bg-transparent"
+                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                         required
                                     >
                                         {industryList.map((industry) => (
@@ -401,7 +398,7 @@ const RegisterForm = () => {
                                         name="industryCategoryId"
                                         value={formData.industryCategoryId}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 text-sm border border-gray rounded-lg focus:outline-none bg-transparent"
+                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                         required
                                     >
                                         {industryCategoryList.map((industry) => (

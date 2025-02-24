@@ -14,16 +14,9 @@ class AuthService {
       try {
         const response = await axios.post('/api/account',
           JSON.stringify({email, password}),
-          {
-            headers: {
-              'Accept': '*/*',
-              'Content-Type': 'application/json',
-            },
-          }
         );
         
         const data = response.data.responseData;
-        console.log('user data: ', data);
   
         setAuth({data, merchant: null});
         dispatch(loginSuccess(data));
@@ -37,10 +30,8 @@ class AuthService {
           dispatch(loginFailure('No Server Response'));
         } else {
           if (err.response.status === 400) {
-            toast.error(err.response.data.message ?? 'Login failed');
             dispatch(loginFailure(err.response.data.message));
           } else {
-            toast.error('Login failed');
             dispatch(loginFailure('Login Failed'));
           }
         }
@@ -51,13 +42,7 @@ class AuthService {
         setLoading(true);
         try {
             const response = await axios.post('/api/account/forget-password',
-                JSON.stringify({email}),
-                 {
-                    headers: {
-                        'Accept': '*/*',
-                        'Content-Type': 'application/json',
-                    },
-                }
+                JSON.stringify({email})
             );
             const data = response.data;
 
@@ -66,7 +51,6 @@ class AuthService {
                 setSuccessMsg(data.message);
             };
         } catch (error) {
-            console.log(error.response)
             if (!error.response) {
                 setErrMsg('No Server Response');
             } else {

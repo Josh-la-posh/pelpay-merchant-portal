@@ -34,7 +34,6 @@ const useNoHeaderAxiosPrivate = () => {
                             navigate('/login', {state: {from: location}, replace: true});
                         }, 2000);
                     } catch (err) {
-                        console.log('New error ', err);
                     }
                 }
                 // if (error?.response?.status === 401 && !prevRequest?.sent) {
@@ -45,7 +44,6 @@ const useNoHeaderAxiosPrivate = () => {
                 //         return noHeaderAxiosPrivate(prevRequest);
                 //     } catch (refreshError) {
                 //         await noHeaderAxiosPrivate('api/account/logout');
-                //         console.log('It has worked out');
                 //         setAuth({});
                 //         navigate('/login', {state: {from: location}, replace: true});
                 //     }

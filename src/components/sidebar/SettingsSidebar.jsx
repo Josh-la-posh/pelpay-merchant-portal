@@ -67,7 +67,7 @@ const SettingsSidebar = () => {
             <nav className={`bg-white pt-4 flex-1 overflow-y-auto scrollbar-none`}>
                 {
                     sidebarItems.map((item) => (
-                        <Link key={item.id} to={item.url} className={`block py-4 ${settingsTitle === item.title ? 'text-priColor border-r-4 border-priColor transition duration-300 bg-priColor bg-opacity-10' : ''}`}>
+                        <Link key={item.id} to={item.url} className={`block py-4 ${settingsTitle === item.title ? 'text-priColor border-r-4 border-priColor transition duration-300 bg-priColor/10' : ''}`}>
                             <div className={`flex items-center gap-2 pl-4`}>
                                 {item.icon}
                                 <div>{item.name}</div>

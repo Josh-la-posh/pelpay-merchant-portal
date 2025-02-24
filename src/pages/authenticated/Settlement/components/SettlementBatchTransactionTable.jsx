@@ -46,8 +46,7 @@ const columns = [
     }
 ];
 
-const SettlementBatchTransactionTable = ({filteredData}) => {
-
+const SettlementBatchTransactionTable = ({filteredData, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
     const processedData = filteredData?.map(row => ({
         ...row,
         amountPayable: `${row?.amountCollected - (row?.merchantCharge + row?.customerCharge)}`,
@@ -67,13 +66,14 @@ const SettlementBatchTransactionTable = ({filteredData}) => {
                 <SettlementCard title='Total Fees' amount={`₦${totalFees ?? '0'}`} newColor='bg-gray-500' />
                 <SettlementCard title='Total Amount Payable' amount={`₦${amountPayable ?? '0'}`} newColor='bg-green-800' />
             </div>
-
             <DataTable
                 columns={columns}
                 data={processedData}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                displayActionButton={false}
-                elementId='SettlementBatchTransactionTable'
+                totalSize={totalSize}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
             />
         </div>
     );

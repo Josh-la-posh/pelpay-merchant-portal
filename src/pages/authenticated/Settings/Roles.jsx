@@ -38,7 +38,6 @@ function RolesAndPermission() {
     }, [rolesError]);
 
     useEffect(() => {
-        console.log(auth)
         loadData();
     }, [aggregatorCode, merchantCode, dispatch]);
 

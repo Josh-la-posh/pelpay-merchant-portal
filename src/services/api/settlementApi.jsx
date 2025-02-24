@@ -13,7 +13,7 @@ class SettlementService {
         const response = await this.axiosPrivate.get(
           `api/Settlement/batches/${merchantCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`,
         );
-        const data = response.data.data;
+        const data = response.data;
         dispatch(settlementSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -32,7 +32,7 @@ class SettlementService {
           `api/Settlement/batch/${id}/transactions?merchantCode=${merchantCode}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
           JSON.stringify({merchantCode})
         );
-        const data = response.data.data;
+        const data = response.data;
         dispatch(settlementTransactionSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -53,7 +53,7 @@ class SettlementService {
           `api/SettlementConfiguration/${merchantCode}`,
           JSON.stringify({data})
         );
-        console.log('Settlement data created successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -72,7 +72,7 @@ class SettlementService {
           `api/SettlementConfiguration/${id}`,
           JSON.stringify({data})
         );
-        console.log('settlement data updated ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -90,7 +90,7 @@ class SettlementService {
         const response = await this.axiosPrivate.get(
           `api/SettlementConfiguration/${id}`,
         );
-        console.log('This is the settlement data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -108,7 +108,7 @@ class SettlementService {
         const response = await this.axiosPrivate.get(
           `api/SettlementConfiguration/bycode/${settlementCode}`,
         );
-        console.log('This is the settlement data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -126,7 +126,7 @@ class SettlementService {
         const response = await this.axiosPrivate.get(
           `api/Settlement/${merchantCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`,
         );
-        console.log('This is the settlement data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -146,7 +146,7 @@ class SettlementService {
         const response = await this.axiosPrivate.get(
           `api/SettlementConfiguration/${configId}/details`,
         );
-        console.log('This is the settlement detail data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -165,7 +165,7 @@ class SettlementService {
           `api/SettlementConfiguration/${configId}/details?merchantCode=${merchantCode}`,
           JSON.stringify({data})
         );
-        console.log('settlement detail data created ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -184,7 +184,7 @@ class SettlementService {
           `api/SettlementConfiguration/details/${detailId}`,
           JSON.stringify({data})
         );
-        console.log('settlement detail data updated ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -202,7 +202,7 @@ class SettlementService {
         const response = await this.axiosPrivate.put(
           `api/SettlementConfiguration/activate/${detailId}`
         );
-        console.log('settlement detail data activated ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -220,7 +220,7 @@ class SettlementService {
         const response = await this.axiosPrivate.put(
           `api/SettlementConfiguration/deactivate/${detailId}`
         );
-        console.log('settlement detail data deactivated ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {

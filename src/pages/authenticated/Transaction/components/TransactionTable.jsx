@@ -7,7 +7,7 @@ import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { toast } from 'react-toastify';
 import { EyeIcon } from 'lucide-react';
 
-const TransactionTable = ({filteredData, handleOpenModal, isExportPopupOpen, setIsExportPopupOpen}) => {
+const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
     const [selectedIndex, setSelectedIndex] = useState(null);
     
     const columns = [
@@ -79,17 +79,11 @@ const TransactionTable = ({filteredData, handleOpenModal, isExportPopupOpen, set
             <DataTable
                 columns={columns}
                 data={filteredData}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                onIndexChange={handleSelectedRow}
-                selectedIndex={selectedIndex}
-                displayActionButton={false}
-                elementId='transactionTable'
-            />
-            <ExportPopup
-                isOpen={isExportPopupOpen}
-                onClose={() => setIsExportPopupOpen(false)}
-                data={filteredData}
-                elementId='transactionTable'
+                totalSize={totalSize}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
             />
         </div>
     );

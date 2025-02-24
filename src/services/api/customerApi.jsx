@@ -13,7 +13,7 @@ class CustomerService {
           `api/Customer/paginated/${pageNumber}/${pageSize}?merchantCode=${merchantCode}`,
         );
         const data = response.data.data;
-        console.log(data)
+        
         dispatch(customerSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -31,7 +31,7 @@ class CustomerService {
         const response = await this.axiosPrivate.get(
           `api/Customer/paginated/${customerEmail}?merchantCode=${merchantCode}`,
         );
-        console.log('This is the customer by email data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -49,7 +49,7 @@ class CustomerService {
         const response = await this.axiosPrivate.get(
           `api/Customer/paginated/${customerId}?merchantCode=${merchantCode}`,
         );
-        console.log('This is the customer by id data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {

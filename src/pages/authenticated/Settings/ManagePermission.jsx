@@ -13,7 +13,7 @@ function ManagePermission() {
     const axiosPrivate = useAxiosPrivate();
     const { auth } = useAuth();
     const dispatch = useDispatch();
-    const { permissions, aggregatorPermissions, permissionsLoading, aggregatorPermissionsLoading, permissionsError, aggregatorPermissionsError } = useSelector((state) => state.permissions);
+    const { permissions, aggregatorPermissionsPageSize, aggregatorPermissionsPageNumber, aggregatorPermissionsTotalSize, aggregatorPermissions, permissionsLoading, aggregatorPermissionsLoading, permissionsError, aggregatorPermissionsError } = useSelector((state) => state.permissions);
     const [permissionLists, setPermissionLists] = useState(permissions);
     const [filteredData, setFilteredData] = useState(aggregatorPermissions);
     const [isAggregatorPermissionsLoading, setIsAggregatorPermissionsLoading] = useState(aggregatorPermissionsLoading);
@@ -21,6 +21,9 @@ function ManagePermission() {
     const [errMsg, setErrMsg] = useState(permissionsError);
     const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
     const permisssionService = new PermissionService(axiosPrivate, auth);
+    const [pageNumber, setPageNumber] = useState(aggregatorPermissionsPageNumber);
+    const [pageSize, setPageSize] = useState(aggregatorPermissionsPageSize);
+    const [totalSize, setTotalSize] = useState(aggregatorPermissionsTotalSize);
 
     useEffect(() => {
         setSettingsTitle('Roles');
@@ -53,6 +56,18 @@ function ManagePermission() {
     useEffect(() => {
         loadAggregatorPermissions();
     }, []);
+          
+    useEffect(() => {
+    setPageNumber(aggregatorPermissionsPageNumber);
+    }, [aggregatorPermissionsPageNumber]);
+        
+    useEffect(() => {
+    setPageSize(aggregatorPermissionsPageSize);
+    }, [aggregatorPermissionsPageSize]);
+        
+    useEffect(() => {
+    setTotalSize(aggregatorPermissionsTotalSize);
+    }, [aggregatorPermissionsTotalSize]);
 
     const handleRefresh = () => {
         loadAggregatorPermissions();
@@ -70,7 +85,7 @@ function ManagePermission() {
     
     const loadAggregatorPermissions = async () => {
         if (id) {
-            await permisssionService.fetchAggregatorRolePermission(id, aggregatorCode, 20, 1, dispatch);
+            await permisssionService.fetchAggregatorRolePermission(id, aggregatorCode, pageSize, pageNumber, dispatch);
         }
     };
 
@@ -82,6 +97,11 @@ function ManagePermission() {
             handleRefresh={handleRefresh}
             permissionLists={permissionLists}
             handleOptionRefresh={handleOptionRefresh}
+            totalSize={totalSize}
+            currentPage={pageNumber}
+            setCurrentPage={setPageNumber}
+            rowsPerPage={pageSize}
+            setRowsPerPage={setPageSize}
         />
     );
 }

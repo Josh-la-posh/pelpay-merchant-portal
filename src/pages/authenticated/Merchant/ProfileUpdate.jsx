@@ -6,8 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import AuthInputField from '@/components/AuthInptField';
 import { ArrowLeft } from 'lucide-react';
 
-const NAME_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
-
 function MerchantProfileUpdate() {
     const { merchantCode } = useParams();
     const navigate = useNavigate();
@@ -335,7 +333,7 @@ function MerchantProfileUpdate() {
                                 Business description is required.
                             </>
                         )}
-                    />
+                    /> 
                     <AuthInputField
                         label="Address"
                         type='text'
@@ -360,7 +358,7 @@ function MerchantProfileUpdate() {
                             name="country"
                             value={formData.country}
                             onChange={handleCountryChange}
-                            className="w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                            className="w-full px-3 py-2 text-xs border border-gra-300y rounded-lg focus:outline-none bg-transparent"
                             required
                         >
                             {countryList.map((country) => (
@@ -382,7 +380,7 @@ function MerchantProfileUpdate() {
                             name="state"
                             value={addressData.state}
                             onChange={(e) => handleStateChange(e)}
-                            className="mt-1 w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                            className="mt-1 w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                             required
                         >
                             {stateList.map((state) => (
@@ -401,7 +399,7 @@ function MerchantProfileUpdate() {
                             name="city"
                             value={formData.city}
                             onChange={(e) => handleCityChange(e)}
-                            className="w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                            className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                             required
                         >
                             {cityList.map((city) => (
@@ -495,7 +493,7 @@ function MerchantProfileUpdate() {
                             name="businessType"
                             value={formData.businessType}
                             onChange={handleChange}
-                            className="mt-1 w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                            className="mt-1 w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                             required
                         >
                             {businessTypes.map((reg, index) => (
@@ -514,7 +512,7 @@ function MerchantProfileUpdate() {
                             name="registerationType"
                             value={formData.registerationType}
                             onChange={handleChange}
-                            className="mt-1 w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                            className="mt-1 w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                             required
                         >
                             {registrationTypes.map((reg, index) => (
@@ -533,7 +531,7 @@ function MerchantProfileUpdate() {
                             name="industry"
                             value={formData.industry}
                             onChange={(e) => handleIndustryChange(e)}
-                            className="mt-1 w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                            className="mt-1 w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                             required
                         >
                             {industryList.map((industry) => (
@@ -554,7 +552,7 @@ function MerchantProfileUpdate() {
                                 name="industryCategoryId"
                                 value={formData.industryCategoryId}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
                             >
                                 {industryCategoryList.map((industry) => (

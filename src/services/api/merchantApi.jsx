@@ -36,7 +36,7 @@ class MerchantService {
           `api/MechantDocuments/${merchantCode}/document-type/${documentId}`,
           fileData
         );
-        // console.log('Merchant document created ', response.data);
+        
         dispatch(merchantDocumentSuccess('Merchant document created successfully'));
         await this.fetchMerchantDocument(merchantCode, dispatch);
       } catch (err) {
@@ -56,7 +56,7 @@ class MerchantService {
           `api/MerchantDocuments/${merchantCode}/document-type_2/${documentId}`,
           JSON.stringify({data})
         );
-        console.log('Merchant document type 2 created ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -119,7 +119,7 @@ class MerchantService {
         toast('Merchant document downloaded successfully');
         
       } catch (err) {
-        console.log(err)
+        
         if (!err.response) {
             toast('No response from server');
         } else {
@@ -136,7 +136,7 @@ class MerchantService {
           `api/MechantDocuments/${documentId}`
         );
         const data = response.data.responseData;
-        console.log('Merchant document deleted sucessfully: ', data);
+        
         await this.fetchMerchantDocument(merchantCode, dispatch);
       } catch (err) {
         if (!err.response) {
@@ -175,7 +175,7 @@ class MerchantService {
           'api/Merchant',
           JSON.stringify({data})
         );
-        console.log('merchant credential created successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -195,7 +195,7 @@ class MerchantService {
         );
         toast('User added successfully');
       } catch (err) {
-        console.log(err);
+        
         if (!err.response) {
           toast('No response from server');
         } else {
@@ -215,7 +215,7 @@ class MerchantService {
           JSON.stringify(formData)
         );
         const data = response.data.responseData;
-        console.log('Fetched data: ', data);
+        
         // dispatch(aggregatorSuccess(data));
         dispatch(aggregatorMerchantSuccess(data));
       } catch (err) {
@@ -237,7 +237,7 @@ class MerchantService {
           'api/Merchant/user',
           JSON.stringify({data})
         );
-        console.log('merchant deleted successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -255,7 +255,7 @@ class MerchantService {
         const response = await this.axiosPrivate.delete(
           `api/Merchant/${merchantId}`
         );
-        console.log('merchant deleted successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -276,7 +276,7 @@ class MerchantService {
           `api/MerchantAccount/${merchantCode}`,
           JSON.stringify({data})
         );
-        console.log('merchant account created successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -294,7 +294,7 @@ class MerchantService {
         const response = await this.axiosPrivate.put(
           `api/MerchantAccount/${Id}`
         );
-        console.log('merchant Account updated successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -312,7 +312,7 @@ class MerchantService {
         const response = await this.axiosPrivate.get(
           `api/MerchantAccount/${Id}`
         );
-        console.log('merchant Account fetched successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -330,7 +330,7 @@ class MerchantService {
         const response = await this.axiosPrivate.get(
           `api/MerchantAccount/${accountNumber}`
         );
-        console.log('merchant Account fetched successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -349,7 +349,7 @@ class MerchantService {
           `api/MerchantAccount/by-merchant-paginated/${merchantCode}?pageNumber=${pageNumber}&pageSize=${pageSize}`
         );
         const data = response.data.data;
-        console.log(data);
+        
         dispatch(merchantAccountSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -367,7 +367,7 @@ class MerchantService {
         const response = await this.axiosPrivate.get(
           `api/MerchantAccount/setasdefault/${id}`
         );
-        console.log('merchant Account set as default successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -387,7 +387,7 @@ class MerchantService {
         const response = await this.axiosPrivate.get(
           `api/MerchantAddress/${merchantCode}`
         );
-        console.log('merchant address fetched successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -408,7 +408,7 @@ class MerchantService {
         );
         toast('Merchant profile updated successfully');
         const data = response.data.responseData;
-        console.log(data);
+        
         dispatch(merchantProfileSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -447,7 +447,7 @@ class MerchantService {
           `api/MerchantContact/${merchantCode}`,
           JSON.stringify({data})
         );
-        console.log('merchant contact updated successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -467,7 +467,7 @@ class MerchantService {
         const response = await this.axiosPrivate.post(
           `api/MerchantDomain/${merchantCode}`
         );
-        console.log('merchant Domain created successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -486,7 +486,7 @@ class MerchantService {
           `api/MerchantDomain/${id}`,
           JSON.stringify({data})
         );
-        console.log('merchant domain updated successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -504,7 +504,7 @@ class MerchantService {
         const response = await this.axiosPrivate.get(
           `api/MerchantDomain/${id}`
         );
-        console.log('merchant Domain fetched successfully ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -523,7 +523,7 @@ class MerchantService {
           `api/MerchantDomain/all/${merchantCode}`
         );
         const data = response.data.responseData;
-        console.log('Hte domain: ', data);
+        
         dispatch(merchantDomainSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -574,7 +574,7 @@ class MerchantService {
         await this.updateMerchantAddress(merchantCode, addressData, dispatch);
         navigate(-1);
       } catch (err) {
-        console.log('E no gree work oooo, ', err.response)
+        
         if (!err.response) {
             dispatch(merchantProfileFailure('No response from server'));
         } else {

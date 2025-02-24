@@ -63,10 +63,6 @@ function Dashboard() {
       }
     };
 
-    const handleIntervalChange = (val) => {
-      setInterval(val);
-    };
-
     if (isLumpsumLoading || isGraphLoading) return (
       <div className="h-[80vh] w-full">
         <Spinner />
@@ -103,7 +99,7 @@ function Dashboard() {
 
       <div className="lg:grid grid-cols-7 gap-4">
         <div className="bg-white col-span-5 mb-4">
-          <div className="flex justify-between items-center py-4 px-8 border-b border-b-gray">
+          <div className="flex justify-between items-center py-4 px-8 border-b border-b-gray-300">
             <p className="text-base font-[800]">Transaction {transactionMode}</p>
             <div>
               <button onClick={() => setInterval('Daily')} className={`${interval === 'Daily' ? 'bg-gray-200 shadow-md text-priColor font-[600]' : 'font-[500] text-gray-300'} text-xs md:text-sm px-5 py-2 rounded-md`}>Daily</button>
@@ -113,7 +109,7 @@ function Dashboard() {
             </div>
           </div>
           <div className="md:grid grid-cols-4">
-            <div className="col-span-3 p-4 border-r border-r-gray">
+            <div className="col-span-3 p-4 border-r border-r-gray-300">
               <DashboardChart graph={graph} type={transactionMode}/>
             </div>
             <div className="hidden md:block py-4 px-5">
@@ -121,13 +117,13 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="bg-white col-span-2 border-b border-b-gray">
-          <p className="text-[16px] font-[800] mb-5 py-5 px-6 border-b border-b-gray">Transaction {transactionMode}</p>
+        <div className="bg-white col-span-2 border-b border-b-gray-300">
+          <p className="text-[16px] font-[800] mb-5 py-5 px-6 border-b border-b-gray-300">Transaction {transactionMode}</p>
           <div className="flex justify-center mb-5">
             <button onClick={() => setTransactionMode('Count')} className={`${transactionMode === 'Count' ? 'bg-gray-200 shadow-md text-priColor font-[600]' : 'font-[500] text-gray-300'} text-sm px-5 py-2 rounded-md`}>Count</button>
             <button onClick={() => setTransactionMode('Volume')} className={`${transactionMode === 'Volume' ? 'bg-gray-200 shadow-md text-priColor font-[600]' : 'font-[500] text-gray-300'} text-sm px-5 py-2 rounded-md`}>Volume</button>
           </div>
-          <div className="border-b border-b-gray pb-8">
+          <div className="border-b border-b-gray-300 pb-8">
             <DashboardPie graph={lumpsum} type={transactionMode} />
           </div>
         </div>

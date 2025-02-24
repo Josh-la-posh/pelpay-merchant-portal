@@ -15,7 +15,7 @@ class PermissionService {
         const response = await this.axiosPrivate.get(
           'api/Permissions'
         );
-        console.log('This is the permission data ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -53,7 +53,7 @@ class PermissionService {
         const response = await this.axiosPrivate.get(
           `api/RolePermission/${roleId}/aggregator/${aggregatorCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
         );
-        const data = response.data.data;
+        const data = response.data;
         dispatch(aggregatorPermissionsSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -140,7 +140,7 @@ class PermissionService {
         const response = await this.axiosPrivate.get(
           `api/RolePermission/user/${aggregatorCode}`
         );
-        console.log('user role permission fetched ', response.data);
+        
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -154,22 +154,21 @@ class PermissionService {
 
     // roles
     
-      async fetchUserRolePermission(aggregatorCode) {
-        try {
-          const response = await this.axiosPrivate.get(
-            `api/RolePermission/user/${aggregatorCode}`
-          );
-          console.log('user role permission fetched ', response.data);
-          return response.data;
-        } catch (err) {
-          if (!err.response) {
-              // dispatch(invoiceFailure('No response from server'));
-          } else {
-              // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
-          }
-        } finally {
-        }
-      }
+      // async fetchUserRolePermission(aggregatorCode) {
+      //   try {
+      //     const response = await this.axiosPrivate.get(
+      //       `api/RolePermission/user/${aggregatorCode}`
+      //     );
+      //     return response.data;
+      //   } catch (err) {
+      //     if (!err.response) {
+      //         // dispatch(invoiceFailure('No response from server'));
+      //     } else {
+      //         // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
+      //     }
+      //   } finally {
+      //   }
+      // }
 
   }
   

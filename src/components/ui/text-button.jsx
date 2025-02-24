@@ -8,7 +8,7 @@ const TextButton = ({ children, onClick, variant = "primary", className }) => {
         ? "text-primary hover:text-primary-dark dark:hover:text-white"
         : variant === "danger"
         ? "text-danger"
-        : "bg-green-500 hover:bg-gray-600";
+        : "";
   
     return (
       <button className={`${baseClass} ${variantClass} ${className}`} onClick={onClick}>
@@ -20,7 +20,7 @@ const TextButton = ({ children, onClick, variant = "primary", className }) => {
   TextButton.propTypes = {
     children: PropTypes.node.isRequired,
     onClick: PropTypes.func,
-    variant: PropTypes.oneOf(["primary", "secondary"]),
+    variant: PropTypes.oneOf(["primary", "secondary", "danger", "custom"]),
     className: PropTypes.any
   };
 

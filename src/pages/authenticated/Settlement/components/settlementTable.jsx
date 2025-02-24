@@ -4,7 +4,7 @@ import { dateFormatter, timeFormatter } from '@/utils/dateFormatter';
 import { Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const SettlementTable = ({filteredData}) => {
+const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
     
     const columns = [
         {
@@ -63,13 +63,14 @@ const SettlementTable = ({filteredData}) => {
     ];
     return (
         <div className="">
-
             <DataTable
                 columns={columns}
                 data={filteredData}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                displayActionButton={false}
-                elementId='SettlementTable'
+                totalSize={totalSize}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
             />
         </div>
     );

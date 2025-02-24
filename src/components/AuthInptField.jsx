@@ -5,7 +5,7 @@ import { Check, Info, X } from 'lucide-react';
 function AuthInputField({ label, type, validName, valueName, id, onChange, setOnFocus, nameFocus, errNote, icon }) {
     return (
         <div className="">
-            <label className="text-xs font-medium text-gray-700" htmlFor={id}>
+            <label className="text-xs font-medium text-gray-700 flex" htmlFor={id}>
                 {label}
                 <span className={validName ? 'valid' : 'hide'}>
                     <Check size='15px' />
@@ -14,7 +14,7 @@ function AuthInputField({ label, type, validName, valueName, id, onChange, setOn
                     <X size='15px' />
                 </span>
             </label>
-            <div className={`relative mt-1 w-full ${icon ? 'pl-9' : 'pl-3'} pr-3 py-2 border border-gray-300 rounded-md`}>
+            <div className={`relative mt-1 w-full ${icon ? 'gap-2' : 'gap-0'} px-3 py-2 border border-gray-300 rounded-md flex items-center`}>
                 {icon && icon}
                 <input
                     type={type}

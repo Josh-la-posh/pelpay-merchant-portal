@@ -31,10 +31,10 @@ import SettlementBatchTransaction from '../pages/authenticated/Settlement/Settle
 import ContactPage from '../pages/authenticated/Settings/Contact';
 import UserManagement from '../pages/authenticated/Settings/UserManagement';
 import SettingsLayout from '../layouts/SettingsLayout';
-import MerchantLayout from '../pages/authenticated/Merchant/components/MerchantLayout';
 import RolesAndPermission from '../pages/authenticated/Settings/Roles';
 import ManagePermission from '../pages/authenticated/Settings/ManagePermission';
 import RoleAssignment from '../pages/authenticated/Settings/RoleAssignment';
+import MerchantLayout from '../layouts/MerchantLayout';
 
 const RoutesSystem = () => {
   return (

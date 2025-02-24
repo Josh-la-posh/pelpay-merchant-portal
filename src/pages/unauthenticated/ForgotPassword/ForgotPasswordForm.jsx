@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../auth.css';
-import Logo from '@/assets/logo.jpg';
+// import Logo from '@/assets/logo.jpg';
 import AuthInputField from '@/components/AuthInptField';
 import AuthService from '@/services/api/authApi';
 import { CheckCircle, User } from 'lucide-react';
@@ -42,33 +42,31 @@ const ForgotPasswordForm = () => {
             {
                 !isTokenSent ?
                 (
-                    <div className="">
+                    <div className="space-y-3">
                         <div className="lg:flex justify-center">
-                            <img src={Logo} />
+                            <img src='/assets/logo.jpg' />
                         </div>
-                        <h2 className="text-2xl font-semibold mt-6 mb-4">Forgot Password</h2>
-                        <h2 className="text-[15px] text-black text-opacity-60 mb-6">Kindly enter your email address</h2>
+                        <h2 className="text-2xl font-semibold">Forgot Password</h2>
+                        <h2 className="text-[15px] text-black/60">Kindly enter your email address</h2>
                         <p ref={errRef} className={errMsg ? "errmsg" :
                             "offscreen"} aria-live='asserive'>{errMsg}</p>
-                        <form onSubmit={handleForgotPassword}>
-                            <div className="mb-4">
-                                <AuthInputField
-                                    label="Email"
-                                    type='email'
-                                    icon={<User size='15px' />}
-                                    validName={validEmail}
-                                    valueName={email}
-                                    id="contactEmail"
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    setOnFocus={setEmailFocus}
-                                    nameFocus={emailFocus}
-                                    errNote={(
-                                        <>
-                                            Enter a valid email address
-                                        </>
-                                    )}
-                                />
-                            </div>
+                        <form onSubmit={handleForgotPassword} className='space-y-4'>
+                            <AuthInputField
+                                label="Email"
+                                type='email'
+                                icon={<User size='15px' />}
+                                validName={validEmail}
+                                valueName={email}
+                                id="contactEmail"
+                                onChange={(e) => setEmail(e.target.value)}
+                                setOnFocus={setEmailFocus}
+                                nameFocus={emailFocus}
+                                errNote={(
+                                    <>
+                                        Enter a valid email address
+                                    </>
+                                )}
+                            />
                             <button
                                 type="submit"
                                 className="w-full bg-priColor text-white py-2 rounded-lg mt-5"
@@ -76,19 +74,19 @@ const ForgotPasswordForm = () => {
                             >
                                 {loading ? 'Loading...' : 'Continue'}
                             </button>
-                            <div className="text-center mt-4">
-                                <Link to="/login" className="text-xs lg:text-sm">Go back to <span className='text-priColor hover:underline'> Log In</span></Link>
-                            </div>
                         </form>
+                        <div className="text-center mt-4">
+                            <Link to="/login" className="text-xs lg:text-sm">Go back to <span className='text-priColor hover:underline'> Log In</span></Link>
+                        </div>
                     </div>
                 ) :
                 (
-                    <div className="text-[13px]">
-                        <div className="flex flex-col justify-center items-center gap-6 pt-[20px] my-8">
-                            <CheckCircle size='32px' className='text-green-600'/>
+                    <div className="text-[13px] h-[screen]">
+                        <div className="h-full flex flex-col justify-center items-center gap-6 pt-[20px] my-8">
+                            <CheckCircle size='36px' className='text-green-600'/>
                             <p className='text-[13px] text-center'>"Kindly follow the link send to your email for password reset</p>
+                            <Link to='/login' className='text-priColor hover:underline'>Proceed to Login page</Link>
                         </div>
-                        <Link to='/login' className='text-priColor hover:underline'>Go back to Login</Link>
                     </div>
                 )
             }

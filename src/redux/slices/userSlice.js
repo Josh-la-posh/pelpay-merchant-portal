@@ -9,7 +9,10 @@ const initialState = {
   newUser: {},
   aggregatorUserLoading: false,
   aggregatorUserError: null,
-  aggregatorUser: []
+  aggregatorUser: [],
+  aggregatorUserPageSize: 10,
+  aggregatorUserPageNumber: 1,
+  aggregatorUserTotalSize: 0,
 };
 
 const usersSlice = createSlice({
@@ -46,7 +49,10 @@ const usersSlice = createSlice({
     },
     aggregatorUserSuccess: (state, action) => {
       state.aggregatorUserLoading = false;
-      state.aggregatorUser = action.payload;
+      state.aggregatorUser = action.payload.data;
+      state.aggregatorUserPageNumber = action.payload.pageNumber;
+      state.aggregatorUserPageSize = action.payload.pageSize;
+      state.aggregatorUserTotalSize = action.payload.totalSize;
     },
     aggregatorUserFailure: (state, action) => {
       state.aggregatorUserLoading = false;

@@ -207,7 +207,7 @@ const RoleManagementTable = ({filteredData}) => {
                                         placeholder="Name"
                                         value={formData.roleName}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-3 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+                                        className="w-full px-3 py-3 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
                                     />
                                     <input
                                     type="text"
@@ -216,7 +216,7 @@ const RoleManagementTable = ({filteredData}) => {
                                     placeholder="Description"
                                     value={formData.roleDescription}
                                     onChange={handleChange}
-                                    className="w-full px-3 py-3 text-xs md:text-sm border border-gray rounded-lg focus:outline-none"
+                                    className="w-full px-3 py-3 text-xs md:text-sm border border-gray-300 rounded-lg focus:outline-none"
                                     />
                                     {
                                         roleMode === 'create'
@@ -266,8 +266,7 @@ const RoleManagementTable = ({filteredData}) => {
             <DataTable
                 columns={columns}
                 data={filteredData}
-                rowsPerPageOptions={[10, 20, 40]}
-                displayActionButton={false}
+                drpp= ''
             />
         </div>
     );

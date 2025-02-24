@@ -15,7 +15,12 @@ const ManagePermissionTable = ({
     errMsg,
     handleRefresh,
     permissionLists,
-    handleOptionRefresh
+    handleOptionRefresh,
+    totalSize,
+    currentPage,
+    setCurrentPage,
+    rowsPerPage,
+    setRowsPerPage
 }) => {
     const { id } = useParams();
     const { auth } = useAuth();
@@ -25,7 +30,6 @@ const ManagePermissionTable = ({
     const [selectedID, setSelectedID] = useState('');
     const merchantCode = auth?.merchant?.merchantCode;
     const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
-
 
     const dispatch = useDispatch();
     const { updatePermissionsLoading } = useSelector((state) => state.permissions);
@@ -44,7 +48,6 @@ const ManagePermissionTable = ({
             ...prev,
             [name]: value
         }));
-        console.log(formData);
     }
 
     const handleEdit = (row) => {
@@ -304,7 +307,11 @@ const ManagePermissionTable = ({
             <DataTable
                 columns={columns}
                 data={filteredData}
-                rowsPerPageOptions={[10, 20, 40]}
+                totalSize={totalSize}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
             />
         </div>
     );

@@ -128,7 +128,7 @@ function MerchantProfile() {
                         <div className="flex justify-end">
                             { canAddUser &&
                                 <div className ="flex items-center justify-center gap-2">
-                                    <select id='users' value={users.id} onChange={handleUserChange} className='flex-grow text-xs px-4 py-2 outline-gray-400' defaultValue='Select User'>
+                                    <select id='users' value={users.id} onChange={handleUserChange} className='flex-grow text-xs px-4 py-2 border border-gray-300 rounded-md outline-gray-400' defaultValue='Select User'>
                                         {
                                             users &&
                                             users.map((user) =>
@@ -139,7 +139,7 @@ function MerchantProfile() {
                                         }
                                     </select>
                                     <button
-                                        className='text-white border border-gray bg-priColor text-xs font-[600]  py-2 px-5 rounded-md flex justify-between items-center'
+                                        className='text-white border border-gray-300 bg-priColor text-xs font-[600]  py-2 px-5 rounded-md flex justify-between items-center'
                                         onClick={handleSubmit}
                                         >
                                             Add
@@ -150,7 +150,7 @@ function MerchantProfile() {
                                 canAddUser === false &&
                                 <button
                                     onClick={() => setCanAddUser(true)}
-                                    className={`text-white border border-gray bg-priColor text-xs font-[600] py-2 px-5 rounded-md flex justify-between items-center gap-2`}
+                                    className={`text-white border border-gray-300 bg-priColor text-xs font-[600] py-2 px-5 rounded-md flex justify-between items-center gap-2`}
                                     >
                                         <Plus size='14' />
                                         Add User

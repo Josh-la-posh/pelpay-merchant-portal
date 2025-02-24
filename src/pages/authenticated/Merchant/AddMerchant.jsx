@@ -122,7 +122,6 @@ function AddMerchantPage() {
     });
 
     const getCountry = async () => { 
-        // e.preventDefault();
         try {
             const response = await axiosPrivate.get('api/country');
             if (response.data.message === 'Successful') {
@@ -155,7 +154,6 @@ function AddMerchantPage() {
                 setShowIndustryListReload(true);
             }
         } catch (err) {
-            console.log('Error printing industry ', err.response);
             setShowIndustryListReload(true);
         }
     }
@@ -448,7 +446,7 @@ function AddMerchantPage() {
                                 name="country"
                                 value={formData.countryCode}
                                 onChange={handleCountryChange}
-                                className="w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
                             >
                                 {countryList.map((country) => (
@@ -471,7 +469,7 @@ function AddMerchantPage() {
                                 name="stateCode"
                                 value={formData.stateCode}
                                 onChange={(e) => handleStateChange(e)}
-                                className="w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
                             >
                                 {stateList.map((state) => (
@@ -667,7 +665,7 @@ function AddMerchantPage() {
                                 name="industry"
                                 value={formData.industry}
                                 onChange={(e) => handleCategoryChange(e)}
-                                className="w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
                             >
                                 {industryList.map((industry) => (
@@ -688,7 +686,7 @@ function AddMerchantPage() {
                                     name="industryCategoryId"
                                     value={formData.industryCategoryId}
                                     onChange={handleChange}
-                                    className="w-full px-3 py-2 text-xs border border-gray rounded-lg focus:outline-none bg-transparent"
+                                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                     required
                                 >
                                     {industryCategoryList.map((industry) => (

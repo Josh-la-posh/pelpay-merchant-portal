@@ -7,6 +7,9 @@ const initialState = {
   aggregatorPermissionsLoading: false,
   aggregatorPermissionsError: null,
   aggregatorPermissions: [],
+  aggregatorPermissionsPageSize: 10,
+  aggregatorPermissionsPageNumber: 1,
+  aggregatorPermissionsTotalSize: 0,
   updatePermissionsLoading: false,
   updatePermissionsError: null,
   updatePermissions: [],
@@ -34,7 +37,10 @@ const permissionsSlice = createSlice({
     },
     aggregatorPermissionsSuccess: (state, action) => {
       state.aggregatorPermissionsLoading = false;
-      state.aggregatorPermissions = action.payload;
+      state.aggregatorPermissions = action.payload.data;
+      state.aggregatorPermissionsPageNumber = action.payload.pageNumber;
+      state.aggregatorPermissionsPageSize = action.payload.pageSize;
+      state.aggregatorPermissionsTotalSize = action.payload.totalSize;
     },
     aggregatorPermissionsFailure: (state, action) => {
       state.aggregatorPermissionsLoading = false;

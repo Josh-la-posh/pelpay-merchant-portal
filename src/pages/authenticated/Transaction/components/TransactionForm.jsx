@@ -36,7 +36,6 @@ function TransactionForm({ handleCloseModal, data }) {
       const data = response.data;
       setTransactionJsonData(response.data);
     } catch (e) {
-      console.log('the resulting error is: ', e);
     }
   }
 
@@ -47,7 +46,6 @@ function TransactionForm({ handleCloseModal, data }) {
       const data = response.data.responseData;
       toast(data);
     } catch (e) {
-      console.log('the resulting error is: ', e);
     }
   }
 
@@ -78,7 +76,7 @@ function TransactionForm({ handleCloseModal, data }) {
                 (data.transactionStatus === 'Successful' || data.transactionStatus === 'Failed') && (
                   <button 
                     onClick={downloadTransaction} 
-                    className="text-priColor text-xs rounded-md flex items-center justify-center gap-2 hover:bg-priColor hover:bg-opacity-[0.56] p-3 hover:text-[#121212]"
+                    className="text-priColor text-xs rounded-md flex items-center justify-center gap-2 hover:bg-priColor/56 p-3 hover:text-[#121212]"
                   >
                     <Cloud size="15px" /> Download Receipt
                   </button>

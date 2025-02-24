@@ -13,7 +13,6 @@ class DisputeService {
           `api/Disputes/${merchantCode}/?pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
         );
         const data = response.data.data;
-        console.log('dispute data: ', data);
         dispatch(disputeSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -34,7 +33,6 @@ class DisputeService {
             transactionReference, sDate, eDate, status, customerEmail, disputeStatus
           })
         );
-        console.log('This is the dispute data ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -55,7 +53,6 @@ class DisputeService {
             comment, disputeId
           })
         );
-        console.log('This is the dispute data ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -76,7 +73,6 @@ class DisputeService {
             comment, disputeId
           })
         );
-        console.log('This is the dispute data ', response.data);
         return response.data;
       } catch (err) {
         if (!err.response) {

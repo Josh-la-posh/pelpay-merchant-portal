@@ -19,6 +19,7 @@ function MerchantDocumentFilter() {
     const [canUpload, setCanUpload] = useState(false);
     const [file, setFile] = useState(null);
     const [documentId, setDocumentId] = useState('');
+    const [errMsg, setErrMsg] = useState('');
 
     const handleFileCharge = (e) => {
         const selectedFile = e.target.files[0];
@@ -48,7 +49,10 @@ function MerchantDocumentFilter() {
 
     const uploadDocument = async () => {
         if (!file) {
-            alert('Please select a file first!');
+            setErrMsg('Please, select a file first');
+            setTimeout(() => {
+                setErrMsg('');
+            }, 2000);
             return;
         }
         const merchantCode = auth?.merchant?.merchantCode;
@@ -62,52 +66,59 @@ function MerchantDocumentFilter() {
         <div className="">
             <div className="flex items-center gap-4">
                 { canUpload &&
-                    <div className="">
-                        <div className ="flex items-center justify-center gap-2">
-                            <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
-                                <select name="" id="documents" value={documents.id} onChange={handleChange} className='px-2 py-2 outline-none text-xs'>
-                                    {
-                                        documents.map(document => {
-                                            return (
-                                                <option key={document.id} value={document.id} className='text-xs'>
-                                                    {document.documentName}
-                                                </option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                                <input 
-                                    type="file"
-                                    accept='image/*, .pdf'
-                                    onChange={handleFileCharge}
-                                    className='text-xs'
-                                />
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                            <div className ="flex items-center justify-center gap-2">
+                                <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
+                                    <select name="" id="documents" value={documents.id} onChange={handleChange} className='px-2 py-2 outline-none text-xs border border-gray-300 rounded-sm'>
+                                        {
+                                            documents.map(document => {
+                                                return (
+                                                    <option key={document.id} value={document.id} className='text-xs'>
+                                                        {document.documentName}
+                                                    </option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                    <input 
+                                        type="file"
+                                        accept='image/*, .pdf'
+                                        onChange={handleFileCharge}
+                                        className='px-2 py-2 text-xs border border-gray-300 rounded-sm'
+                                    />
+                                </div>
+                                <button
+                                    className={`text-white border border-gray-300 bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
+                                    onClick={uploadDocument}
+                                    disabled={isUploading}
+                                    >
+                                        {isUploading ? 'Uploading...' : 'Upload'}
+                                </button>
                             </div>
-                            <button
-                                className={`text-white border border-gray bg-priColor text-xs font-[600] py-2 px-2 rounded-sm flex justify-between items-center gap-2`}
-                                onClick={uploadDocument}
-                                disabled={isUploading}
-                                >
-                                    {isUploading ? 'Uploading...' : 'Upload'}
-                            </button>
+                            {
+                                canUpload === true && (
+                                <button
+                                    onClick={() => setCanUpload(false)}
+                                    className={`w-4 h-4 text-white flex justify-center items-center bg-priColor text-xs font-[600] rounded-full shadow-xl`}
+                                    >
+                                        <X size='12px' />
+                                </button>
+                                )
+                            }
                         </div>
+                        {errMsg && <p className='text-red-400 text-[11px] text-center'>{errMsg}</p>}
                         <p className='text-gray-400 text-xs text-center'>**Supported files jpeg, png, pdf</p>
                     </div>
                 }
                 {
-                    canUpload === false ?
-                    <button
+                    canUpload === false &&
+                    (<button
                         onClick={() => setCanUpload(true)}
                         className={`w-9 h-9 text-white flex justify-center items-center bg-priColor text-xs font-[600] rounded-full shadow-xl`}
                         >
                             <Plus size='22px' />
-                    </button>
-                    : <button
-                        onClick={() => setCanUpload(false)}
-                        className={`w-4 h-4 text-white flex justify-center items-center bg-priColor text-xs font-[600] rounded-full shadow-xl`}
-                        >
-                            <X size='12px' />
-                    </button>
+                    </button>)
                 }
             </div>
         </div>
