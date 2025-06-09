@@ -1,4 +1,3 @@
-import React from 'react';
 import HeroSection from './HeroSection';
 
 const AuthLayout = ({children}) => {
@@ -8,8 +7,8 @@ const AuthLayout = ({children}) => {
         <HeroSection />
       </div>
       <div className='h-full w-full lg:w-[45%] bg-[#f7f7f7]'>
-        <div className="h-full w-full flex justify-center items-center overflow-y-scroll">
-          <div className="w-[280px] lg:w-[unset] lg:px-20">
+        <div className="h-full w-full flex justify-center items-center overflow-y-hidden">
+          <div className="">
             {children}
           </div>
         </div>

@@ -105,15 +105,17 @@ function MerchantCredential() {
       <div className="bg-white p-4">
         <div className="">
           <div className="flex border-b border-b-gray-300 py-4">
-            <p className='text-xs w-32 mr-32'>Client ID</p>
-            <p className='text-xs'>Client Secret</p>
+            <p className='text-xs flex-1'>Client ID</p>
+            <p className='text-xs flex-1'>Client Secret</p>
+            <p className='flex-1 text-xs'></p>
           </div>
           <div className="flex border-b border-b-gray-300 py-4 text-xs">
-            <p className='w-32 mr-32'>{merchantCredentials?.clientId}</p>
-            <div className='flex items-center gap-5'>
+            <p className='flex-1'>{merchantCredentials?.clientId}</p>
+            <div className='flex-1 flex items-center gap-5'>
               {merchantCredentials?.clientSecret && viewSecret === true ? merchantCredentials?.clientSecret : '************'}
               <button onClick={() => setViewSecret(!viewSecret)} className='text-priColor'><Eye size={'15px'} /></button>
             </div>
+            <p className='flex-1 text-xs'></p>
           </div>
         </div>
         <div className="flex justify-center mt-8 mb-4">
@@ -121,20 +123,21 @@ function MerchantCredential() {
         </div>
         <div className="">   
           <div className="flex border-b border-b-gray-300 py-4">
-            <p className='text-xs w-32 mr-32'>Environment</p>
-            <p className='text-xs w-32'>Integration Key</p>
+            <p className='flex-1 text-xs'>Environment</p>
+            <p className='flex-1 text-xs'>Integration Key</p>
+            <p className='flex-1 text-xs'></p>
           </div>
         </div>
 
         { userData &&
           userData.map((data, index) => (
             <div key={index} className="flex border-b border-b-gray-300 py-4 text-xs">
-              <p className='w-32 mr-32'>{data?.env === 'Test' ? 'Sandbox' : 'Production'}</p>
-              <div className='flex items-center gap-5 mr-auto'>
+              <p className='flex-1'>{data?.env === 'Test' ? 'Sandbox' : 'Production'}</p>
+              <div className='flex-1 flex items-center gap-5'>
                 {viewKey[index] === true ? data?.integrationKey : '************'}
                 <button onClick={() => handleIntegrationKey(index)} className='text-priColor'><Eye size={'15px'} /></button>
               </div>
-              <button onClick={() => handlePayment(index)} className='text-priColor '>Make Payment</button>
+              <button onClick={() => handlePayment(index)} className='text-priColor flex-1'>Make Payment</button>
             </div>
           ))
         }

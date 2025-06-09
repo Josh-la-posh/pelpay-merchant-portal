@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
-import { aggregatorFailure, aggregatorMerchantFailure, aggregatorMerchantStart, aggregatorMerchantSuccess, aggregatorStart, aggregatorSuccess } from "@/redux/slices/aggregatorSlice";
-import { merchantAccountFailure, merchantAccountStart, merchantAccountSuccess, merchantAddressFailure, merchantAddressStart, merchantBusinessTypesSucess, merchantContactFailure, merchantContactStart, merchantContactSuccess, merchantCredentialsFailure, merchantCredentialsStart, merchantCredentialsSuccess, merchantDocumentFailure, merchantDocumentStart, merchantDocumentSuccess, merchantDocumentTypeFailure, merchantDocumentTypeStart, merchantDocumentTypeSuccess, merchantDomainFailure, merchantDomainStart, merchantDomainSuccess, merchantFailure, merchantProfileFailure, merchantProfileStart, merchantProfileSuccess, merchantRegistrationTypesSucess, merchantStart, merchantSuccess } from "@/redux/slices/merchantSlice";
-import jsPDF from "jspdf";
+import { aggregatorMerchantFailure, aggregatorMerchantStart, aggregatorMerchantSuccess } from "@/redux/slices/aggregatorSlice";
+import { merchantAccountFailure, merchantAccountStart, merchantAccountSuccess, merchantAddressFailure, merchantAddressStart, merchantBusinessTypesSucess, merchantContactFailure, merchantContactStart, merchantContactSuccess, merchantCredentialsFailure, merchantCredentialsStart, merchantCredentialsSuccess, merchantDocumentFailure, merchantDocumentStart, merchantDocumentSuccess, merchantDocumentTypeFailure, merchantDocumentTypeStart, merchantDocumentTypeSuccess, merchantDomainFailure, merchantDomainStart, merchantDomainSuccess, merchantFailure, merchantProfileFailure, merchantProfileStart, merchantProfileSuccess, merchantRegistrationTypesSucess, merchantStart } from "@/redux/slices/merchantSlice";
 import { saveAs } from "file-saver";
 
 class MerchantService {
@@ -193,14 +192,16 @@ class MerchantService {
           'api/Merchant/adduser',
           JSON.stringify(formData)
         );
+        console.log('Real other response: ', response);
         toast('User added successfully');
       } catch (err) {
-        
+          console.log('Real other response: ');
         if (!err.response) {
           toast('No response from server');
         } else {
+          console.log('Real response: ', err.response);
           const errMsg = err.response.data.message;
-          toast(errMsg);
+          toast.error(errMsg);
         }
       } finally {
       }

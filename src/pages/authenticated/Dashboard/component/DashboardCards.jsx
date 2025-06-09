@@ -20,17 +20,17 @@ function DashboardCards({ lumpsum }) {
       : 0;
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-1 gap-4 lg:gap-0 mb-8 md:mb-0">
-      <Card title="Total Revenue" value={`₦${totalRevenue}`} icon={<CircleDollarSign size='15px' className='text-[#7447C6]' />} />
-      <Card title="Total Transactions" value={totalCounts} color="bg-red-700" color2= "bg-[#0000FF]" icon={<ShoppingCart size='15px' className='text-[#FFC107]' />} />
-      <Card title="Successful Payments" value={successfulTransaction} color="bg-[#E7F6EC]" color2="bg-priColor" icon={<Check size='15px' className='text-[#40B869]' />} />
-      <div className="hidden md:flex items-center pt-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-1 gap-4 xl:gap-0 mb-8 md:mb-0">
+      <Card title="Total Revenue" value={`₦${totalRevenue}`} icon={<CircleDollarSign size='19px' className='text-[#7447C6]' />} />
+      <Card title="Total Transactions" value={totalCounts} icon={<ShoppingCart size='18px' className='text-[#FFC107]' />} />
+      <Card title="Successful Payments" value={successfulTransaction} icon={<Check size='18px' className='text-[#40B869]' />} />
+      <div className="hidden xl:flex items-center pt-4">
         <div className='flex item-start gap-2'>
           <div className="w-6 h-6">
             <Smile color='#00A049' size='20' />
           </div>
           <div className=''>
-            <h3 className='font-[700] text-gray-600 text-sm mb-1'>You're doing good!</h3>
+            <h3 className='font-[700] text-gray-600 text-sm mb-1'>You&apos;re doing good!</h3>
             {/* <p className='text-[11px] text-gray-400 '>Your performance is 12% better compare to last year</p> */}
           </div>
         </div>

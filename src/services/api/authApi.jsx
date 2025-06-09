@@ -31,14 +31,20 @@ class AuthService {
         } else {
           if (err.response.status === 400) {
             dispatch(loginFailure(err.response.data.message));
+            setTimeout(() => {
+              dispatch(loginFailure(''));
+            }, [4000]);
           } else {
             dispatch(loginFailure('Login Failed'));
+            setTimeout(() => {
+              dispatch(loginFailure(''));
+            }, [2000]);
           }
         }
       }
     };
 
-    async submitForgotPassword(email, setLoading, setIsTokenSent, setSuccessMsg, setErrMsg, errRef) {
+    async submitForgotPassword(email, setLoading, setIsTokenSent, setErrMsg, errRef) {
         setLoading(true);
         try {
             const response = await axios.post('/api/account/forget-password',
@@ -48,13 +54,19 @@ class AuthService {
 
             if (data.requestSuccessful === true) {
                 setIsTokenSent(true);
-                setSuccessMsg(data.message);
+                toast.success(data.message);
             };
         } catch (error) {
             if (!error.response) {
                 setErrMsg('No Server Response');
+                setTimeout(() => {
+                  setErrMsg('');
+                }, [2000]);
             } else {
-                setErrMsg(error.response.data.message)
+                setErrMsg(error.response.data.message);
+                setTimeout(() => {
+                  setErrMsg('');
+                }, [2000]);
             }
 
             errRef.current.focus();

@@ -6,6 +6,7 @@ import axios from '@/services/api/axios';
 import { toast } from 'react-toastify';
 // import Logo from '@/assets/logo.jpg';
 import { CheckCircle, Home, Mail, Phone, User } from 'lucide-react';
+import Button from '../../../components/ui/button';
 
 const BUSINESS_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
 const NAME_REGEX = /^[a-zA-Z]{2,24}$/;
@@ -228,7 +229,7 @@ const RegisterForm = () => {
 
                     </section>
                 ) : (
-                    <section className="pt-8 overflow-x-scroll">
+                    <section className="pt-8 overflow-x-scroll px-10 sm:px-0">
                         <p ref={errRef} className={errMsg ? "errmsg" :
                             "offscreen"} aria-live='asserive'>{errMsg}</p>
 
@@ -260,7 +261,7 @@ const RegisterForm = () => {
                                     </>
                                 )}
                             />
-                            <div className="block md:flex md:space-x-4">
+                            <div className="flex space-x-4 my-4">
                                 <AuthInputField
                                     label="Email"
                                     type='email'
@@ -296,8 +297,7 @@ const RegisterForm = () => {
                                 />
 
                             </div>
-                            <div className="block md:flex md:space-x-4">
-
+                            <div className="flex space-x-4 my-4">
                                 <AuthInputField
                                     label="First Name"
                                     type='text'
@@ -344,7 +344,7 @@ const RegisterForm = () => {
                                     )}
                                 />
                             </div>
-                            <div className="block md:flex md:space-x-4 mb-6">
+                            <div className="flex space-x-4 mb-6">
                                 <div className="mb-6 w-full">
                                     <label className="text-black text-[11px] lg:text-[13px] mb-1 lg:mb-2 flex items-center" htmlFor="country">
                                         Country
@@ -409,13 +409,12 @@ const RegisterForm = () => {
                                     </select>
                                 </div>
                             }
-                            <button
-                                type="submit"
-                                className="w-full bg-priColor text-sm text-white py-2 rounded-lg"
-                                // disabled={loading || !validBusinessName || !validContactEmail || !validContactFirstName || !validContactLastName || !validContactPhoneNumber ? true : false}
+                            <Button
+                              type='submit'
+                            //   disabled={loading || !validBusinessName || !validContactEmail || !validContactFirstName || !validContactLastName || !validContactPhoneNumber ? true : false}
                             >
-                                {loading ? 'Registering...' : 'Register'}
-                            </button>
+                              {loading ? 'Registering...' : 'Register'}
+                            </Button>
                             <div className="text-center mt-4 mb-10">
                                 <Link to="/login" className="text-xs lg:text-sm">Already have an account? <span className='text-priColor hover:underline'> Log In</span></Link>
                             </div>

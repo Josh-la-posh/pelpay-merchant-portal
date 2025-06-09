@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import { Boxes, File, Paperclip, User, UserPlus } from 'lucide-react';
@@ -43,17 +42,16 @@ const MerchantSidebar = () => {
         },
     ]
 
-
     return (
         <div className="">
             <div className="text-gray-800 text-sm md:text-lg mb-4">
                 {settingsTitle}
             </div>
-            <nav className={`bg-white pt-4 flex-1 overflow-y-auto scrollbar-none`}>
+            <nav className={`bg-white sm:pt-4 flex-1 flex items-center sm:block overflow-y-auto scrollbar-none`}>
                 {
                     sidebarItems.map((item) => (
-                        <Link key={item.id} to={item.url} className={`block py-4 ${settingsTitle === item.title ? 'text-priColor border-r-4 border-priColor transition duration-300 bg-priColor/10' : ''}`}>
-                            <div className={`flex items-center gap-2 pl-4`}>
+                        <Link key={item.id} to={item.url} className={`block px-3 sm:px-0 py-2 sm:py-4 ${settingsTitle === item.title ? 'text-priColor sm:border-r-4 border-priColor transition duration-300 bg-priColor/10' : ''}`}>
+                            <div className={`flex items-center gap-2 sm:pl-4`}>
                                 {item.icon}
                                 <div>{item.name}</div>
                             </div>

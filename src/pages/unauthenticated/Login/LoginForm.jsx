@@ -4,7 +4,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '@/services/hooks/useAuth';
 import AuthService from '@/services/api/authApi';
 import { Eye, EyeOff, Lock } from 'lucide-react';
-import TextButton from '@/components/ui/text-button';
+import { loginFailure } from '../../../redux/slices/authSlice';
+import UpdateInputField from '../../../components/UpdateInputField';
+import Button from '../../../components/ui/button';
 
 const LoginForm = () => {
   const { setAuth } = useAuth();
@@ -12,28 +14,25 @@ const LoginForm = () => {
   const { loading, error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
-  const userRef = useRef();
   const authService = new AuthService();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  // const [rememberMe, setRememberMe] = useState(false);
   const [errMsg, setErrMsg] = useState(error);
-
-  useEffect(() => {
-    userRef.current.focus();
-  }, [])
 
   useEffect(() => {
     setErrMsg(error);
 
-    setTimeout(() => {
-      setErrMsg('');
-    }, 5000);
+    // setTimeout(() => {
+    //   setErrMsg('');
+    //   dispatch(loginFailure());
+    // }, 5000);
   }, [error])
 
-  const handleShowPassword = () => {
+  const handleShowPassword = (e) => {
+    e.preventDefault();
     setShowPassword(!showPassword);
   }
 
@@ -54,69 +53,38 @@ const LoginForm = () => {
 
       {errMsg && <p className='text-xs text-red-600'>{errMsg}</p>}
       <form onSubmit={handleLogin} className='space-y-6'>
-        <div className="">
-          <label className="block text-black text-[13px] mb-1 lg:mb-2" htmlFor="email">
-            Email
-          </label>
-          <div className="relative w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg">            
-            <Lock size='15px' className='absolute top-3 left-3 text-gray-500' />
-            <input
-              type="email"
-              id="email"
-              ref={userRef}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="text-sm focus:outline-none w-full bg-transparent"
-              required
-            />
-          </div>
-        </div>
-        <div className="">
-          <label className="block text-black text-[13px] mb-1 lg:mb-2" htmlFor="password">
-            Password
-          </label>
-          <div className="relative w-full pl-9 pr-12 py-2 border border-gray-300 rounded-lg">            
-            <Lock size='15px' className='absolute top-3 left-3 text-gray-500' />
-            <input
-              type={!showPassword ? 'password' : 'text'}
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="text-sm focus:outline-none w-full bg-transparent"
-              required
-            />
-            <TextButton 
-              onClick={handleShowPassword}
-              variant= "custom"
-              className="absolute top-3 right-3 text-gray-500"
-            >
-              {!showPassword 
-                ? <EyeOff size='15px' />
-                : <Eye size='15px' />
-              }
-
-            </TextButton>
-          </div>
-        </div>
+        <UpdateInputField
+          label='Email'
+          icon={<Lock size='15px' className='text-gray-500' />}
+          type='email'
+          id='email'
+          valueName={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required={true}
+        />
+        <UpdateInputField
+          label='Password'
+          icon={<Lock size='15px' className='text-gray-500' />}
+          type={!showPassword ? 'password' : 'text'}
+          id='password'
+          valueName={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required={true}
+          prefixIcon={!showPassword 
+              ? <EyeOff size='15px' />
+              : <Eye size='15px' />
+            }
+          prefixOnclick={handleShowPassword}
+        />
         <div className="flex items-center justify-end">
-          {/* <label className="text-black text-[11px] sm:text-xs mb-1 lg:mb-2 flex items-center">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={() => setRememberMe(!rememberMe)}
-              className="mr-2"
-            />
-            Remember me
-          </label> */}
           <Link to="/forgot-password" className="text-xs lg:text-sm text-priColor hover:underline">Forgot password?</Link>
         </div>
-        <button
-          type="submit"
-          className="w-full bg-priColor text-sm text-white py-2 rounded-lg"
+        <Button
+          type='submit'
           disabled={loading}
         >
           {loading ? 'Logging in...' : 'Log in'}
-        </button>
+        </Button>
         <div className="text-center mt-4">
           <Link to="/register" className="text-[12px] lg:text-sm">Don't have an account? <span className='text-priColor hover:underline'> Sign Up</span></Link>
         </div>

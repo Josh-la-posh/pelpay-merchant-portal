@@ -115,54 +115,43 @@ function ProfilePage() {
         </div>
 
         <form onSubmit={handleSubmit} className='mt-8'>
-            <div className="flex gap-1 md:gap-4 lg:gap-8">
-                <div className="w-full">
-                    <UpdateInputField
-                        label="First Name"
-                        type='firstName'
-                        icon={<User size={18}/>}
-                        valueName={formData.firstName}
-                        id="firstName"
-                        disabled={!editing}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="w-full">
-                    <UpdateInputField
-                        label="Last Name"
-                        type='lastName'
-                        icon={<User size={18} />}
-                        valueName={formData.lastName}
-                        id="lastName"
-                        onChange={handleChange}
-                        disabled={!editing}
-                    />
-                </div>
-                
-            </div>
-            <div className="flex gap-1 md:gap-4 lg:gap-8">
-                <div className="w-full">
-                    <UpdateInputField
-                        label="Email"
-                        type='email'
-                        icon={<Mail size={18}/>}
-                        valueName={formData.email}
-                        id="email"
-                        onChange={handleChange}
-                        disabled={!editing}
-                    />
-                </div>
-                <div className="w-full">
-                    <UpdateInputField
-                        label="Mobile Number"
-                        type='phone'
-                        icon={<Phone size={18}/>}
-                        valueName={formData.phone}
-                        id="phone"
-                        onChange={handleChange}
-                        disabled={!editing}
-                    />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:grid-4">
+                <UpdateInputField
+                    label="First Name"
+                    type='firstName'
+                    icon={<User size={18}/>}
+                    valueName={formData.firstName}
+                    id="firstName"
+                    disabled={!editing}
+                    onChange={handleChange}
+                />
+                <UpdateInputField
+                    label="Last Name"
+                    type='lastName'
+                    icon={<User size={18} />}
+                    valueName={formData.lastName}
+                    id="lastName"
+                    onChange={handleChange}
+                    disabled={!editing}
+                />
+                <UpdateInputField
+                    label="Email"
+                    type='email'
+                    icon={<Mail size={18}/>}
+                    valueName={formData.email}
+                    id="email"
+                    onChange={handleChange}
+                    disabled={!editing}
+                />
+                <UpdateInputField
+                    label="Mobile Number"
+                    type='phone'
+                    icon={<Phone size={18}/>}
+                    valueName={formData.phone}
+                    id="phone"
+                    onChange={handleChange}
+                    disabled={!editing}
+                />
                 
             </div>
 

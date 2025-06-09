@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from "prop-types";
 import '../pages/unauthenticated/auth.css';
 import { Check, Info, X } from 'lucide-react';
 
@@ -20,7 +20,6 @@ function AuthInputField({ label, type, validName, valueName, id, onChange, setOn
                     type={type}
                     id={id}
                     name={id}
-                    // ref={emailRef}
                     value={valueName}
                     onChange={onChange}
                     className="bg-transparent block text-xs text-gray-900 focus:outline-none w-full"
@@ -41,5 +40,17 @@ function AuthInputField({ label, type, validName, valueName, id, onChange, setOn
         </div>
     )
 }
+AuthInputField.propTypes = {
+label: PropTypes.string,
+type: PropTypes.string,
+validName: PropTypes.string,
+valueName: PropTypes.string,
+id: PropTypes.string,
+onChange: PropTypes.func,
+errNote: PropTypes.string,
+setOnFocus: PropTypes.func,
+nameFocus: PropTypes.bool,
+icon: PropTypes.node,
+};
 
 export default AuthInputField

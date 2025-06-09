@@ -60,7 +60,7 @@ const SettlementBatchTransactionTable = ({filteredData, totalSize, currentPage, 
 
     return (
         <div className="">
-            <div className="mb-8 flex justify-around w-full space-x-12">
+            <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-5">
                 <SettlementCard className='flex-1' title='Total Amount' amount={`₦${totalAmount ?? '0'}`} newColor='bg-blue-800' />
                 <SettlementCard title='Stamp Duty' amount={`₦${stampDuty ?? '0'}`} newColor='bg-red-600' />
                 <SettlementCard title='Total Fees' amount={`₦${totalFees ?? '0'}`} newColor='bg-gray-500' />

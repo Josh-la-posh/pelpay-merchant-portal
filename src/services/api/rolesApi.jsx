@@ -182,13 +182,12 @@ class RoleService {
             `api/UserRoles/addrole/${merchantCode}`,
             JSON.stringify(formData)
           );
-          toast('User role assigned successfully');
+          toast.success('User role assigned successfully');
         } catch (err) {
           if (!err.response) {
               toast('No response from server');
-          } else {
-            
-            toast(err.response.data.message)
+          } else {            
+            toast.error(err.response.data.message)
           }
         } finally {
         }

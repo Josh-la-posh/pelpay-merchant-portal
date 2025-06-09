@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
-import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, Warehouse } from 'lucide-react';
+import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, Warehouse, X } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
 
@@ -64,13 +64,19 @@ const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
 
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
+            <button
+                className="sm:hidden border-2 border-priColor rounded-full p-1 absolute right-[-15px] top-3"
+                onClick={() => handleSidebar(false)}
+            >
+                <X />
+            </button>
             <div className='bg-[#f7f7f7] w-full h-16 flex items-center'>
                 <img src='/assets/logo.jpg' alt="Logo" className="max-h-fit max-w-[85%]" />
             </div>
             <nav className={`flex-1 my-2 ${isSidebarTextVisible ? 'pl-6' : ''} overflow-y-auto scrollbar-none`}>
                 {
                     sidebarItems.map((item) => (
-                        <Link key={item.id} to={item.url} onClick={() => handleSidebar(item.openSidebar)} className={`block py-4 ${appTitle === item.title ? 'text-priColor' : ''}`}>
+                        <Link key={item.id} to={item.url} onClick={() => handleSidebar(false)} className={`block py-4 ${appTitle === item.title ? 'text-priColor' : ''}`}>
                             <div className={`flex items-center ${isSidebarTextVisible ? '' : 'justify-center'} gap-2`}>
                                 <button
                                     data-tooltip-id={`tooltip-${item.id}`}

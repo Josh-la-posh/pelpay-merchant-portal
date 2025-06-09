@@ -11,6 +11,7 @@ import { Plus, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
 import ErrorLayout from '@/components/ErrorLayout';
+import MerchantProfileContent from './components/merchantProfile/MerchantProfileContent';
 
 function MerchantProfile() {
     const { auth } = useAuth();
@@ -107,6 +108,11 @@ function MerchantProfile() {
         await userService.fetchUserByAggregatorCode(aggregatorCode, 1, 20, dispatch);
     };
 
+    const restoreDefault = () => {
+        setIsExpanded(false);
+        setCanAddUser(false);
+    }
+
     if (isLoading) return (
         <div className='h-[40vh] w-full'>
             <Spinner />
@@ -121,13 +127,23 @@ function MerchantProfile() {
 
     return (
         <div className="bg-white p-5">
-            <div className="mb-8 flex justify-between items-center">
-                <p className='text-md'>Merchant ({merchantProfile.merchantName})</p>
+            <div className="space-y-5 sm:space-y-0 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                <div className="flex items-center justify-between space-x-5">
+                    <p className='text-md'>Merchant ({merchantProfile.merchantName})</p>
+                    {!isExpanded &&
+                        <button
+                            onClick={() => setIsExpanded(true)}
+                            className={`w-9 h-9 text-white flex justify-center items-center bg-priColor text-xs font-[600] rounded-full shadow-xl`}
+                            >
+                                <Plus size='22px' />
+                        </button>
+                    }
+                </div>
                 {
-                    isExpanded && <div className="flex items-center gap-4">
+                    isExpanded && <div className="flex items-center gap-2 sm:gap-4">
                         <div className="flex justify-end">
                             { canAddUser &&
-                                <div className ="flex items-center justify-center gap-2">
+                                <div className ="flex flex-row items-center justify-center gap-2">
                                     <select id='users' value={users.id} onChange={handleUserChange} className='flex-grow text-xs px-4 py-2 border border-gray-300 rounded-md outline-gray-400' defaultValue='Select User'>
                                         {
                                             users &&
@@ -158,71 +174,62 @@ function MerchantProfile() {
                             }
                         </div>
                         <Link to={`/merchants/profile/update/${merchantCode}`} className='bg-priColor text-xs text-white py-2 px-5 rounded-md text-center'>
-                            Update profile
+                            <span className='sm:hidden'>Update</span><span className='hidden sm:block'>Update profile</span>
                         </Link>
                         <button
-                            onClick={() => setIsExpanded(false)}
+                            onClick={restoreDefault}
                             className={`w-4 h-4 text-white flex justify-center items-center bg-priColor text-xs font-[600] rounded-full shadow-xl`}
                             >
                                 <X size='12px' />
                         </button>
                     </div>
-                }
-                {!isExpanded &&
-                    <button
-                        onClick={() => setIsExpanded(true)}
-                        className={`w-9 h-9 text-white flex justify-center items-center bg-priColor text-xs font-[600] rounded-full shadow-xl`}
-                        >
-                            <Plus size='22px' />
-                    </button>
-                }
+                }                
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm font-[700] text-gray-600">
-                <div className="flex">
-                    <p className='flex-1'>Merchant Code:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.merchantCode}</span>
-
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>Address:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.address ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>City:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.city ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>State:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.state ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>Phone Number:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.phoneNumber ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>Postal Code:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.postalCode ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>Country:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.countryCode ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>Status:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.status ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>White Listed:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.isWhitelisted === true ? 'True' : 'False'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>Business type:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.businessType ?? 'N/A'}</span>
-                </div>
-                <div className="flex">
-                    <p className='flex-1'>Registration Type:</p>
-                    <span className='font-[400] ml-4 flex-1'>{merchantProfile.registrationType ?? 'N/A'}</span>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm font-[700] text-gray-600">
+                <MerchantProfileContent
+                    title='Merchant Code'
+                    value={merchantProfile.merchantCode}
+                />
+                <MerchantProfileContent
+                    title='Address'
+                    value={merchantProfile.address ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='City'
+                    value={merchantProfile.city ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='State'
+                    value={merchantProfile.state ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='Phone Number'
+                    value={merchantProfile.phoneNumber ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='Postal Code'
+                    value={merchantProfile.postalCode ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='Country'
+                    value={merchantProfile.countryCode ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='Status'
+                    value={merchantProfile.status ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='White Listed'
+                    value={merchantProfile.isWhitelisted ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='Business Type'
+                    value={merchantProfile.businessType ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='Registration Type'
+                    value={merchantProfile.registrationType ?? 'N/A'}
+                />
             </div>
         </div>
     )

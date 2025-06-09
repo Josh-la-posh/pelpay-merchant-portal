@@ -1,4 +1,5 @@
 import { graphFailure, graphStart, graphSuccess, lumpsumFailure, lumpsumStart, lumpsumSuccess } from "@/redux/slices/dashboardSlice";
+import { transactionFailure, transactionStart, transactionSuccess } from "../../redux/slices/dashboardSlice";
 
 class DashboardService {
     constructor(axiosPrivate, auth) {
@@ -41,6 +42,31 @@ class DashboardService {
       } finally {
       }
     }
+
+    
+  
+    async fetchtransactions(merchantCode, env, dispatch) {
+      dispatch(transactionStart());
+    try {
+      const response = await this.axiosPrivate.post(
+        `api/Transaction/search?merchantCode=${merchantCode}&pageNumber=1&pageSize=5&env=${env}`,
+        JSON.stringify({"status": "Successful"})
+      );
+
+
+
+      const data = response.data;
+      dispatch(transactionSuccess(data.data));
+      // dispatch(transactionSecondSuccess(data));
+    } catch (err) {
+      if (!err.response) {
+          dispatch(transactionFailure('No response from server'));
+      } else {
+          dispatch(transactionFailure('Failed to load Customer transactions. Try again.'));
+      }
+    } finally {
+    }
+  }
   }
   
   export default DashboardService;

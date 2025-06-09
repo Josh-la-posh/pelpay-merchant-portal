@@ -57,13 +57,9 @@ const RoleAssignmentTable = ({
     }
 
     const addRole = async () => {
-        try {
-            await roleService.addUserRole(merchantCode, formData);
-            resetState();
-            handleRefresh();
-        } catch (error) {
-
-        }
+        await roleService.addUserRole(merchantCode, formData);
+        resetState();
+        handleRefresh();
     }
 
     const removeRole = async (roleId) => {

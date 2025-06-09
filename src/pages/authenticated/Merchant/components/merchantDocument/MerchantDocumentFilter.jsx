@@ -67,14 +67,14 @@ function MerchantDocumentFilter() {
             <div className="flex items-center gap-4">
                 { canUpload &&
                     <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                            <div className ="flex items-center justify-center gap-2">
-                                <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
-                                    <select name="" id="documents" value={documents.id} onChange={handleChange} className='px-2 py-2 outline-none text-xs border border-gray-300 rounded-sm'>
+                        <div className="flex items-center gap-1 sm:gap-3">
+                            <div className ="flex items-center justify-center gap-1 sm:gap-2">
+                                <div className="flex items-start md:items-center gap-2">
+                                    <select name="" id="documents" value={documents.id} onChange={handleChange} className='pl-1 sm:pl-2 py-2 outline-none text-[7px] sm:text-xs border border-gray-300 rounded-sm'>
                                         {
                                             documents.map(document => {
                                                 return (
-                                                    <option key={document.id} value={document.id} className='text-xs'>
+                                                    <option key={document.id} value={document.id} className='text-[6px] sm:text-xs'>
                                                         {document.documentName}
                                                     </option>
                                                 )
@@ -85,7 +85,7 @@ function MerchantDocumentFilter() {
                                         type="file"
                                         accept='image/*, .pdf'
                                         onChange={handleFileCharge}
-                                        className='px-2 py-2 text-xs border border-gray-300 rounded-sm'
+                                        className='pl-1 sm:px-2 py-2 text-[7px] sm:text-xs border border-gray-300 rounded-sm'
                                     />
                                 </div>
                                 <button
@@ -108,7 +108,7 @@ function MerchantDocumentFilter() {
                             }
                         </div>
                         {errMsg && <p className='text-red-400 text-[11px] text-center'>{errMsg}</p>}
-                        <p className='text-gray-400 text-xs text-center'>**Supported files jpeg, png, pdf</p>
+                        <p className='text-gray-400 text-[8px] sm:text-xs text-center'>**Supported files jpeg, png, pdf</p>
                     </div>
                 }
                 {

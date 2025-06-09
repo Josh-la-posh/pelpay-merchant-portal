@@ -52,7 +52,7 @@ import PropTypes from 'prop-types';
 
     return (
         <>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto scrollbar-none">
                 <table className="divide-y-6 divide-white dark:divide-[#2C2C3E] min-w-full border-collapse rounded-lg">
                     <thead className="bg-gray-300 dark:bg-[#20263D]">
                         <tr>

@@ -77,7 +77,7 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
             <div className="mb-8">
                 <div className='text-sm font-[500] pb-3 border-b border-b-gray-300'>Create Advice</div>
             </div>
-            <div className="grid grid-cols-3 gap-5 md:gap-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-5 md:gap-10">
                 <UpdateInputField 
                     label='Amount'
                     type='number'

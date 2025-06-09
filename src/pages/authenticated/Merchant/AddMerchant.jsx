@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import useTitle from '@/services/hooks/useTitle';
-import useAuth from '@/services/hooks/useAuth';
-import { useDispatch, useSelector } from 'react-redux';
-import MerchantService from '@/services/api/merchantApi';
 import AuthInputField from '@/components/AuthInptField';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
+import Button from '../../../components/ui/button';
 
 const BUSINESS_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
 const NAME_REGEX = /^[a-zA-Z]{2,24}$/;
@@ -17,15 +15,8 @@ const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 function AddMerchantPage() {
     const { setSettingsTitle } = useSettingsTitle();
-    const navigate = useNavigate();
     const { setAppTitle } = useTitle();
     const axiosPrivate = useAxiosPrivate();
-    const dispatch = useDispatch();
-    const { auth } = useAuth();
-    const merchants = auth?.data?.merchants || [];
-    const [merchant, setMerchant] = useState(merchants[0] || {});
-    const merchantCode = merchant.merchantCode;
-    const merchantService = new MerchantService(axiosPrivate, auth);
 
     useEffect(() => {
         setAppTitle('Merchant');
@@ -61,9 +52,6 @@ function AddMerchantPage() {
     const [validPhoneNumber, setValidPhoneNumber] = useState(false);
     const [phoneNumberFocus, setPhoneNumberFocus] = useState(false);
 
-    const [validContactFirstName, setValidContactFirstName] = useState(false);
-    const [contactFirstNameFocus, setContactFirstNameFocus] = useState(false);
-
     const [validWebsite, setValidWebsite] = useState(false);
     const [websiteFocus, setWebsiteFocus] = useState(false);
 
@@ -74,7 +62,6 @@ function AddMerchantPage() {
     const [postalCodeFocus, setPostalCodeFocus] = useState(false);
 
     const [validAccountNumber, setValidAccountNumber] = useState(false);
-    const [accountNumberFocus, setAccountNumberFocus] = useState(false);
 
     const [validAccountBalance, setValidAccountBalance] = useState(false);
     const [accountBalanceFocus, setAccountAmountFocus] = useState(false);
@@ -698,13 +685,11 @@ function AddMerchantPage() {
                             </div>
                         }
                     </div>
-                    <button
-                        type="submit"
-                        className="bg-priColor text-xs text-white py-2 px-5 rounded-md mb-10"
-                        // disabled={loading || !validBusinessName || !validContactEmail || !validContactFirstName || !validContactLastName || !validContactPhoneNumber ? true : false}
+                    <Button
+                        type='submit'
                     >
                         {loading ? 'Registering...' : 'Register'}
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>

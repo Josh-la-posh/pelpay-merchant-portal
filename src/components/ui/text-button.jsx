@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 
 const TextButton = ({ children, onClick, variant = "primary", className }) => {
@@ -18,7 +17,7 @@ const TextButton = ({ children, onClick, variant = "primary", className }) => {
   };
   
   TextButton.propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
     onClick: PropTypes.func,
     variant: PropTypes.oneOf(["primary", "secondary", "danger", "custom"]),
     className: PropTypes.any

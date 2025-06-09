@@ -1,12 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../auth.css';
-// import Logo from '@/assets/logo.jpg';
 import AuthInputField from '@/components/AuthInptField';
 import AuthService from '@/services/api/authApi';
 import { CheckCircle, User } from 'lucide-react';
+import Button from '../../../components/ui/button';
 
-const FORGOT_PASSWORD_URL = '/api/account/forget-password';
 const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const ForgotPasswordForm = () => {
@@ -17,8 +16,6 @@ const ForgotPasswordForm = () => {
     const [loading, setLoading] = useState(false);
     const [isTokenSent, setIsTokenSent] = useState(false);
     const [errMsg, setErrMsg] = useState(false);
-    const [successMsg, setSuccessMsg] = useState('');
-    const navigate = useNavigate();
     const authService = new AuthService();
 
     useEffect(() => {
@@ -28,13 +25,12 @@ const ForgotPasswordForm = () => {
 
     useEffect(() => {
         setErrMsg('');
-        setSuccessMsg('');
     }, [email])
 
     const handleForgotPassword = async (e) => {
         e.preventDefault();
 
-        authService.submitForgotPassword(email, setLoading, setIsTokenSent, setSuccessMsg, setErrMsg, errRef);
+        authService.submitForgotPassword(email, setLoading, setIsTokenSent, setErrMsg, errRef);
     };
 
     return (
@@ -67,13 +63,13 @@ const ForgotPasswordForm = () => {
                                     </>
                                 )}
                             />
-                            <button
-                                type="submit"
-                                className="w-full bg-priColor text-white py-2 rounded-lg mt-5"
+                            <Button
+                                variant='primary'
+                                type='submit'
                                 disabled={loading}
                             >
                                 {loading ? 'Loading...' : 'Continue'}
-                            </button>
+                            </Button>
                         </form>
                         <div className="text-center mt-4">
                             <Link to="/login" className="text-xs lg:text-sm">Go back to <span className='text-priColor hover:underline'> Log In</span></Link>

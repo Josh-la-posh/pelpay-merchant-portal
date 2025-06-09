@@ -7,25 +7,25 @@ import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { toast } from 'react-toastify';
 import { EyeIcon } from 'lucide-react';
 
-const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
+const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage, drpp}) => {
     const [selectedIndex, setSelectedIndex] = useState(null);
     
     const columns = [
         {
             header: 'Date',
-            accessor: 'modifiedDate',
-            render: (value) => (
+            accessor: '',
+            render: (value, row) => (
                 <span>
-                    {dateFormatter(value)}
+                    {dateFormatter(row.modifiedDate ?? row.createdDate)}
                 </span>
             ),
         },
         {
             header: 'Time',
-            accessor: 'modifiedDate',
-            render: (value) => (
+            accessor: '',
+            render: (value, row) => (
                 <span>
-                    {timeFormatter(value)}
+                    {timeFormatter(row.modifiedDate ?? row.createdDate)}
                 </span>
             ),
         },
@@ -69,10 +69,6 @@ const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage
     const getDataToParent = (row) => {
         handleOpenModal(row);
     }
-    
-    const handleSelectedRow = (index) => {
-        setSelectedIndex(selectedIndex === index ? null : index);
-    };
 
     return (
         <div className="">
@@ -84,6 +80,7 @@ const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage
                 setCurrentPage={setCurrentPage}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
+                drpp={drpp}
             />
         </div>
     );

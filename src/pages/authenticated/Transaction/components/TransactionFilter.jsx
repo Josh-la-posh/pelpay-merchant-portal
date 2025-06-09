@@ -163,9 +163,11 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
     
   return (
     <div className='mb-4'>
+        {/* <div className="w-full flex flex-col md:flex-row items-center space-y-3">
+        </div> */}
         <div className="flex items-center justify-between">
             <button onClick={() => navigate(-1)} className='text-priColor flex items-center gap-2 text-xs'><ArrowLeft size={'14px'}/> Go Back</button>
-            <div className="flex">
+            <div className="flex gap-1 sm:gap-2">
                 <button onClick={handleRefreshAllTransctions}
                     className={`${searchMode === 'All' ? 'text-white bg-priColor font-[600]' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 py-2 px-2 rounded-sm`}>
                         All
@@ -184,67 +186,70 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                             <ArrowDownWideNarrow size='14' />
                             Filter
                     </button>
-                }
-                { searchMode === 'Filter' &&
-                    <div className ="ml-5 flex items-center justify-center gap-2">
-                        <select id="searchFilterType" value={searchFilterType} onChange={handleSearchMode} className="p-2 border focus:outline-none rounded-sm bg-white text-gray-400 selection:bg-transparent text-xs">
-                            <option value="Name">Name</option>
-                            <option value="Email">Email</option>
-                            <option value="paymentReference">Transaction ID</option>
-                        </select>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={search}
-                                onChange={handleFilterSearch}
-                                className="p-2 pl-8 border border-gray-300 rounded-sm focus:outline-none text-xs"
-                                placeholder="Search transactions..."
-                            />
-                            <Search
-                                size='14'
-                                className='absolute left-2 top-2/4 transform -translate-y-2/4 text-gray-400' />
-                        </div>
-                        <button onClick={handleFilter}
-                            className='text-white bg-priColor text-xs w-20 py-2 px-2 rounded-sm flex justify-center items-center'>
-                                Filter
-                        </button>
-                    </div>
-                }
-                {
-                    searchMode === 'Date' &&
-                    <div className="flex space-x-3 ml-5">
-                        <DatePicker 
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            placeholderText='Start Date'
-                            className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
-                        />
-                        <DatePicker
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            placeholderText='End Date'
-                            className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
-                        />
-                        <button onClick={handleFilter}
-                            className='text-white bg-priColor text-xs w-20 py-2 px-2 rounded-sm flex justify-center items-center'>
-                                Search
-                        </button>
-                        
-                    </div>
-                }
+                }                
             </div>
+        </div>
+        
+        <div className="flex justify-end mt-4 gap-2">
+            { searchMode === 'Filter' &&
+                <div className ="ml-5 flex items-center justify-center gap-2">
+                    <select id="searchFilterType" value={searchFilterType} onChange={handleSearchMode} className="p-2 border focus:outline-none rounded-sm bg-white text-gray-400 selection:bg-transparent text-xs">
+                        <option value="Name">Name</option>
+                        <option value="Email">Email</option>
+                        <option value="paymentReference">Transaction ID</option>
+                    </select>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={handleFilterSearch}
+                            className="p-2 pl-8 border border-gray-300 rounded-sm focus:outline-none text-xs"
+                            placeholder="Search transactions..."
+                        />
+                        <Search
+                            size='14'
+                            className='absolute left-2 top-2/4 transform -translate-y-2/4 text-gray-400' />
+                    </div>
+                    <button onClick={handleFilter}
+                        className='text-white bg-priColor text-xs w-20 py-2 px-2 rounded-sm flex justify-center items-center'>
+                            Filter
+                    </button>
+                </div>
+            }
+            {
+                searchMode === 'Date' &&
+                <div className="flex space-x-3 ml-5">
+                    <DatePicker 
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        placeholderText='Start Date'
+                        className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
+                    />
+                    <DatePicker
+                        selected={endDate}
+                        onChange={(date) => setEndDate(date)}
+                        placeholderText='End Date'
+                        className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
+                    />
+                    <button onClick={handleFilter}
+                        className='text-white bg-priColor text-xs w-20 py-2 px-2 rounded-sm flex justify-center items-center'>
+                            Search
+                    </button>
+                    
+                </div>
+            }
         </div>
         
         <div className="flex justify-end mt-4">
             { canSearch &&
                 <div className ="flex flex-col items-center justify-center gap-5">
-                    <div className="flex flex-wrap items-center justify-center gap-2 overflow-x-auto">
+                    <div className="grid grid-cols-6 gap-2">
                         <input
                             type="text"
                             name='transactionReference'
                             value={formData.transactionReference}
                             onChange={handleChange}
-                            className="p-2 pl-4 border border-gray-300 rounded-lg focus:outline-none text-xs"
+                            className="col-span-2 lg:col-span-1 p-2 md:pl-4 border border-gray-300 rounded-lg focus:outline-none text-xs"
                             placeholder="Transaction Reference"
                         />
                         <input
@@ -252,7 +257,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                             name='accountNumber'
                             value={formData.accountNumber}
                             onChange={handleChange}
-                            className="p-2 pl-4 border border-gray-300 rounded-lg focus:outline-none text-xs"
+                            className="col-span-2 lg:col-span-1 p-2 md:pl-4 border border-gray-300 rounded-lg focus:outline-none text-xs"
                             placeholder="Account Number"
                         />
                         <input
@@ -260,27 +265,31 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                             name='sessionId'
                             value={formData.sessionId}
                             onChange={handleChange}
-                            className="p-2 pl-4 border border-gray-300 rounded-lg focus:outline-none text-xs"
+                            className="col-span-2 lg:col-span-1 p-2 md:pl-4 border border-gray-300 rounded-lg focus:outline-none text-xs"
                             placeholder="Session ID"
                         />
-                        <DatePicker 
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            placeholderText='Start Date'
-                            className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
-                        />
-                        <DatePicker
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            placeholderText='End Date'
-                            className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
-                        />
+                        <div className="col-span-3 md:col-span-2 xl:col-span-1">
+                            <DatePicker 
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                placeholderText='Start Date'
+                                className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
+                            />
+                        </div>
+                        <div className="col-span-3 md:col-span-2 xl:col-span-1">
+                            <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                placeholderText='End Date'
+                                className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
+                            />
+                        </div>                        
                         <select
                             id="status" 
                             name='status' 
                             value={formData.status} 
                             onChange={handleChange} 
-                            className="p-2 text-xs text-gray-400 border focus:outline-none rounded-lg bg-white selection:bg-transparent">
+                            className="col-span-6 md:col-span-2 xl:col-span-1 p-2 text-xs text-gray-400 border focus:outline-none rounded-lg bg-white selection:bg-transparent">
                             <option value="Successful">Successful</option>
                             <option value="Pending">Pending</option>
                             <option value="Processing">Processing</option>
@@ -318,7 +327,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                 </button>
             }
         </div>
-        <div className="h-32 bg-[#F0F2F5] my-4 p-4">
+        <div className="h-20 sm:h-32 bg-[#F0F2F5] my-4 p-4">
             <div className="bg-white h-full flex justify-center items-center gap-5">
                 <div className="flex-1">
                     <img src='/assets/Visa.svg' alt='Visa'/>
@@ -340,22 +349,22 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                 </div>
             </div>
         </div>
-        <div className="w-full flex justify-between">
-            <div className="flex py-2">
+        <div className="w-full flex flex-col sm:flex-row items-end sm:items-center sm:justify-between">
+            <div className="flex gap-1 sm:gap-2 py-2">
                 <button onClick={() => handleFilteredDataChange('All')}
-                    className={`${filterStatus === 'All' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'All' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 sm:w-24 py-2 rounded-sm`}>
                         All
                 </button>
                 <button onClick={() => handleFilteredDataChange('Successful')}
-                    className={`${filterStatus === 'Successful' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'Successful' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 sm:w-24 py-2 rounded-sm`}>
                         Successful
                 </button>
                 <button onClick={() => handleFilteredDataChange('Pending')}
-                    className={`${filterStatus === 'Pending' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'Pending' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 sm:w-24 py-2 rounded-sm`}>
                         Pending
                 </button>
                 <button onClick={() => handleFilteredDataChange('Failed')}
-                    className={`${filterStatus === 'Failed' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-24 py-2 rounded-sm`}>
+                    className={`${filterStatus === 'Failed' ? 'text-white bg-priColor' : 'text-gray-400 border border-gray-300 bg-white'} text-xs w-20 sm:w-24 py-2 rounded-sm`}>
                         Failed
                 </button>
             </div>

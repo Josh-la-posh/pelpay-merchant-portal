@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 const SettlementCard = ({ title, amount, newColor }) => {
     return (
@@ -9,5 +9,11 @@ const SettlementCard = ({ title, amount, newColor }) => {
         </div>
     );
 };
+
+SettlementCard.propTypes = {
+    title: PropTypes.string,
+    amount: PropTypes.string,
+    newColor: PropTypes.string,
+}
 
 export default SettlementCard;

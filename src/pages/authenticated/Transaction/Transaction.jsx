@@ -66,6 +66,7 @@ function TransactionPage() {
       await transactionService.fetchtransactions(merchantCode, env, pageNumber, pageSize, dispatch);
     }
   };
+  
   const handleOpenModal = (val) => {
     setSelectedTransactionData(val);
     setIsModalOpen(true);
