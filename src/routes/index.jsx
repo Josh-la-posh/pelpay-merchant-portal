@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayouts';
 import RequireAuth from '../services/hooks/RequiredAuth';

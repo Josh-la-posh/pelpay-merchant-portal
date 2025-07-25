@@ -4,10 +4,15 @@ import UpdateInputField from '@/components/UpdateInputField';
 import useAuth from '@/services/hooks/useAuth';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { X } from 'lucide-react';
+import Spinner from '../../../../../components/Spinner';
 
 function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
     const { auth } = useAuth();
     const uniqueId = crypto.randomUUID();
+    const [openPopupWithIframe, setOpenPopupWithIframe] = useState(false);
+    const [redirectUrl, setRedirectUrl] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         amount: '100',
         currency: 'NGN',
@@ -52,28 +57,42 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
         }))
     }
 
+    const openIframePopup = () => {
+        setOpenPopupWithIframe(true);
+    };
+
+    const closeIframePopup = () => {
+        setOpenPopupWithIframe(false);
+    };
+
     const handleSubmit = async () => {
         const headers = {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
           }
     try {
+        setIsLoading(true);
         const response = await axios.post(
           'https://api.pelpay.ng/payment/advice',
           formData,
           { headers },
         );
         const data = response.data.responseData;
-        window.open(data.paymentUrl, '_blank');
+        setRedirectUrl(data.paymentUrl);
+        setIsLoading(false);
+        setOpenPopupWithIframe(true);
+
+        // window.open(data.paymentUrl, '_blank');
         // window.location.href = data.paymentUrl;
       } catch (e) {
+        setIsLoading(false);
         const errMsg = e.response.data.message;
         toast(errMsg);
       }
     }
 
     return (
-        <CustomModal handleOpenModal={handleCloseModal} width='w-[95%] md:w-[75%]'>
+        isLoading ? <Spinner /> : (<CustomModal handleOpenModal={handleCloseModal} width='w-[95%] md:w-[75%]'>
             <div className="mb-8">
                 <div className='text-sm font-[500] pb-3 border-b border-b-gray-300'>Create Advice</div>
             </div>
@@ -243,8 +262,59 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
             <button onClick={handleSubmit} className='py-2 px-4 bg-priColor text-white text-xs rounded-sm'>
                 Submit
             </button>
-        </CustomModal>
+
+            {openPopupWithIframe && (
+                <div style={styles.overlay}>
+                    <div style={styles.popup}>
+                        <button style={styles.closeButton} onClick={closeIframePopup}>
+                            <X />
+                        </button>
+
+                        <iframe
+                        src={redirectUrl}
+                        title="Glass"
+                        style={styles.iframe}
+                        ></iframe>
+                    </div>
+                </div>
+            )}
+        </CustomModal>)
     )
 }
+
+const styles = {
+  overlay: {
+    position: "fixed",
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  popup: {
+    position: "relative",
+    background: "#fff",
+    borderRadius: "5px",
+    width: "90%",
+    maxWidth: "800px",
+    height: "80%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  iframe: {
+    flex: 1,
+    border: "none",
+    borderRadius: "5px",
+  },
+  closeButton: {
+    position: 'absolute',
+    top: '5px',
+    right: '10px',
+    color: 'gray',
+    border: "none",
+    cursor: "pointer",
+  },
+};
 
 export default PaymentForm;
