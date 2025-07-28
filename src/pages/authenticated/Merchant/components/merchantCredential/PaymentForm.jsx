@@ -271,9 +271,11 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
                         </button>
 
                         <iframe
-                        src={redirectUrl}
-                        title="Glass"
-                        style={styles.iframe}
+                            id='paymentIframe'
+                            src={redirectUrl}
+                            title="Glass"
+                            style={styles.iframe}
+                            onLoad={closeIframePopup}
                         ></iframe>
                     </div>
                 </div>
