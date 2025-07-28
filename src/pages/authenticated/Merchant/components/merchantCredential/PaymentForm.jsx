@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import CustomModal from '@/components/Modal'
 import UpdateInputField from '@/components/UpdateInputField';
 import useAuth from '@/services/hooks/useAuth';
@@ -10,6 +10,7 @@ import Spinner from '../../../../../components/Spinner';
 function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
     const { auth } = useAuth();
     const uniqueId = crypto.randomUUID();
+    const iframeRef = useRef(null);
     const [openPopupWithIframe, setOpenPopupWithIframe] = useState(false);
     const [redirectUrl, setRedirectUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +41,9 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
         channels: ["Card", "BankTransfer", "USSD"]
 
     });
+
+    
+    const callbackUrl = formData.callBackUrl ?? 'merchant.pelpay.africa';
 
     useEffect(() => {
     }, [])
@@ -272,10 +276,22 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
 
                         <iframe
                             id='paymentIframe'
+                            ref={iframeRef}
                             src={redirectUrl}
                             title="Glass"
                             style={styles.iframe}
-                            onLoad={closeIframePopup}
+                            onLoad={() => {
+                                try {
+                                    const iframe = iframeRef.current;
+                                    const currentUrl = iframe?.contentWindow?.location.href;
+
+                                    if (currentUrl?.includes(callbackUrl)) {
+                                        closeIframePopup()
+                                    }
+                                } catch (err) {
+                                    console.warn("Unable to access iframe URL (possibly cross-origin)", err);
+                                }
+                            }}
                         ></iframe>
                     </div>
                 </div>
