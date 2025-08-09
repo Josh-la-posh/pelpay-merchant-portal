@@ -30,9 +30,9 @@ class TransactionService {
             "transactionReference": transactionReference,
             "accountNumber": accountNumber,
             "sessionId": sessionId,
-            "sDate": sDate,
-            "eDate": eDate,
-            "status": status
+            "sDate": sDate ?? '',
+            "eDate": eDate ?? '',
+            "status": status.toLowerCase() === 'all' ? '' : status.toLowerCase()
           },
           {
             responseType: 'arraybuffer'
