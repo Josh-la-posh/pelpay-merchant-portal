@@ -42,16 +42,16 @@ class TransactionService {
           throw new Error('No data received from the server.');
         }
         
-        const decryptData = (data) => {
-          const res = new TextDecoder().decode(data);
-          return res;
-        }
+        // const decryptData = (data) => {
+        //   const res = new TextDecoder().decode(data);
+        //   return res;
+        // }
 
-        const encryptedData = new Uint8Array(response.data);
-        const decryptedData = decryptData(encryptedData);
-        const fileBlob = new Blob([decryptedData], {type: 'application/pdf'});
-        
-        const fileName = `Pelpay_transactions_${Date.now()}.pdf`;
+        // const encryptedData = new Uint8Array(response.data);
+        // const decryptedData = decryptData(encryptedData);
+        const fileBlob = new Blob([response.data], {type: 'application/xlsx'});
+
+        const fileName = `Pelpay_transactions_${Date.now()}.xlsx`;
         saveAs(fileBlob, fileName);
         
         toast('Transations downloaded successfully');
