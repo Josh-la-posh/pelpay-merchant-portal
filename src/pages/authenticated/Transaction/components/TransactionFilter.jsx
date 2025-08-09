@@ -139,7 +139,18 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
 
     const downloadTransaction = async () => {
         const merchantCode = auth?.merchant?.merchantCode;
-        await transactionService.downloadTransactionReceipt(merchantCode, pageNumber, 40,  env);
+        await transactionService.downloadTransactionReceipt(
+            merchantCode,
+            pageNumber,
+            40,
+            env,
+            startDate,
+            endDate,
+            filterStatus,
+            formData.sessionId,
+            formData.accountNumber,
+            formData.transactionReference,
+        );
     };
 
     const handleChange = (e) => {

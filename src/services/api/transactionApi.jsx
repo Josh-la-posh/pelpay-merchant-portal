@@ -9,12 +9,31 @@ class TransactionService {
       this.auth = auth;
     }
   
-    async downloadTransactionReceipt(merchantCode, pageNumber, pageSize, env) {
+    async downloadTransactionReceipt(
+      merchantCode,
+      pageNumber,
+      pageSize,
+      env,
+      sDate,
+      eDate,
+      status,
+      sessionId,
+      accountNumber,
+      transactionReference,
+
+    ) {
 
       try {
         const response = await this.axiosPrivate.post(
           `api/Transaction/search/download?merchantCode=${merchantCode}&pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
-          null,
+          {
+            "transactionReference": transactionReference,
+            "accountNumber": accountNumber,
+            "sessionId": sessionId,
+            "sDate": sDate,
+            "eDate": eDate,
+            "status": status
+          },
           {
             responseType: 'arraybuffer'
           }
