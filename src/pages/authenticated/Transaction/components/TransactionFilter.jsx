@@ -74,13 +74,13 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
         if (searchMode === 'All') {
             setCanSearch(false);
             setFilteredData(transactions);
+            setEndDate(null);
+            setStartDate(null);
         }
     }, [searchMode])
 
     useEffect(() => {
         setCanSearch(false);
-        setEndDate(null);
-        setStartDate(null);
         const filteredTransactions = transactions.filter((row) => {
             const rowValues = Object.values(row).map(val => (val || '').toString().toLowerCase());
             const matchSearch = search
