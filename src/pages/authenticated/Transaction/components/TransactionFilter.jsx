@@ -14,6 +14,8 @@ import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import useAuth from '@/services/hooks/useAuth';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
+import { dateFormatter } from '../../../../utils/dateFormatter';
+import { formatEncodedDate } from '../../../../utils/formatEncodedDate';
 
 function TransactionFilter({filteredData, setFilteredData, transactions, handleRefresh, setFilteredDataResult}) {
     const navigate = useNavigate();
@@ -232,13 +234,13 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                 <div className="flex space-x-3 ml-5">
                     <DatePicker 
                         selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        onChange={(date) => setStartDate(formatEncodedDate(date))}
                         placeholderText='Start Date'
                         className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
                     />
                     <DatePicker
                         selected={endDate}
-                        onChange={(date) => setEndDate(date)}
+                        onChange={(date) => setEndDate(formatEncodedDate(date))}
                         placeholderText='End Date'
                         className='text-gray-400 border border-gray-300 bg-white text-xs w-20 py-2 px-2 rounded-sm flex justify-between items-center'
                     />
@@ -282,7 +284,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                         <div className="col-span-3 md:col-span-2 xl:col-span-1">
                             <DatePicker 
                                 selected={startDate}
-                                onChange={(date) => setStartDate(date)}
+                                onChange={(date) => setStartDate(formatEncodedDate(date))}
                                 placeholderText='Start Date'
                                 className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
                             />
@@ -290,7 +292,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
                         <div className="col-span-3 md:col-span-2 xl:col-span-1">
                             <DatePicker
                                 selected={endDate}
-                                onChange={(date) => setEndDate(date)}
+                                onChange={(date) => setEndDate(formatEncodedDate(date))}
                                 placeholderText='End Date'
                                 className='text-gray-400 border border-gray-300 bg-white text-xs w-40 py-2 px-2 rounded-lg flex justify-between items-center'
                             />
