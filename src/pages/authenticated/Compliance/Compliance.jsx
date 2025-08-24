@@ -16,7 +16,7 @@ const Compliance = () => {
     setAppTitle("Compliance");
   }, []);
   const handleNextStep = (val) => {
-    console.log('The result is: ', val);
+    console.log("The result is: ", val);
     setStep((prevStep) => prevStep + 1);
   };
   const handlePrevStep = () => {

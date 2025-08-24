@@ -8,8 +8,8 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
     ''
   ])
   const [formData, setFormData] = React.useState({
-    registrationNumber: "",
-    taxIdNumber: "",
+    rcNumber: "",
+    tin: "",
   });
 
   const handleChange = (field, value) => {
@@ -21,8 +21,8 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
 
   const handleSubmit = () => {
     const newErrors = ["", ""];
-    if (formData.registrationNumber.length < 10 || formData.registrationNumber.length > 12) newErrors[0] = 'Registration number should be between 10 and 12 characters';
-    if (formData.taxIdNumber.length < 10 || formData.taxIdNumber.length > 12) newErrors[1] = 'Tax Identification number should be between 10 and 12 characters';
+    if (formData.rcNumber.length < 10 || formData.rcNumber.length > 12) newErrors[0] = 'Registration number should be between 10 and 12 characters';
+    if (formData.tin.length < 10 || formData.tin.length > 12) newErrors[1] = 'Tax Identification number should be between 10 and 12 characters';
     setErr(newErrors)
 
     if (newErrors.every((e) => e === '')) {
@@ -39,21 +39,21 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
       <ComplianceInput
         label="Registration number"
         type="text"
-        value={formData.registrationNumber}
+        value={formData.rcNumber}
         minLength={10}
         maxLength={12}
         errMsg={err[0]}
-        onChange={(e) => handleChange("registrationNumber", e.target.value)}
+        onChange={(e) => handleChange("rcNumber", e.target.value)}
       />
 
       <ComplianceInput
         label="Tax identification number"
         type="text"
-        value={formData.taxIdNumber}
+        value={formData.tin}
         minLength={10}
         maxLength={12}
         errMsg={err[1]}
-        onChange={(e) => handleChange("taxIdNumber", e.target.value)}
+        onChange={(e) => handleChange("tin", e.target.value)}
       />
 
       <div className="grid grid-cols-2 gap-4 mt-4">
@@ -65,8 +65,8 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
         </button>
         <button
           onClick={handleSubmit}
-          className={`${(!formData.registrationNumber || !formData.taxIdNumber) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
-          disabled={!formData.registrationNumber || !formData.taxIdNumber}
+          className={`${(!formData.rcNumber || !formData.tin) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
+          disabled={!formData.rcNumber || !formData.tin}
         >
           Save and continue
         </button>

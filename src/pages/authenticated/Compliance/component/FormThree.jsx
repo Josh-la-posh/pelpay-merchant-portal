@@ -4,8 +4,8 @@ import ComplianceUploader from "../../../../components/ComplianceUploader";
 
 const FormThree = ({ handleNextStep, handlePrevStep }) => {
   const [formData, setFormData] = React.useState({
-    memorandum: null,
-    certOfIncorporation: null,
+    memorandum_of_association: null,
+    certificate_of_incorporation: null,
     cac: null,
   });
 
@@ -24,13 +24,13 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
       />
       <ComplianceUploader
         label="Memorandum and Articles of Association"
-        value={formData.memorandum}
-        onChange={(e) => handleChange("memorandum", e.target.files)}
+        value={formData.memorandum_of_association}
+        onChange={(e) => handleChange("memorandum_of_association", e.target.files)}
       />
       <ComplianceUploader
         label="Certificate of Incorporation"
-        value={formData.certOfIncorporation}
-        onChange={(e) => handleChange("certOfIncorporation", e.target.files)}
+        value={formData.certificate_of_incorporation}
+        onChange={(e) => handleChange("certificate_of_incorporation", e.target.files)}
       />
       <ComplianceUploader
         label="CAC Status Report"
@@ -47,8 +47,8 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
         </button>
         <button
           onClick={() => handleNextStep(formData)}
-          className={`${(!formData.memorandum || !formData.certOfIncorporation || !formData.cac) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
-          disabled={!formData.memorandum || !formData.certOfIncorporation || !formData.cac}
+          className={`${(!formData.memorandum_of_association || !formData.certificate_of_incorporation || !formData.cac) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
+          disabled={!formData.memorandum_of_association || !formData.certificate_of_incorporation || !formData.cac}
         >
           Save and continue
         </button>
