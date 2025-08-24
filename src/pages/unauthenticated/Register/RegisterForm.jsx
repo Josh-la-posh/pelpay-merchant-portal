@@ -69,9 +69,11 @@ const RegisterForm = () => {
         // e.preventDefault();
         try {
             const response = await axios.get('api/country');
+            // console.log(response.data);
             if (response.data.message === 'Successful') {
                 setCountryList(response.data.responseData);
                 setShowCountryListReload(false);
+                
             } else {
                 setShowCountryListReload(true);
             }
@@ -354,7 +356,7 @@ const RegisterForm = () => {
                                         name="country"
                                         value={formData.country}
                                         onChange={handleChange}
-                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-transparent"
+                                        className="w-full  px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                         required
                                     >
                                         {countryList.map((country) => (
@@ -363,7 +365,7 @@ const RegisterForm = () => {
                                             </option>
                                         ))}
                                     </select>
-                                    {showCountryListReload && <div className="w-full mt-2">
+                                    {showCountryListReload && <div className="w-full  mt-2">
                                         <Link to='' onClick={getCountry} className='text-priColor text-xs text-right cursor'>Retry</Link>
                                     </div>}
                                 </div>

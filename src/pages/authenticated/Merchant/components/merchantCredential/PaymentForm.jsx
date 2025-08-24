@@ -43,7 +43,7 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
     });
 
     
-    const callbackUrl = formData.callBackUrl ?? 'merchant.pelpay.africa';
+    const callbackUrl = formData.callBackUrl ?? 'merchant.pelpay.ng';
 
     useEffect(() => {
     }, [])
@@ -312,18 +312,19 @@ const styles = {
   },
   popup: {
     position: "relative",
-    background: "#fff",
     borderRadius: "5px",
     width: "90%",
     maxWidth: "800px",
-    height: "80%",
+    height: "90%",
     display: "flex",
     flexDirection: "column",
+    overflow: "hidden",
   },
   iframe: {
     flex: 1,
     border: "none",
     borderRadius: "5px",
+    
   },
   closeButton: {
     position: 'absolute',

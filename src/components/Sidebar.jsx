@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
-import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, Warehouse, X } from 'lucide-react';
+import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck  } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
 
@@ -58,6 +58,13 @@ const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
             icon: <Headset size={isSidebarTextVisible ? '18' : '22'} />,
             title: 'Help Center',
             url: '/help-center',
+            openSidebar: true
+        },
+         {
+            id: 7,
+            icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />,
+            title: 'Compliance',
+            url: '/compliance',
             openSidebar: true
         },
     ]

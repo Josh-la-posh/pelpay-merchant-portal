@@ -11,6 +11,7 @@ import transactionReducer from './slices/transactionSlice';
 import usersReducer from './slices/userSlice';
 import rolesReducer from './slices/roleSlice';
 import permissionsReducer from './slices/permissionSlice';
+import complianceReducer from './slices/complianceSlice';
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
     transaction: transactionReducer,
     users: usersReducer,
     roles: rolesReducer,
-    permissions: permissionsReducer
+    permissions: permissionsReducer,
+    compliance: complianceReducer,
   },
 });

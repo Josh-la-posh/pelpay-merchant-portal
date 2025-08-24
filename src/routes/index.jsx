@@ -34,6 +34,7 @@ import RolesAndPermission from '../pages/authenticated/Settings/Roles';
 import ManagePermission from '../pages/authenticated/Settings/ManagePermission';
 import RoleAssignment from '../pages/authenticated/Settings/RoleAssignment';
 import MerchantLayout from '../layouts/MerchantLayout';
+import Compliance from '../pages/authenticated/Compliance/Compliance';
 
 const RoutesSystem = () => {
   return (
@@ -91,6 +92,7 @@ const RoutesSystem = () => {
               <Route path="user/:id/roleAssign" element={<RoleAssignment />} />
             </Route>
           </Route>
+          <Route path="/compliance" element={<Compliance />} />
 
 
           {/* Add other routes */}
