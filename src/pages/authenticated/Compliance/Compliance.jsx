@@ -15,7 +15,8 @@ const Compliance = () => {
   useEffect(() => {
     setAppTitle("Compliance");
   }, []);
-  const handleNextStep = () => {
+  const handleNextStep = (val) => {
+    console.log('The result is: ', val);
     setStep((prevStep) => prevStep + 1);
   };
   const handlePrevStep = () => {

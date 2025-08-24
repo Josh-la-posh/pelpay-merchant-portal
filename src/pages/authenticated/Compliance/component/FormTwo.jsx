@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceInput from "../../../../components/ComplianceInput";
 
 const FormTwo = ({ handleNextStep, handlePrevStep }) => {
+  const [err, setErr] = useState([
+    '',
+    ''
+  ])
   const [formData, setFormData] = React.useState({
     registrationNumber: "",
     taxIdNumber: "",
@@ -14,6 +18,17 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
       [field]: value,
     }));
   };
+
+  const handleSubmit = () => {
+    const newErrors = ["", ""];
+    if (formData.registrationNumber.length < 10 || formData.registrationNumber.length > 12) newErrors[0] = 'Registration number should be between 10 and 12 characters';
+    if (formData.taxIdNumber.length < 10 || formData.taxIdNumber.length > 12) newErrors[1] = 'Tax Identification number should be between 10 and 12 characters';
+    setErr(newErrors)
+
+    if (newErrors.every((e) => e === '')) {
+      handleNextStep(formData)
+    }
+  }
   return (
     <div className="max-w-[450px] ">
       <ComplianceHeader
@@ -27,15 +42,17 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
         value={formData.registrationNumber}
         minLength={10}
         maxLength={12}
+        errMsg={err[0]}
         onChange={(e) => handleChange("registrationNumber", e.target.value)}
       />
 
       <ComplianceInput
         label="Tax identification number"
         type="text"
-        value={""}
+        value={formData.taxIdNumber}
         minLength={10}
         maxLength={12}
+        errMsg={err[1]}
         onChange={(e) => handleChange("taxIdNumber", e.target.value)}
       />
 
@@ -47,8 +64,9 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
           Go back
         </button>
         <button
-          onClick={handleNextStep}
-          className="bg-priColor w-full p-4 text-white text-[13px] rounded-md "
+          onClick={handleSubmit}
+          className={`${(!formData.registrationNumber || !formData.taxIdNumber) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
+          disabled={!formData.registrationNumber || !formData.taxIdNumber}
         >
           Save and continue
         </button>

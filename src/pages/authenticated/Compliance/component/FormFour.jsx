@@ -5,6 +5,16 @@ import ComplianceInputSelect from "../../../../components/ComplianceInputSelect"
 import ComplianceUploader from "../../../../components/ComplianceUploader";
 
 const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
+  const [err, setErr] = useState([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ])
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,6 +37,23 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
     setFormData({ ...formData, [field]: value });
   };
 
+  const handleSubmit = () => {
+    const newErrors = ["", "", "", "", "", "", "", "", ];
+    if (formData.firstName.length) newErrors[0] = 'First name should be more than 1 characters';
+    if (formData.lastName.length) newErrors[1] = 'Last name should be more than 1 characters';
+    if (!formData.dob) newErrors[2] = 'Date of birth should not be empty';
+    if (!formData.role) newErrors[3] = 'Select role';
+    if (!formData.ownership) newErrors[4] = 'Enter business percentage';
+    if (formData.bvn.length !== 10) newErrors[5] = 'Enter a valid BVN';
+    if (!formData.idType) newErrors[6] = 'Select ID';
+    if (formData.lastName.length < 8) newErrors[7] = `${formData.idType} should be more than 8 characters`;
+    setErr(newErrors)
+
+    if (newErrors.every((e) => e === '')) {
+      handleSave(formData)
+    }
+  }
+
   return (
     <div className="max-w-[450px] ">
       <ComplianceHeader
@@ -37,6 +64,7 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
       <ComplianceInput
         label="Legal first name"
         type="text"
+        errMsg={err[0]}
         value={formData.firstName}
         onChange={(e) => handleChange("firstName", e.target.value)}
       />
@@ -44,6 +72,7 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
       <ComplianceInput
         label="Legal last name"
         type="text"
+        errMsg={err[1]}
         value={formData.lastName}
         onChange={(e) => handleChange("lastName", e.target.value)}
       />
@@ -51,6 +80,7 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
       <ComplianceInput
         label="Date of birth"
         type="date"
+        errMsg={err[2]}
         value={formData.dob}
         onChange={(e) => handleChange("dob", e.target.value)}
       />
@@ -67,6 +97,7 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
 
       <ComplianceInputSelect
         label="Role at the business"
+        errMsg={err[3]}
         options={[
           { value: "", label: "Select a role" },
           { value: "Owner", label: "Owner" },
@@ -80,6 +111,7 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
       <ComplianceInput
         label="What percentage of the business does this representative own?"
         type="text"
+        errMsg={err[4]}
         value={formData.ownership}
         onChange={(e) => handleChange("ownership", e.target.value)}
       />
@@ -87,6 +119,7 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
       <ComplianceInput
         label="Bank Verification Number (BVN)"
         type="text"
+        errMsg={err[5]}
         value={formData.bvn}
         onChange={(e) => handleChange("bvn", e.target.value)}
         minLength={10}
@@ -95,6 +128,7 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
 
       <ComplianceInputSelect
         label="Identification Document"
+        errMsg={err[6]}
         options={[
           { value: "", label: "Select a document" },
           { value: "NIN", label: "National Identification Number (NIN)" },
@@ -117,12 +151,17 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
               : "Document Number"
           }
           type="text"
+        errMsg={err[7]}
           value={formData.idNumber}
           onChange={(e) => handleChange("idNumber", e.target.value)}
         />
       )}
 
-      <ComplianceUploader label="" />
+      <ComplianceUploader
+        label=""
+        value={formData.}
+        onChange={(e) => handleChange("memorandum", e.target.files)}
+      />
 
       <div className="grid grid-cols-2 gap-4 mt-4">
         <button
@@ -132,8 +171,9 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
           Go back
         </button>
         <button
-          onClick={() => handleSave(formData)}
-          className="bg-priColor w-full p-4 text-white text-[13px] rounded-md "
+          onClick={handleSubmit}
+          className={`${(!formData.firstName || !formData.lastName || !formData.dob || !formData.role || !formData.ownership || !formData.bvn || !formData.idType || !formData.idNumber) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
+          disabled={!formData.firstName || !formData.lastName || !formData.dob || !formData.role || !formData.ownership || !formData.bvn || !formData.idType || !formData.idNumber}
         >
           Save and continue
         </button>

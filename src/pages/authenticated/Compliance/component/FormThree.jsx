@@ -1,17 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceUploader from "../../../../components/ComplianceUploader";
 
 const FormThree = ({ handleNextStep, handlePrevStep }) => {
+  const [formData, setFormData] = React.useState({
+    memorandum: null,
+    certOfIncorporation: null,
+    cac: null,
+  });
+
+  const handleChange = (field, files) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: files[0],
+    }));
+  };
+
   return (
     <div className="max-w-[450px] ">
       <ComplianceHeader
         title="Business registration documents"
         subtitle="Please upload documents that are government issued, unedited and are JPG, JPEG, PNG or PDF file formats"
       />
-      <ComplianceUploader label="Memorandum and Articles of Association" />
-      <ComplianceUploader label="Certificate of Incorporation" />
-      <ComplianceUploader label="CAC Status Report" />
+      <ComplianceUploader
+        label="Memorandum and Articles of Association"
+        value={formData.memorandum}
+        onChange={(e) => handleChange("memorandum", e.target.files)}
+      />
+      <ComplianceUploader
+        label="Certificate of Incorporation"
+        value={formData.certOfIncorporation}
+        onChange={(e) => handleChange("certOfIncorporation", e.target.files)}
+      />
+      <ComplianceUploader
+        label="CAC Status Report"
+        value={formData.cac}
+        onChange={(e) => handleChange("cac", e.target.files)}
+      />
 
       <div className="grid grid-cols-2 gap-4 mt-4">
         <button
@@ -21,8 +46,9 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
           Go back
         </button>
         <button
-          onClick={handleNextStep}
-          className="bg-priColor w-full p-4 text-white text-[13px] rounded-md "
+          onClick={() => handleNextStep(formData)}
+          className={`${(!formData.memorandum || !formData.certOfIncorporation || !formData.cac) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
+          disabled={!formData.memorandum || !formData.certOfIncorporation || !formData.cac}
         >
           Save and continue
         </button>

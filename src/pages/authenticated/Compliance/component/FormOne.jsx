@@ -5,11 +5,17 @@ import ComplianceTextArea from "../../../../components/ComplianceTextArea";
 import ComplianceInputSelect from "../../../../components/ComplianceInputSelect";
 
 const FormOne = ({ handleNextStep }) => {
+  const [err, setErr] = useState([
+    '',
+    '',
+    '',
+    ''
+  ])
   const [formData, setFormData] = useState({
     businessName: "",
     tradingName: "",
     description: "",
-    category: "",
+    category: "individual",
     salesVolume: "",
     website: "",
   });
@@ -21,6 +27,20 @@ const FormOne = ({ handleNextStep }) => {
     }));
   };
 
+  const handleSubmit = () => {
+    const newErrors = ["", "", "", ""];
+    if (formData.businessName.length < 3) newErrors[0] = 'Business name must be greater than 2 characters';
+    if (formData.tradingName.length < 3) newErrors[1] = 'Trading name must be greater than 2 characters';
+    if (formData.description.length < 100) newErrors[2] = 'Business description must be greater than 100 characters';
+    if (formData.website.length < 3) newErrors[3] = 'Website must be a valid website';
+
+    setErr(newErrors)
+
+    if (newErrors.every((e) => e === '')) {
+      handleNextStep(formData)
+    }
+  }
+
   return (
     <div className="max-w-[450px]">
       <ComplianceHeader
@@ -31,6 +51,7 @@ const FormOne = ({ handleNextStep }) => {
       <ComplianceInput
         label="What is your legal business name?"
         type="text"
+        errMsg={err[0]}
         value={formData.businessName}
         onChange={(e) => handleChange("businessName", e.target.value)}
       />
@@ -38,6 +59,7 @@ const FormOne = ({ handleNextStep }) => {
       <ComplianceInput
         label="Trading name"
         type="text"
+        errMsg={err[1]}
         value={formData.tradingName}
         onChange={(e) => handleChange("tradingName", e.target.value)}
       />
@@ -45,6 +67,7 @@ const FormOne = ({ handleNextStep }) => {
       <ComplianceTextArea
         label="Business description"
         type="text"
+        errMsg={err[2]}
         value={formData.description}
         onChange={(e) => handleChange("description", e.target.value)}
         minLength={100}
@@ -62,7 +85,7 @@ const FormOne = ({ handleNextStep }) => {
 
       <ComplianceInput
         label="Projected sales volume"
-        type="text"
+        type="number"
         value={formData.salesVolume}
         onChange={(e) => handleChange("salesVolume", e.target.value)}
       />
@@ -70,13 +93,15 @@ const FormOne = ({ handleNextStep }) => {
       <ComplianceInput
         label="Website"
         type="text"
+        errMsg={err[3]}
         value={formData.website}
         onChange={(e) => handleChange("website", e.target.value)}
       />
 
       <button
-        onClick={() => handleNextStep(formData)}
-        className="bg-priColor w-full p-2 text-white text-[13px] rounded-md mt-3"
+        onClick={handleSubmit}
+        className={`${(!formData.businessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-2 text-white text-[13px] rounded-md mt-3`}
+        disabled={!formData.businessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName}
       >
         Save and continue
       </button>
