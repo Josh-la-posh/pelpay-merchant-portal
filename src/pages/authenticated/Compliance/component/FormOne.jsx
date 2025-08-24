@@ -12,7 +12,7 @@ const FormOne = ({ handleNextStep }) => {
     ''
   ])
   const [formData, setFormData] = useState({
-    businessName: "",
+    legalBusinessName: "",
     tradingName: "",
     description: "",
     category: "individual",
@@ -29,7 +29,7 @@ const FormOne = ({ handleNextStep }) => {
 
   const handleSubmit = () => {
     const newErrors = ["", "", "", ""];
-    if (formData.businessName.length < 3) newErrors[0] = 'Business name must be greater than 2 characters';
+    if (formData.legalBusinessName.length < 3) newErrors[0] = 'Business name must be greater than 2 characters';
     if (formData.tradingName.length < 3) newErrors[1] = 'Trading name must be greater than 2 characters';
     if (formData.description.length < 100) newErrors[2] = 'Business description must be greater than 100 characters';
     if (formData.website.length < 3) newErrors[3] = 'Website must be a valid website';
@@ -52,8 +52,8 @@ const FormOne = ({ handleNextStep }) => {
         label="What is your legal business name?"
         type="text"
         errMsg={err[0]}
-        value={formData.businessName}
-        onChange={(e) => handleChange("businessName", e.target.value)}
+        value={formData.legalBusinessName}
+        onChange={(e) => handleChange("legalBusinessName", e.target.value)}
       />
 
       <ComplianceInput
@@ -100,8 +100,8 @@ const FormOne = ({ handleNextStep }) => {
 
       <button
         onClick={handleSubmit}
-        className={`${(!formData.businessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-2 text-white text-[13px] rounded-md mt-3`}
-        disabled={!formData.businessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName}
+        className={`${(!formData.legalBusinessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-2 text-white text-[13px] rounded-md mt-3`}
+        disabled={!formData.legalBusinessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName}
       >
         Save and continue
       </button>

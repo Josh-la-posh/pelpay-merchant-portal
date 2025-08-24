@@ -23,8 +23,8 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
     role: "",
     ownership: "",
     bvn: "",
-    idType: "",
-    idNumber: "",
+    verificationType: "",
+    verificationNumber: "",
   });
 
   useEffect(() => {
@@ -39,15 +39,16 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
 
   const handleSubmit = () => {
     const newErrors = ["", "", "", "", "", "", "", "", ];
-    if (formData.firstName.length) newErrors[0] = 'First name should be more than 1 characters';
-    if (formData.lastName.length) newErrors[1] = 'Last name should be more than 1 characters';
+    if (formData.firstName.length < 1) newErrors[0] = 'First name should be more than 1 characters';
+    if (formData.lastName.length < 1) newErrors[1] = 'Last name should be more than 1 characters';
     if (!formData.dob) newErrors[2] = 'Date of birth should not be empty';
     if (!formData.role) newErrors[3] = 'Select role';
     if (!formData.ownership) newErrors[4] = 'Enter business percentage';
-    if (formData.bvn.length !== 10) newErrors[5] = 'Enter a valid BVN';
-    if (!formData.idType) newErrors[6] = 'Select ID';
-    if (formData.lastName.length < 8) newErrors[7] = `${formData.idType} should be more than 8 characters`;
+    if (formData.bvn.length !== 11) newErrors[5] = 'Enter a valid BVN';
+    if (!formData.verificationType) newErrors[6] = 'Select ID';
+    if (formData.verificationNumber.length < 11 || formData.verificationNumber.length > 12) newErrors[7] = `${formData.verificationType} should be more than 10 characters`;
     setErr(newErrors)
+ 
 
     if (newErrors.every((e) => e === '')) {
       handleSave(formData)
@@ -135,31 +136,31 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
           { value: "PASSPORT", label: "International Passport" },
           { value: "DRIVERS_LICENSE", label: "Driver's License" },
         ]}
-        value={formData.idType}
-        onChange={(e) => handleChange("idType", e.target.value)}
+        value={formData.verificationType}
+        onChange={(e) => handleChange("verificationType", e.target.value)}
       />
 
-      {formData.idType && (
+      {formData.verificationType && (
         <ComplianceInput
           label={
-            formData.idType === "NIN"
+            formData.verificationType === "NIN"
               ? "Enter NIN Number"
-              : formData.idType === "PASSPORT"
+              : formData.verificationType === "PASSPORT"
               ? "Enter Passport Number"
-              : formData.idType === "DRIVERS_LICENSE"
+              : formData.verificationType === "DRIVERS_LICENSE"
               ? "Driver's License Number"
               : "Document Number"
           }
           type="text"
         errMsg={err[7]}
-          value={formData.idNumber}
-          onChange={(e) => handleChange("idNumber", e.target.value)}
+          value={formData.verificationNumber}
+          onChange={(e) => handleChange("verificationNumber", e.target.value)}
         />
       )}
 
       <ComplianceUploader
         label=""
-        value={formData.}
+        value={formData.memorandum}
         onChange={(e) => handleChange("memorandum", e.target.files)}
       />
 
@@ -172,8 +173,8 @@ const FormFour = ({ handlePrevStep, handleSave, editRepresentativeData }) => {
         </button>
         <button
           onClick={handleSubmit}
-          className={`${(!formData.firstName || !formData.lastName || !formData.dob || !formData.role || !formData.ownership || !formData.bvn || !formData.idType || !formData.idNumber) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
-          disabled={!formData.firstName || !formData.lastName || !formData.dob || !formData.role || !formData.ownership || !formData.bvn || !formData.idType || !formData.idNumber}
+          className={`${(!formData.firstName || !formData.lastName || !formData.dob || !formData.role || !formData.ownership || !formData.bvn || !formData.verificationType || !formData.verificationNumber) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-4 text-white text-[13px] rounded-md`}
+          disabled={!formData.firstName || !formData.lastName || !formData.dob || !formData.role || !formData.ownership || !formData.bvn || !formData.verificationType || !formData.verificationNumber}
         >
           Save and continue
         </button>
