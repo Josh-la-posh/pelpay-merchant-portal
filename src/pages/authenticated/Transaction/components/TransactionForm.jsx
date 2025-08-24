@@ -42,7 +42,7 @@ function TransactionForm({ handleCloseModal, data }) {
   const resendNotification = async () => {
     const id = transactionData?.paymentReference;
     try {
-      const response = await axios.post(`https://api.pelpay.africa/api/WebHook/push/${id}`);
+      const response = await axios.post(`https://api.pelpay.ng/api/WebHook/push/${id}`);
       const data = response.data.responseData;
       toast(data);
     } catch (e) {
