@@ -16,6 +16,14 @@ export const axiosPrivate = axios.create({
     }
 });
 
+// export const formDataAxiosPrivate = axios.create({
+//     baseURL: import.meta.env.VITE_MERCHANT_BASE_URL_NEW,
+//     headers: {
+//         'Accept': 'application/json',
+//         'Content-Type': 'multipart/form-data'
+//     }
+// })
+
 export const noHeaderAxiosPrivate = axios.create({
     baseURL: import.meta.env.VITE_MERCHANT_BASE_URL,
 });

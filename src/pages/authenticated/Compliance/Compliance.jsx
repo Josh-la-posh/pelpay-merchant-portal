@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import useTitle from "@/services/hooks/useTitle";
+import useAuth from "@/services/hooks/useAuth";
 import FormOne from "./component/FormOne";
 import FormTwo from "./component/FormTwo";
 import FormThree from "./component/FormThree";
 import FormFour from "./component/FormFour";
 import FormFive from "./component/FormFive";
+import { useNavigate } from "react-router-dom";
+
 
 const Compliance = () => {
   const { setAppTitle } = useTitle();
+  const { auth } = useAuth();
+  const [isOpen, setIsOpen] = useState(true);
   const [step, setStep] = useState(0);
   const [businessRepresentative, setBusinessRepresentative] = useState([]);
   const [editRepresentative, setEditRepresentative] = useState(null);
+
+  const user = auth?.data.user;
 
   useEffect(() => {
     setAppTitle("Compliance");
@@ -26,6 +33,13 @@ const Compliance = () => {
     setEditRepresentative(index);
     setStep(3);
   };
+
+  const navigate = useNavigate();
+
+  const handleCloseButton=()=>{
+    setIsOpen(false);
+    navigate('/')
+  }
 
   const businessRepresentativeData = (representativeData) => {
     if (editRepresentative !== null) {
@@ -75,7 +89,7 @@ const Compliance = () => {
         </div>
 
         <div>
-          <button className="bg-gray-200 w-full py-3 px-5 text-black text-[13px] rounded-md">
+          <button className="bg-gray-200 w-full py-3 px-5 text-black text-[13px] rounded-md" onClick={handleCloseButton}>
             Close
           </button>
         </div>

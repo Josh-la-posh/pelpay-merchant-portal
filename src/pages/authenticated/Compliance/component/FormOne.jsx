@@ -1,16 +1,15 @@
 import React, { useState } from "react";
+import useAuth from "@/services/hooks/useAuth";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceInput from "../../../../components/ComplianceInput";
 import ComplianceTextArea from "../../../../components/ComplianceTextArea";
 import ComplianceInputSelect from "../../../../components/ComplianceInputSelect";
 
 const FormOne = ({ handleNextStep }) => {
-  const [err, setErr] = useState([
-    '',
-    '',
-    '',
-    ''
-  ])
+  const { auth } = useAuth();
+  const user = auth?.data.user;
+
+  const [err, setErr] = useState(["", "", "", ""]);
   const [formData, setFormData] = useState({
     legalBusinessName: "",
     tradingName: "",
@@ -29,22 +28,26 @@ const FormOne = ({ handleNextStep }) => {
 
   const handleSubmit = () => {
     const newErrors = ["", "", "", ""];
-    if (formData.legalBusinessName.length < 3) newErrors[0] = 'Business name must be greater than 2 characters';
-    if (formData.tradingName.length < 3) newErrors[1] = 'Trading name must be greater than 2 characters';
-    if (formData.description.length < 100) newErrors[2] = 'Business description must be greater than 100 characters';
-    if (formData.website.length < 3) newErrors[3] = 'Website must be a valid website';
+    if (formData.legalBusinessName.length < 3)
+      newErrors[0] = "Business name must be greater than 2 characters";
+    if (formData.tradingName.length < 3)
+      newErrors[1] = "Trading name must be greater than 2 characters";
+    if (formData.description.length < 100)
+      newErrors[2] = "Business description must be greater than 100 characters";
+    if (formData.website.length < 3)
+      newErrors[3] = "Website must be a valid website";
 
-    setErr(newErrors)
+    setErr(newErrors);
 
-    if (newErrors.every((e) => e === '')) {
-      handleNextStep(formData)
+    if (newErrors.every((e) => e === "")) {
+      handleNextStep(formData);
     }
-  }
+  };
 
   return (
     <div className="max-w-[450px]">
       <ComplianceHeader
-        title="Hi Demi, let's setup your account real quick"
+        title={`Hi ${user?.firstName}, let's setup your account real quick`}
         subtitle="As a regulated financial services company, we would need to verify your identification and business registration information."
       />
 
@@ -100,8 +103,22 @@ const FormOne = ({ handleNextStep }) => {
 
       <button
         onClick={handleSubmit}
-        className={`${(!formData.legalBusinessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName) ? 'bg-priColor/35' : 'bg-priColor'} w-full p-2 text-white text-[13px] rounded-md mt-3`}
-        disabled={!formData.legalBusinessName || !formData.category || !formData.description || !formData.salesVolume || !formData.tradingName}
+        className={`${
+          !formData.legalBusinessName ||
+          !formData.category ||
+          !formData.description ||
+          !formData.salesVolume ||
+          !formData.tradingName
+            ? "bg-priColor/35"
+            : "bg-priColor"
+        } w-full p-2 text-white text-[13px] rounded-md mt-3`}
+        disabled={
+          !formData.legalBusinessName ||
+          !formData.category ||
+          !formData.description ||
+          !formData.salesVolume ||
+          !formData.tradingName
+        }
       >
         Save and continue
       </button>

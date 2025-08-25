@@ -79,7 +79,7 @@ class ComplianceService {
   async fetchComplianceAgreementsDocs(dispatch) {
     try {
       const response = await this.axiosPrivate.get(
-        "api/compliance/agreements-docs"
+        "api/compliance/agreement-docs"
       );
       const data = response.data;
       console.log("Compliance agreements documents fetched:", data);
