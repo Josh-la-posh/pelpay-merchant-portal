@@ -1,10 +1,11 @@
 import React from 'react'
 
-const ComplianceInputSelect = ({ label, options, value, onChange }) => {
+const ComplianceInputSelect = ({ label, options, value, onChange, id }) => {
   return (
     <div className='mb-4'>
       <label className='block text-[13px] py-2'>{label}</label>
       <select
+      id={id}
         value={value}
         onChange={onChange}
         className='bg-gray-200 block w-full border border-gray-200 rounded-md text-[13px] p-2'

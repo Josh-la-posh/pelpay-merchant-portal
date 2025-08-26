@@ -1,4 +1,4 @@
-import { axiosPrivate } from "../api/axios";
+import {  axiosPrivate } from "../api/axios";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "./useAuth";
@@ -10,6 +10,7 @@ const useAxiosPrivate = () => {
     const { auth, setAuth } = useAuth();
     const navigate = useNavigate();
     const location  = useLocation();
+    // const axiosPrivate = formDataAxiosPrivate;
 
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(

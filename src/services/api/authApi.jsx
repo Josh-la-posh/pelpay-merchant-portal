@@ -18,7 +18,7 @@ class AuthService {
 
     try {
       const response = await axios.post(
-        `${this.baseUrl}/api/login`,
+        `${this.baseUrl}api/Account`,
         JSON.stringify({  email,  password })
       );
 

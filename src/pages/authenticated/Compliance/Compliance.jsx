@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
 import FormOne from "./component/FormOne";
@@ -7,46 +8,68 @@ import FormThree from "./component/FormThree";
 import FormFour from "./component/FormFour";
 import FormFive from "./component/FormFive";
 import { useNavigate } from "react-router-dom";
-
-
+import ComplianceService from "@/services/api/complianceApi";
+import useAxiosPrivate from "../../../services/hooks/useFormAxios";
+import Spinner from "@/components/Spinner";
+import { complianceStep } from "../../../redux/slices/complianceSlice";
 const Compliance = () => {
   const { setAppTitle } = useTitle();
   const { auth } = useAuth();
-  const [isOpen, setIsOpen] = useState(true);
-  const [step, setStep] = useState(0);
-  const [businessRepresentative, setBusinessRepresentative] = useState([]);
-  const [editRepresentative, setEditRepresentative] = useState(null);
 
-  const user = auth?.data.user;
+  const [isOpen, setIsOpen] = useState(true);
+
+  const [businessRepresentative, setBusinessRepresentative] = useState([]);
+
+  const complianceState = useSelector((state) => state.compliance);
+  const { complianceData, complianceLoading, complianceSuccess, step } =
+    complianceState;
+
+  const axiosPrivate = useAxiosPrivate();
+  const complianceService = new ComplianceService(axiosPrivate);
+
+  const [editOwnerIndex, setEditOwnerIndex] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const user = auth?.data.merchants[0];
+
+  console.log("Compliance Step: ", step);
+
+  useEffect(() => {
+    console.log("Compliance data fetched successfully:", complianceData);
+  }, [complianceSuccess]);
 
   useEffect(() => {
     setAppTitle("Compliance");
   }, []);
+
   const handleNextStep = (val) => {
-    console.log("The result is: ", val);
-    setStep((prevStep) => prevStep + 1);
+    dispatch(complianceStep(step + 1));
   };
+
   const handlePrevStep = () => {
-    setStep((prevStep) => prevStep - 1);
+    if (step === 0) return;
+    dispatch(complianceStep(step - 1));
   };
+
   const handleEditRepresentative = (index) => {
-    setEditRepresentative(index);
-    setStep(3);
+    setEditOwnerIndex(index);
+    dispatch(complianceStep(3));
   };
 
   const navigate = useNavigate();
 
-  const handleCloseButton=()=>{
+  const handleCloseButton = () => {
     setIsOpen(false);
-    navigate('/')
-  }
+    navigate("/");
+  };
 
   const businessRepresentativeData = (representativeData) => {
-    if (editRepresentative !== null) {
+    if (editOwnerIndex !== null) {
       const updated = [...businessRepresentative];
-      updated[editRepresentative] = representativeData;
+      updated[editOwnerIndex] = representativeData;
       setBusinessRepresentative(updated);
-      setEditRepresentative(null);
+      setEditOwnerIndex(null);
     } else {
       setBusinessRepresentative([
         ...businessRepresentative,
@@ -54,8 +77,16 @@ const Compliance = () => {
       ]);
     }
 
-    setStep(4);
+    handleNextStep();
   };
+
+  useEffect(() => {
+    const loadData = async () => {
+      // console.log("Compliance data fetched", user);
+      await complianceService.fetchComplianceData(dispatch, user?.merchantCode);
+    };
+    loadData();
+  }, [dispatch]);
 
   const steps = [
     <FormOne handleNextStep={handleNextStep} />,
@@ -68,12 +99,12 @@ const Compliance = () => {
       handleNextStep={handleNextStep}
       handlePrevStep={handlePrevStep}
       handleSave={businessRepresentativeData}
+      editOwnerIndex={editOwnerIndex}
       editRepresentativeData={
-        editRepresentative !== null
-          ? businessRepresentative[editRepresentative]
-          : null
+        editOwnerIndex !== null ? businessRepresentative[editOwnerIndex] : null
       }
     />,
+
     <FormFive
       handlePrevStep={handlePrevStep}
       representativeDatas={businessRepresentative || []}
@@ -81,6 +112,12 @@ const Compliance = () => {
     />,
   ];
 
+  if (complianceLoading)
+    return (
+      <div className="h-[40vh] w-full">
+        <Spinner />
+      </div>
+    );
   return (
     <div className="">
       <div className="flex border-0 border-b-1  justify-between items-center mb-4 p-1">
@@ -89,7 +126,10 @@ const Compliance = () => {
         </div>
 
         <div>
-          <button className="bg-gray-200 w-full py-3 px-5 text-black text-[13px] rounded-md" onClick={handleCloseButton}>
+          <button
+            className="bg-gray-200 w-full py-3 px-5 text-black text-[13px] rounded-md"
+            onClick={handleCloseButton}
+          >
             Close
           </button>
         </div>

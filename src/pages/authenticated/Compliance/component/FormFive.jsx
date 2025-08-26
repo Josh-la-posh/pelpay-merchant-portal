@@ -1,7 +1,73 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
+import useAuth from "@/services/hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import ComplianceService from "@/services/api/complianceApi";
+import useAxiosPrivate from "@/services/hooks/useFormAxios";
 
-const FormFive = ({ handlePrevStep, representativeDatas = [], handleEditRepresentative }) => {
+const FormFive = ({
+  handlePrevStep,
+  representativeDatas = [],
+  handleEditRepresentative,
+}) => {
+  const { auth } = useAuth();
+  const user = auth?.data;
+  const complianceState = useSelector((state) => state.compliance);
+  const { complianceData } = complianceState;
+
+  console.log("Compliance Data 5: ", complianceData);
+
+  const formDataAxiosPrivate = useAxiosPrivate();
+  const complianceService = new ComplianceService(formDataAxiosPrivate);
+  const dispatch = useDispatch();
+
+  const initialData = complianceData?.owners;
+
+  const existingRecord = Array.isArray(initialData) ? initialData[0] : initialData || {};
+
+const handleSubmit = async () => {
+  try {
+    
+    const payload = {
+      owners: representativeDatas,  
+    };
+
+    let savedRecord;
+    if (existingRecord && Object.keys(existingRecord).length > 0) {
+      savedRecord = await complianceService.updateComplianceData(
+        payload, // 👈 pass reps here
+        dispatch,
+        user?.merchants[0]?.merchantCode
+      );
+      console.log("Updated compliance record 5:", savedRecord);
+    } else {
+      savedRecord = await complianceService.complianceUpload(
+        payload, 
+        dispatch,
+        user?.merchants[0]?.merchantCode
+      );
+      console.log("Created new compliance record 5:", savedRecord);
+      
+    }
+  } catch (error) {
+    console.error("Error saving compliance reps:", error);
+  }
+};
+
+
+
+  useEffect(() => {
+    if(initialData){
+      console.log("Initial Data 5: ", initialData);
+    }
+  })
+
+  //   useEffect(() => {
+  //   if (user?.merchants[0]?.merchantCode) {
+  //     complianceService.fetchComplianceData(dispatch, user.merchants[0].merchantCode);
+  //   }
+  // }, [user?.merchants, dispatch]);
+
   return (
     <div className="max-w-[450px] ">
       <ComplianceHeader
@@ -12,7 +78,7 @@ const FormFive = ({ handlePrevStep, representativeDatas = [], handleEditRepresen
       {representativeDatas?.map((rep, index) => (
         <div
           key={index}
-          className="grid grid-cols-12 md:grid-cols-10  border-b py-3 items-center "
+          className="grid grid-cols-12 md:grid-cols-11  border-b py-3 items-center "
         >
           <div className="col-span-4">
             <p className="text-[10px] md:text-[13px] text-gray-800">
@@ -22,7 +88,7 @@ const FormFive = ({ handlePrevStep, representativeDatas = [], handleEditRepresen
 
           {rep.role ? (
             <div className="col-span-3 md:col-span-2 ">
-              <p className="text-[11px] text-gray-600">{rep.role}</p>
+              <p className="text-[11px] text-gray-600">{rep.roleInBusiness}</p>
             </div>
           ) : (
             <div className="col-span-4 md:col-span-3">
@@ -30,10 +96,10 @@ const FormFive = ({ handlePrevStep, representativeDatas = [], handleEditRepresen
             </div>
           )}
 
-          {rep.ownership ? (
-            <div className="col-span-4 md:col-span-3 ">
+          {rep.percentOfBusiness ? (
+            <div className="col-span-3  ">
               <p className=" text-[9px] md:text-[11px] text-gray-600">
-                {rep.ownership}% of ownership
+                {rep.percentOfBusiness}% of ownership
               </p>
             </div>
           ) : (
@@ -65,7 +131,7 @@ const FormFive = ({ handlePrevStep, representativeDatas = [], handleEditRepresen
         >
           Go back
         </button>
-        <button className="bg-priColor w-full p-4 text-white text-[13px] rounded-md ">
+        <button onClick={handleSubmit} className="bg-priColor w-full p-4 text-white text-[13px] rounded-md ">
           Save and continue
         </button>
       </div>

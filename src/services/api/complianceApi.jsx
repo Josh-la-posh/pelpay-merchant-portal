@@ -6,25 +6,30 @@ import {
 } from "@/redux/slices/complianceSlice";
 
 class ComplianceService {
-  constructor(axiosPrivate, auth) {
+  constructor(axiosPrivate) {
     this.axiosPrivate = axiosPrivate;
-    this.auth = auth;
   }
 
   async complianceUpload(merchantCode, formData, dispatch) {
     dispatch(complianceStart());
     try {
-      const response = awaitthis.axiosPrivate.post(
+      const response = await this.axiosPrivate.post(
         `api/compliance/upload?merchantCode=${merchantCode}`,
-        formData
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
 
-      const data = response.data;
+      const data = response?.data;
       dispatch(complianceSuccess(data));
+      await this.fetchComplianceData(dispatch, merchantCode);
       toast.success("Compliance data uploaded successfully.");
+      console.log("Compliance data uploaded sucess:", data);
     } catch (err) {
       if (!err.response) {
         dispatch(complianceFailure("No response from server"));
+        console.error("Error uploading compliance data:", err);
       } else {
         dispatch(
           complianceFailure(
@@ -37,12 +42,15 @@ class ComplianceService {
 
   async fetchComplianceData(dispatch, merchantCode) {
     dispatch(complianceStart());
+
     try {
       const response = await this.axiosPrivate.get(
         `api/compliance?merchantCode=${merchantCode}`
       );
-      const data = response.data;
-      console.log("Compliance data fetched:", data);
+
+      const data = response.data?.responseData;
+      console.log("Compliance data fetched successfully22:", data);
+
       dispatch(complianceSuccess(data));
     } catch (err) {
       if (!err.response) {
@@ -53,17 +61,24 @@ class ComplianceService {
         );
       }
     }
+    console.log("Fetch compliance data process completed.");
   }
 
-  async updateComplianceData(formData, dispatch) {
+  async updateComplianceData(formData, dispatch, merchantCode) {
     dispatch(complianceStart());
     try {
       const response = await this.axiosPrivate.put(
-        "api/compliance",
-        JSON.stringify(formData)
+        `api/compliance/?merchantCode=${merchantCode}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
+
       const data = response.data;
       dispatch(complianceSuccess(data));
+      await this.fetchComplianceData(dispatch, merchantCode);
+      console.log("Compliance data updated successfully:", data);
       toast.success("Compliance data updated successfully.");
     } catch (err) {
       if (!err.response) {
@@ -78,9 +93,7 @@ class ComplianceService {
 
   async fetchComplianceAgreementsDocs(dispatch) {
     try {
-      const response = await this.axiosPrivate.get(
-        "api/compliance/agreement-docs"
-      );
+      const response = await this.axiosPrivate.get("api/complianceju");
       const data = response.data;
       console.log("Compliance agreements documents fetched:", data);
       dispatch(complianceSuccess(data));
@@ -139,7 +152,7 @@ class ComplianceService {
     }
   }
 
-   async deleteComplianceDocPermanently(id, merchantCode, dispatch) {
+  async deleteComplianceDocPermanently(id, merchantCode, dispatch) {
     dispatch(complianceStart());
     try {
       const response = await this.axiosPrivate.delete(
@@ -158,7 +171,6 @@ class ComplianceService {
       }
     }
   }
-
 
   async startComplianceVerification(merchantCode, dispatch) {
     dispatch(complianceStart());
