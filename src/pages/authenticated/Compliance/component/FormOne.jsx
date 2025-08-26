@@ -13,7 +13,7 @@ const FormOne = ({ handleNextStep }) => {
   const user = auth?.data;
 
   const complianceState = useSelector((state) => state.compliance);
-  const { complianceData, complianceLoading, complianceSuccess } =
+  const { complianceData, complianceLoading, complianceSuccess, step } =
     complianceState;
 
   const formDataAxiosPrivate = useAxiosPrivate();
@@ -23,7 +23,6 @@ const FormOne = ({ handleNextStep }) => {
   const initialData = complianceData?.businessInfo;
   // console.log("Initial Data 1: ", initialData);
   // console.log("Initial Data 1: ", complianceData?.financialInfo);
- 
 
   const [err, setErr] = useState(["", "", "", ""]);
   const [formData, setFormData] = useState({
@@ -77,7 +76,7 @@ const FormOne = ({ handleNextStep }) => {
     if (formData.website) newFormData.append("website", formData.website);
 
     try {
-      if (existingRecord) {
+      if (existingRecord || step > 0) {
         console.log(
           "Updating compliance with existing record:",
           existingRecord

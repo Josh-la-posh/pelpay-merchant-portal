@@ -4,6 +4,7 @@ import {
   complianceFailure,
   complianceSuccess,
 } from "@/redux/slices/complianceSlice";
+import { complianceStep } from "../../redux/slices/complianceSlice";
 
 class ComplianceService {
   constructor(axiosPrivate) {
@@ -22,7 +23,9 @@ class ComplianceService {
       );
 
       const data = response?.data;
+
       dispatch(complianceSuccess(data));
+    
       await this.fetchComplianceData(dispatch, merchantCode);
       toast.success("Compliance data uploaded successfully.");
       console.log("Compliance data uploaded sucess:", data);
@@ -50,7 +53,10 @@ class ComplianceService {
 
       const data = response.data?.responseData;
       console.log("Compliance data fetched successfully22:", data);
+      
+      dispatch(complianceStep(data?.progress || 0));
 
+     
       dispatch(complianceSuccess(data));
     } catch (err) {
       if (!err.response) {

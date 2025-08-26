@@ -80,37 +80,36 @@ const Compliance = () => {
     handleNextStep();
   };
 
+  const handleSaveStep = async (formData) => {
+    try {
+      if (step > 0) {
+        await complianceService.updateComplianceData(
+          dispatch,
+          user?.merchantCode,
+          formData
+        );
+      } else {
+        await complianceService.complianceUpload(
+          dispatch,
+          user?.merchantCode,
+          formData
+        );
+      }
+
+      handleNextStep();
+    } catch (error) {
+      console.error("Error saving compliance data:", error);
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       // console.log("Compliance data fetched", user);
       await complianceService.fetchComplianceData(dispatch, user?.merchantCode);
     };
+
     loadData();
   }, [dispatch]);
-
-  const steps = [
-    <FormOne handleNextStep={handleNextStep} />,
-    <FormTwo handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />,
-    <FormThree
-      handleNextStep={handleNextStep}
-      handlePrevStep={handlePrevStep}
-    />,
-    <FormFour
-      handleNextStep={handleNextStep}
-      handlePrevStep={handlePrevStep}
-      handleSave={businessRepresentativeData}
-      editOwnerIndex={editOwnerIndex}
-      editRepresentativeData={
-        editOwnerIndex !== null ? businessRepresentative[editOwnerIndex] : null
-      }
-    />,
-
-    <FormFive
-      handlePrevStep={handlePrevStep}
-      representativeDatas={businessRepresentative || []}
-      handleEditRepresentative={handleEditRepresentative}
-    />,
-  ];
 
   if (complianceLoading)
     return (
@@ -136,10 +135,48 @@ const Compliance = () => {
       </div>
       <div className="p-2 m--0 relative ">
         <div className="absolute top-[-1px] sm:top-4 left-[70%] md:left-0   bg-amber-300 px-2 py-1 rounded-md ">
-          Step {step + 1} of {steps.length}
+          Step {step + 1} of 5
         </div>
 
-        <div className="flex justify-center mt-5 md:mt-0">{steps[step]}</div>
+        <div className="flex justify-center mt-5 md:mt-0">
+          {/* {steps[step]} */}
+
+          {step === 0 && <FormOne handleNextStep={handleNextStep} />}
+          {step === 1 && (
+            <FormTwo
+              handleNextStep={handleNextStep}
+              handlePrevStep={handlePrevStep}
+            />
+          )}
+          {step === 2 && (
+            <FormThree
+              handleNextStep={handleNextStep}
+              handlePrevStep={handlePrevStep}
+              handleSaveStep={handleSaveStep}
+              merchantCode={user?.merchantCode}
+            />
+          )}
+          {step === 3 && (
+            <FormFour
+              handleNextStep={handleNextStep}
+              handlePrevStep={handlePrevStep}
+              handleSave={businessRepresentativeData}
+              editOwnerIndex={editOwnerIndex}
+              editRepresentativeData={
+                editOwnerIndex !== null
+                  ? businessRepresentative[editOwnerIndex]
+                  : null
+              }
+            />
+          )}
+          {step === 4 && (
+            <FormFive
+              handlePrevStep={handlePrevStep}
+              representativeDatas={businessRepresentative || []}
+              handleEditRepresentative={handleEditRepresentative}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

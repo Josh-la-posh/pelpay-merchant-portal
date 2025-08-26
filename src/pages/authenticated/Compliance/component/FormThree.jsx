@@ -6,12 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "@/services/hooks/useFormAxios";
 
-const FormThree = ({ handleNextStep, handlePrevStep }) => {
+const FormThree = ({ handleNextStep, handlePrevStep, handleSaveStep, merchantCode }) => {
   const { auth } = useAuth();
   const user = auth?.data;
 
-  
-  const { complianceData } = useSelector((state) => state.compliance);
+  const { complianceData, step } = useSelector((state) => state.compliance);
   // console.log("Compliance Data in form 3: ", complianceData);
 
   const initialData = complianceData?.documents;
@@ -22,12 +21,18 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
-    memorandum_of_association: initialData?.find((doc) => doc?.documentType === "memorandum_of_association")?.originalName || null,
+    memorandum_of_association:
+      initialData?.find(
+        (doc) => doc?.documentType === "memorandum_of_association"
+      )?.originalName || null,
     certificate_of_incorporation:
-      initialData?.find((doc) => doc?.documentType === "certificate_of_incorporation")?.originalName || null,
-    status_report: initialData?.find((doc) => doc?.documentType === "status_report")?.originalName || null,
+      initialData?.find(
+        (doc) => doc?.documentType === "certificate_of_incorporation"
+      )?.originalName || null,
+    status_report:
+      initialData?.find((doc) => doc?.documentType === "status_report")
+        ?.originalName || null,
   });
-
 
   // console.log("Form Data 3: ", formData);
 
@@ -60,9 +65,12 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
       );
     if (formData.status_report)
       newFormData.append("status_report", formData.status_report);
+    
 
     try {
-      if (Object.keys(initialData || {}).length > 0)  {
+      // if (Object.keys(initialData || {}).length > 0)
+      if (existingRecord)
+         {
         await complianceService.updateComplianceData(
           newFormData,
           dispatch,
