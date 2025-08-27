@@ -5,7 +5,7 @@ const initialState = {
     complianceError: null,
     complianceData: {},
     complianceSuccess: null,
-    step: 2,
+    step: 0,
 };
 
 const complianceSlice = createSlice({
