@@ -6,7 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "@/services/hooks/useFormAxios";
 
-const FormThree = ({ handleNextStep, handlePrevStep, handleSaveStep, merchantCode }) => {
+const FormThree = ({
+  handleNextStep,
+  handlePrevStep,
+  handleSaveStep,
+  merchantCode,
+}) => {
   const { auth } = useAuth();
   const user = auth?.data;
 
@@ -45,11 +50,15 @@ const FormThree = ({ handleNextStep, handlePrevStep, handleSaveStep, merchantCod
     console.log("Formdata", formData);
   };
 
-  const existingRecord = Array.isArray(initialData)
-    ? initialData[0]
-    : initialData || {};
+   const handleFileChange = (field, files) => {
+    setFormData({ ...formData, [field]: files[0] });
+  };
 
-  console.log("Existing Record 3: ", existingRecord);
+  // const existingRecord = Array.isArray(initialData)
+  //   ? initialData[0]
+  //   : initialData || {};
+
+  // console.log("Existing Record 3: ", existingRecord);
 
   const handleSubmit = async () => {
     const newFormData = new FormData();
@@ -65,31 +74,49 @@ const FormThree = ({ handleNextStep, handlePrevStep, handleSaveStep, merchantCod
       );
     if (formData.status_report)
       newFormData.append("status_report", formData.status_report);
-    
 
     try {
-      // if (Object.keys(initialData || {}).length > 0)
-      if (existingRecord)
-         {
-        await complianceService.updateComplianceData(
-          newFormData,
-          dispatch,
-          user?.merchants[0]?.merchantCode
-        );
-        console.log("Updated compliance record 3:");
-      } else {
-        await complianceService.complianceUpload(
-          user?.merchants[0]?.merchantCode,
-          newFormData,
-          dispatch
-        );
-        console.log("Uploaded compliance record 3:");
+      const newFormData = new FormData();
+      
+    
+      Object.keys(formData).forEach(key => {
+        if (formData[key] && key !== 'documents') {
+          newFormData.append(key, formData[key]);
+        }
+      });
+
+    
+      if (formData.documents) {
+        newFormData.append('ownerDocument', formData.documents);
       }
 
-      handleNextStep(formData);
+      await handleSaveStep(newFormData);
     } catch (error) {
-      console.error(error);
+      console.error("Error saving form three:", error);
     }
+    // try {
+    //   // if (Object.keys(initialData || {}).length > 0)
+    //   if (existingRecord)
+    //      {
+    //     await complianceService.updateComplianceData(
+    //       newFormData,
+    //       dispatch,
+    //       user?.merchants[0]?.merchantCode
+    //     );
+    //     console.log("Updated compliance record 3:");
+    //   } else {
+    //     await complianceService.complianceUpload(
+    //       user?.merchants[0]?.merchantCode,
+    //       newFormData,
+    //       dispatch
+    //     );
+    //     console.log("Uploaded compliance record 3:");
+    //   }
+
+    //   handleNextStep(formData);
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   return (

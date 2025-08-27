@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
@@ -17,7 +18,6 @@ const Compliance = () => {
   const { auth } = useAuth();
 
   const [isOpen, setIsOpen] = useState(true);
-
   const [businessRepresentative, setBusinessRepresentative] = useState([]);
 
   const complianceState = useSelector((state) => state.compliance);
@@ -30,6 +30,7 @@ const Compliance = () => {
   const [editOwnerIndex, setEditOwnerIndex] = useState(null);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const user = auth?.data.merchants[0];
 
@@ -43,7 +44,7 @@ const Compliance = () => {
     setAppTitle("Compliance");
   }, []);
 
-  const handleNextStep = (val) => {
+  const handleNextStep = () => {
     dispatch(complianceStep(step + 1));
   };
 
@@ -56,8 +57,6 @@ const Compliance = () => {
     setEditOwnerIndex(index);
     dispatch(complianceStep(3));
   };
-
-  const navigate = useNavigate();
 
   const handleCloseButton = () => {
     setIsOpen(false);
@@ -80,23 +79,57 @@ const Compliance = () => {
     handleNextStep();
   };
 
-  const handleSaveStep = async (formData) => {
+  // const handleSaveStep = async (formData) => {
+  //   try {
+  //     if (step > 0) {
+  //       await complianceService.updateComplianceData(
+  //         formData,
+  //         dispatch,
+  //         user?.merchantCode
+  //       );
+  //     } else {
+  //       await complianceService.complianceUpload(
+  //         formData,
+  //         dispatch,
+  //         user?.merchantCode
+  //       );
+  //     }
+
+  //     handleNextStep();
+  //   } catch (error) {
+  //     console.error("Error saving compliance data:", error);
+  //   }
+  // };
+  // const handleSaveStep = async (formData) => {
+    const handleSaveStep = async (formData, isFormFive = false) => {
     try {
       if (step > 0) {
         await complianceService.updateComplianceData(
+          formData,
           dispatch,
-          user?.merchantCode,
-          formData
+          user?.merchantCode
         );
       } else {
         await complianceService.complianceUpload(
-          dispatch,
           user?.merchantCode,
-          formData
+          formData,
+          dispatch
         );
       }
-
-      handleNextStep();
+      // handleNextStep();
+      if (isFormFive) {
+        toast.success("Compliance data saved successfully!");
+      } else {
+        handleNextStep();
+      }
+      // if (isFormFive) {
+      //   toast.success("Compliance process completed successfully!");
+      //   setTimeout(() => {
+      //     navigate("/");
+      //   }, 2000);
+      // } else {
+      //   handleNextStep();
+      // }
     } catch (error) {
       console.error("Error saving compliance data:", error);
     }
@@ -161,6 +194,7 @@ const Compliance = () => {
               handleNextStep={handleNextStep}
               handlePrevStep={handlePrevStep}
               handleSave={businessRepresentativeData}
+              handleSaveStep={handleSaveStep}
               editOwnerIndex={editOwnerIndex}
               editRepresentativeData={
                 editOwnerIndex !== null
@@ -174,6 +208,7 @@ const Compliance = () => {
               handlePrevStep={handlePrevStep}
               representativeDatas={businessRepresentative || []}
               handleEditRepresentative={handleEditRepresentative}
+              handleSaveStep={handleSaveStep}
             />
           )}
         </div>

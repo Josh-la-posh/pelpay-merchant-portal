@@ -8,19 +8,19 @@ import { useDispatch, useSelector } from "react-redux";
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "@/services/hooks/useFormAxios";
 
-
 const FormFour = ({
   handlePrevStep,
   handleNextStep,
   handleSave,
+  handleSaveStep,
   editRepresentativeData,
 }) => {
   const { auth } = useAuth();
   const user = auth?.data;
 
   const complianceState = useSelector((state) => state.compliance);
-  const { complianceData, complianceLoading, complianceSuccess } =
-    complianceState;
+  const { complianceData } = complianceState;
+
   const formDataAxiosPrivate = useAxiosPrivate();
   const complianceService = new ComplianceService(formDataAxiosPrivate);
 
@@ -44,8 +44,11 @@ const FormFour = ({
     firstName: "",
     lastName: "",
     dob: "",
-    nationality: "NGA",
-    roleInBusiness: "",
+    nationality: "Nigerian",
+    role: "",
+    address: "",
+    occupation: "",
+    mobile: "",
     percentOfBusiness: "",
     bvn: "",
     verificationType: "",
@@ -53,8 +56,6 @@ const FormFour = ({
   });
 
   console.log("Form Data 4: ", formData);
-
-
 
   useEffect(() => {
     if (editRepresentativeData) {
@@ -64,8 +65,11 @@ const FormFour = ({
         firstName: "",
         lastName: "",
         dob: "",
-        nationality: "NGA",
-        roleInBusiness: "",
+        nationality: "Nigerian",
+        role: "",
+        address: "",
+        occupation: "",
+        mobile: "",
         percentOfBusiness: "",
         bvn: "",
         verificationType: "",
@@ -74,17 +78,18 @@ const FormFour = ({
     }
   }, [editRepresentativeData]);
 
-  
-
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
+  };
+
+  const handleFileChange = (field, files) => {
+    setFormData({ ...formData, [field]: files[0] });
   };
 
   const existingRecord = Array.isArray(initialData)
     ? initialData[0]
     : initialData || {};
   console.log("Existing Record 4: ", existingRecord);
-
 
   const handleSubmit = async () => {
     const newErrors = ["", "", "", "", "", "", "", ""];
@@ -94,47 +99,70 @@ const FormFour = ({
     if (formData.lastName.length < 1)
       newErrors[1] = "Last name should be more than 1 characters";
     if (!formData.dob) newErrors[2] = "Date of birth should not be empty";
-    if (!formData.roleInBusiness) newErrors[3] = "Select role";
+    if (!formData.role) newErrors[3] = "Select role";
     if (!formData.percentOfBusiness) newErrors[4] = "Enter business percentage";
-    if (formData.bvn.length <2) newErrors[5] = "Enter a valid BVN";
+    if (formData.bvn.length < 2) newErrors[5] = "Enter a valid BVN";
     if (!formData.verificationType) newErrors[6] = "Select ID";
-    if (
-      formData.verificationNumber.length < 2 ||
-      formData.verificationNumber.length > 7
-    )
-      newErrors[7] = `${formData.verificationType} should be more than 10 characters`;
+    // if (
+    //   formData.verificationNumber.length < 2 ||
+    //   formData.verificationNumber.length > 7
+    // )
+    //   newErrors[7] = `${formData.verificationType} should be more than 10 characters`;
     setErr(newErrors);
 
     if (!newErrors.every((e) => e === "")) return;
 
+    // try {
+    //   const existingOwners = Array.isArray(complianceData?.owners)
+    //     ? complianceData.owners
+    //     : [];
+
+    //   let updatedOwners;
+
+    //   if (formData.id) {
+    //     updatedOwners = existingOwners.map((owner) =>
+    //       owner.id === formData.id ? { ...owner, ...formData } : owner
+    //     );
+    //   } else {
+    //     updatedOwners = [...existingOwners, { ...formData, id: Date.now() }];
+    //   }
+
+    //   const payload = { ...complianceData, owners: updatedOwners };
+
+    //   await complianceService.updateComplianceData(
+    //     payload,
+    //     dispatch,
+    //     user?.merchants[0]?.merchantCode
+    //   );
+
+    //   console.log("Updated owners array:", updatedOwners);
+    //   handleSave(formData);
+    //   // handleNextStep();
+    // } catch (error) {
+    //   console.error("Error saving owner:", error);
+    // }
     try {
-      const existingOwners = Array.isArray(complianceData?.owners)
-        ? complianceData.owners
-        : [];
+      const newFormData = new FormData();
+      const representativeData = {
+        ...formData,
+        id:
+          formData.id ||
+          `rep_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      };
 
-      let updatedOwners;
+      Object.keys(representativeData).forEach((key) => {
+        if (representativeData[key] && key !== "owners") {
+          newFormData.append(key, representativeData[key]);
+        }
+      });
 
-      if (formData.id) {
-        
-        updatedOwners = existingOwners.map((owner) =>
-          owner.id === formData.id ? { ...owner, ...formData } : owner
-        );
-      } else {
-        
-        updatedOwners = [...existingOwners, { ...formData, id: Date.now() }];
+      if (formData.owners) {
+        newFormData.append("ownerDocument", formData.owners);
       }
 
-      const payload = { ...complianceData, owners: updatedOwners };
+      await handleSaveStep(newFormData);
 
-      await complianceService.updateComplianceData(
-        payload,
-        dispatch,
-        user?.merchants[0]?.merchantCode
-      );
-
-      console.log("Updated owners array:", updatedOwners);
-handleSave(formData);
-      // handleNextStep();
+      handleSave(formData);
     } catch (error) {
       console.error("Error saving owner:", error);
     }
@@ -174,7 +202,7 @@ handleSave(formData);
       <ComplianceInputSelect
         label="Nationality"
         options={[
-          { value: "NGA", label: "Nigeria" },
+          { value: "Nigerian", label: "Nigerian" },
           { value: "GHA", label: "Ghana" },
         ]}
         value={formData.nationality}
@@ -190,10 +218,31 @@ handleSave(formData);
           { value: "Director", label: "Director" },
           { value: "Shareholder", label: "Shareholder" },
         ]}
-        value={formData.roleInBusiness}
-        onChange={(e) => handleChange("roleInBusiness", e.target.value)}
+        value={formData.role}
+        onChange={(e) => handleChange("role", e.target.value)}
+      />
+      <ComplianceInput
+        label="Address"
+        type="text"
+        errMsg={err[2]}
+        value={formData.address}
+        onChange={(e) => handleChange("address", e.target.value)}
       />
 
+      <ComplianceInput
+        label="Occupation"
+        type="text"
+        errMsg={err[2]}
+        value={formData.occupation}
+        onChange={(e) => handleChange("occupation", e.target.value)}
+      />
+      <ComplianceInput
+        label="Mobile"
+        type="text"
+        errMsg={err[2]}
+        value={formData.mobile}
+        onChange={(e) => handleChange("mobile", e.target.value)}
+      />
       <ComplianceInput
         label="What percentage of the business does this representative own?"
         type="text"
@@ -217,7 +266,7 @@ handleSave(formData);
         errMsg={err[6]}
         options={[
           { value: "", label: "Select a document" },
-          { value: "NIN", label: "National Identification Number (NIN)" },
+          { value: "nin", label: "National Identification Number (NIN)" },
           { value: "PASSPORT", label: "International Passport" },
           { value: "DRIVERS_LICENSE", label: "Driver's License" },
         ]}
@@ -228,7 +277,7 @@ handleSave(formData);
       {formData.verificationType && (
         <ComplianceInput
           label={
-            formData.verificationType === "NIN"
+            formData.verificationType === "nin"
               ? "Enter NIN Number"
               : formData.verificationType === "PASSPORT"
               ? "Enter Passport Number"
@@ -262,7 +311,7 @@ handleSave(formData);
             !formData.firstName ||
             !formData.lastName ||
             !formData.dob ||
-            !formData.roleInBusiness ||
+            !formData.role ||
             !formData.percentOfBusiness ||
             !formData.bvn ||
             !formData.verificationType ||
@@ -274,7 +323,7 @@ handleSave(formData);
             !formData.firstName ||
             !formData.lastName ||
             !formData.dob ||
-            !formData.roleInBusiness ||
+            !formData.role ||
             !formData.percentOfBusiness ||
             !formData.bvn ||
             !formData.verificationType ||

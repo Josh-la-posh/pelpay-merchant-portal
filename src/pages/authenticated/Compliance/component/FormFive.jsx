@@ -9,6 +9,7 @@ const FormFive = ({
   handlePrevStep,
   representativeDatas = [],
   handleEditRepresentative,
+  handleSaveStep
 }) => {
   const { auth } = useAuth();
   const user = auth?.data;
@@ -26,32 +27,49 @@ const FormFive = ({
   const existingRecord = Array.isArray(initialData) ? initialData[0] : initialData || {};
 
 const handleSubmit = async () => {
-  try {
+  // try {
     
-    const payload = {
-      owners: representativeDatas,  
-    };
+  //   const payload = {
+  //     owners: representativeDatas,  
+  //   };
 
-    let savedRecord;
-    if (existingRecord && Object.keys(existingRecord).length > 0) {
-      savedRecord = await complianceService.updateComplianceData(
-        payload, // 👈 pass reps here
-        dispatch,
-        user?.merchants[0]?.merchantCode
-      );
-      console.log("Updated compliance record 5:", savedRecord);
-    } else {
-      savedRecord = await complianceService.complianceUpload(
-        payload, 
-        dispatch,
-        user?.merchants[0]?.merchantCode
-      );
-      console.log("Created new compliance record 5:", savedRecord);
+  //   let savedRecord;
+  //   if (existingRecord && Object.keys(existingRecord).length > 0) {
+  //     savedRecord = await complianceService.updateComplianceData(
+  //       payload, // 👈 pass reps here
+  //       dispatch,
+  //       user?.merchants[0]?.merchantCode
+  //     );
+  //     console.log("Updated compliance record 5:", savedRecord);
+  //   } else {
+  //     savedRecord = await complianceService.complianceUpload(
+  //       payload, 
+  //       dispatch,
+  //       user?.merchants[0]?.merchantCode
+  //     );
+  //     console.log("Created new compliance record 5:", savedRecord);
       
+  //   }
+  // } catch (error) {
+  //   console.error("Error saving compliance reps:", error);
+  // }
+    try {
+      // Create FormData for final submission
+      const finalFormData = new FormData();
+      
+      // Add all representative data as JSON string
+      finalFormData.append('owners', JSON.stringify(representativeDatas));
+      
+      // Add any additional final form data if needed
+      finalFormData.append('completionStatus', 'completed');
+      finalFormData.append('submissionDate', new Date().toISOString());
+
+      // Use parent's handleSaveStep with isFormFive = true for final processing
+      await handleSaveStep(finalFormData, true);
+
+    } catch (error) {
+      console.error("Error saving compliance reps:", error);
     }
-  } catch (error) {
-    console.error("Error saving compliance reps:", error);
-  }
 };
 
 
@@ -88,7 +106,7 @@ const handleSubmit = async () => {
 
           {rep.role ? (
             <div className="col-span-3 md:col-span-2 ">
-              <p className="text-[11px] text-gray-600">{rep.roleInBusiness}</p>
+              <p className="text-[11px] text-gray-600">{rep.role}</p>
             </div>
           ) : (
             <div className="col-span-4 md:col-span-3">
