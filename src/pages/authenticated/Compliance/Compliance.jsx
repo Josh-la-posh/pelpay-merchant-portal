@@ -16,22 +16,23 @@ import { useNavigate } from "react-router-dom";
 const Compliance = () => {
   const { setAppTitle } = useTitle();
   const { auth } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const [businessRepresentative, setBusinessRepresentative] = useState([]);
-  const { complianceData, complianceLoading, complianceSuccess, step } = useSelector((state) => state.compliance);
+  const { complianceData, complianceLoading, complianceSuccess, step } =
+    useSelector((state) => state.compliance);
   const complianceService = new ComplianceService(axiosPrivate);
   const [editOwnerIndex, setEditOwnerIndex] = useState(null);
   const dispatch = useDispatch();
   const user = auth?.data.merchants[0];
-  
+
   useEffect(() => {
     setAppTitle("Compliance");
   }, []);
-  
+
   useEffect(() => {
     if (complianceData.progress === 5) {
-      navigate('/');
+      navigate("/");
     }
   }, [complianceData]);
 
@@ -74,8 +75,6 @@ const Compliance = () => {
         representativeData,
       ]);
     }
-
-    dispatch(complianceStep(4));
   };
 
   useEffect(() => {
@@ -87,12 +86,12 @@ const Compliance = () => {
     loadData();
   }, [dispatch]);
 
-  if (complianceLoading)
-    return (
-      <div className="h-[40vh] w-full">
-        <Spinner />
-      </div>
-    );
+  // if (complianceLoading)
+  //   return (
+  //     <div className="h-[40vh] w-full">
+  //       <Spinner />
+  //     </div>
+  //   );
   return (
     <div className="">
       <div className="flex border-0 border-b-1 mb-4 p-1">
@@ -124,7 +123,6 @@ const Compliance = () => {
               handleNextStep={handleNextStep}
               handlePrevStep={handlePrevStep}
               businessRepresentativeData={businessRepresentativeData}
-              editOwnerIndex={editOwnerIndex}
               editRepresentativeData={
                 editOwnerIndex !== null
                   ? businessRepresentative[editOwnerIndex]
@@ -135,7 +133,9 @@ const Compliance = () => {
           {step === 4 && (
             <FormFive
               handlePrevStep={handlePrevStep}
+              handleNextStep={handleNextStep}
               representativeDatas={businessRepresentative || []}
+              setBusinessRepresentative={setBusinessRepresentative}
               handleEditRepresentative={handleEditRepresentative}
             />
           )}
