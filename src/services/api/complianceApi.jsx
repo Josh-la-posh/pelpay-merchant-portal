@@ -53,8 +53,12 @@ class ComplianceService {
 
       const data = response.data?.responseData;
       console.log("Compliance data fetched successfully22:", data);
+
+      let progress = 0;
+
+      if (data?.progress && data.progress > 0) progress = data?.progress;
       
-      dispatch(complianceStep(data?.progress || 0));
+      dispatch(complianceStep(progress));
 
      
       dispatch(complianceSuccess(data));
@@ -70,7 +74,7 @@ class ComplianceService {
     console.log("Fetch compliance data process completed.");
   }
 
-  async updateComplianceData(formData, dispatch, merchantCode) {
+  async updateComplianceData(merchantCode, formData, dispatch) {
     dispatch(complianceStart());
     try {
       const response = await this.axiosPrivate.put(

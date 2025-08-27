@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import useAuth from "@/services/hooks/useAuth";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceInput from "../../../../components/ComplianceInput";
 import ComplianceTextArea from "../../../../components/ComplianceTextArea";
 import ComplianceInputSelect from "../../../../components/ComplianceInputSelect";
-import { useDispatch, useSelector } from "react-redux";
-import ComplianceService from "@/services/api/complianceApi";
-import useAxiosPrivate from "@/services/hooks/useFormAxios";
+import { useSelector } from "react-redux";
 
 const FormOne = ({ handleNextStep }) => {
   const { auth } = useAuth();
   const user = auth?.data;
 
-  const complianceState = useSelector((state) => state.compliance);
-  const { complianceData, complianceLoading, complianceSuccess, step } =
-    complianceState;
-
-  const formDataAxiosPrivate = useAxiosPrivate();
-  const complianceService = new ComplianceService(formDataAxiosPrivate);
-  const dispatch = useDispatch();
+  const { complianceData, complianceLoading } = useSelector((state) => state.compliance);
 
   const initialData = complianceData?.businessInfo;
-  // console.log("Initial Data 1: ", initialData);
-  // console.log("Initial Data 1: ", complianceData?.financialInfo);
 
   const [err, setErr] = useState(["", "", "", ""]);
   const [formData, setFormData] = useState({
@@ -32,6 +22,7 @@ const FormOne = ({ handleNextStep }) => {
     ownershipType: initialData?.ownershipType || "limited_liability_companyl",
     projectedSalesVolume: initialData?.projectedSalesVolume || "",
     website: initialData?.website || "",
+    progress: complianceData?.progress || 0
   });
   const handleChange = (field, value) => {
     setFormData((prev) => ({
@@ -40,15 +31,26 @@ const FormOne = ({ handleNextStep }) => {
     }));
   };
 
-  const existingRecord = Array.isArray(initialData)
-    ? initialData[0]
-    : initialData || {};
-
-  console.log("Existing Record: ", existingRecord);
+  useEffect(() => {
+    if (complianceData) {
+      const initialData = complianceData?.businessInfo;
+      
+      if (initialData != null) {
+        setFormData({
+          legalBusinessName: initialData.legalBusinessName || "",
+          tradingName: initialData.tradingName || "",
+          businessDescription: initialData.businessDescription || "",
+          ownershipType: initialData.ownershipType || "individual",
+          projectedSalesVolume: initialData.projectedSalesVolume || "",
+          website: initialData.website || "",
+          progress: complianceData?.progress || 0
+        });
+      }
+    }
+  }, [complianceData]);
 
   const handleSubmit = async () => {
     const newErrors = ["", "", "", ""];
-
     if (formData.legalBusinessName.length < 3)
       newErrors[0] = "Business name must be greater than 2 characters";
     if (formData.tradingName.length < 3)
@@ -62,6 +64,7 @@ const FormOne = ({ handleNextStep }) => {
 
     if (!newErrors.every((e) => e === "")) return;
 
+    
     const newFormData = new FormData();
     if (formData.legalBusinessName)
       newFormData.append("legalBusinessName", formData.legalBusinessName);
@@ -74,51 +77,11 @@ const FormOne = ({ handleNextStep }) => {
     if (formData.ownershipType)
       newFormData.append("ownershipType", formData.ownershipType);
     if (formData.website) newFormData.append("website", formData.website);
+    newFormData.append("progress", 1);
+    if (formData.progress === 0) newFormData.append("progress", 1)
 
-    try {
-      if (existingRecord || step > 0) {
-        console.log(
-          "Updating compliance with existing record:",
-          existingRecord
-        );
-
-        await complianceService.updateComplianceData(
-          newFormData,
-          dispatch,
-          user?.merchants[0]?.merchantCode
-        );
-        console.log("Compliance record updated successfully!");
-      } else {
-        await complianceService.complianceUpload(
-          user?.merchants[0]?.merchantCode,
-          newFormData,
-          dispatch
-        );
-
-        console.log("Compliance record uploaded successfully!");
-      }
-
-      handleNextStep(formData);
-    } catch (error) {
-      console.error(error);
-    }
+    handleNextStep(formData);
   };
-
-  useEffect(() => {
-    if (initialData) {
-      const record = Array.isArray(initialData) ? initialData[0] : initialData;
-      if (record) {
-        setFormData({
-          legalBusinessName: record.legalBusinessName || "",
-          tradingName: record.tradingName || "",
-          businessDescription: record.businessDescription || "",
-          ownershipType: record.ownershipType || "individual",
-          projectedSalesVolume: record.projectedSalesVolume || "",
-          website: record.website || "",
-        });
-      }
-    }
-  }, []);
 
   return (
     <div className="max-w-[450px]">
@@ -187,7 +150,8 @@ const FormOne = ({ handleNextStep }) => {
           !formData.ownershipType ||
           !formData.businessDescription ||
           !formData.projectedSalesVolume ||
-          !formData.tradingName
+          !formData.tradingName ||
+          complianceLoading
             ? "bg-priColor/35"
             : "bg-priColor"
         } w-full p-2 text-white text-[13px] rounded-md mt-3`}
@@ -196,10 +160,11 @@ const FormOne = ({ handleNextStep }) => {
           !formData.ownershipType ||
           !formData.businessDescription ||
           !formData.projectedSalesVolume ||
-          !formData.tradingName
+          !formData.tradingName ||
+          complianceLoading
         }
       >
-        Save and continue
+        {complianceLoading ? "Saving" : "Save and continue"}
       </button>
     </div>
   );

@@ -1,45 +1,23 @@
-import React, { useState, useEffect } from "react";
-import useAuth from "@/services/hooks/useAuth";
+import { useState, useEffect } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceInput from "../../../../components/ComplianceInput";
 import ComplianceInputSelect from "../../../../components/ComplianceInputSelect";
 import ComplianceUploader from "../../../../components/ComplianceUploader";
-import { useDispatch, useSelector } from "react-redux";
-import ComplianceService from "@/services/api/complianceApi";
-import useAxiosPrivate from "@/services/hooks/useFormAxios";
+import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 
 const FormFour = ({
   handlePrevStep,
   handleNextStep,
-  handleSave,
+  businessRepresentativeData,
   editRepresentativeData,
 }) => {
-  const { auth } = useAuth();
-  const user = auth?.data;
+  const { complianceData, complianceLoading, complianceSuccess } = useSelector((state) => state.compliance);
 
-  const complianceState = useSelector((state) => state.compliance);
-  const { complianceData, complianceLoading, complianceSuccess } =
-    complianceState;
-  const formDataAxiosPrivate = useAxiosPrivate();
-  const complianceService = new ComplianceService(formDataAxiosPrivate);
-
-  const dispatch = useDispatch();
   const [err, setErr] = useState(["", "", "", "", "", "", "", ""]);
   const initialData = complianceData?.owners;
-  console.log("Initial Data 4: ", initialData);
 
-  // const [formData, setFormData] = useState({
-  //   firstName: initialData?.firstName || "",
-  //   lastName: initialData?.lastName || "",
-  //   dob: initialData?.dob || "",
-  //   nationality: initialData?.nationality || "NGA",
-  //   roleInBusiness: initialData?.roleInBusiness || "",
-  //   percentOfBusiness: initialData?.percentOfBusiness || "",
-  //   bvn: initialData?.bvn || "",
-  //   verificationType: initialData?.verificationType || "",
-  //   verificationNumber: initialData?.verificationNumber || "",
-  // });
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -51,10 +29,6 @@ const FormFour = ({
     verificationType: "",
     verificationNumber: "",
   });
-
-  console.log("Form Data 4: ", formData);
-
-
 
   useEffect(() => {
     if (editRepresentativeData) {
@@ -72,19 +46,11 @@ const FormFour = ({
         verificationNumber: "",
       });
     }
-  }, [editRepresentativeData]);
-
-  
+  }, [editRepresentativeData]);  
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
-
-  const existingRecord = Array.isArray(initialData)
-    ? initialData[0]
-    : initialData || {};
-  console.log("Existing Record 4: ", existingRecord);
-
 
   const handleSubmit = async () => {
     const newErrors = ["", "", "", "", "", "", "", ""];
@@ -114,27 +80,26 @@ const FormFour = ({
 
       let updatedOwners;
 
-      if (formData.id) {
-        
+       const ownerPayload = {
+          ...formData,
+          role: formData.roleInBusiness,
+          id: formData.id || uuidv4(),
+        };
+
+      if (formData.id) {        
         updatedOwners = existingOwners.map((owner) =>
           owner.id === formData.id ? { ...owner, ...formData } : owner
         );
-      } else {
-        
-        updatedOwners = [...existingOwners, { ...formData, id: Date.now() }];
+      } else {        
+        updatedOwners = [...existingOwners, ownerPayload];
       }
 
       const payload = { ...complianceData, owners: updatedOwners };
 
-      await complianceService.updateComplianceData(
-        payload,
-        dispatch,
-        user?.merchants[0]?.merchantCode
-      );
+      handleNextStep(payload);
+      businessRepresentativeData(formData)
 
       console.log("Updated owners array:", updatedOwners);
-handleSave(formData);
-      // handleNextStep();
     } catch (error) {
       console.error("Error saving owner:", error);
     }

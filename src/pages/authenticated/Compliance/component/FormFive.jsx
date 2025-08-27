@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import useAuth from "@/services/hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,7 +35,7 @@ const handleSubmit = async () => {
     let savedRecord;
     if (existingRecord && Object.keys(existingRecord).length > 0) {
       savedRecord = await complianceService.updateComplianceData(
-        payload, // 👈 pass reps here
+        payload,
         dispatch,
         user?.merchants[0]?.merchantCode
       );
@@ -54,19 +54,11 @@ const handleSubmit = async () => {
   }
 };
 
-
-
   useEffect(() => {
     if(initialData){
       console.log("Initial Data 5: ", initialData);
     }
   })
-
-  //   useEffect(() => {
-  //   if (user?.merchants[0]?.merchantCode) {
-  //     complianceService.fetchComplianceData(dispatch, user.merchants[0].merchantCode);
-  //   }
-  // }, [user?.merchants, dispatch]);
 
   return (
     <div className="max-w-[450px] ">

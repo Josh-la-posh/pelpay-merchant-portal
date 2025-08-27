@@ -7,44 +7,49 @@ import FormTwo from "./component/FormTwo";
 import FormThree from "./component/FormThree";
 import FormFour from "./component/FormFour";
 import FormFive from "./component/FormFive";
-import { useNavigate } from "react-router-dom";
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "../../../services/hooks/useFormAxios";
 import Spinner from "@/components/Spinner";
 import { complianceStep } from "../../../redux/slices/complianceSlice";
+import { useNavigate } from "react-router-dom";
+
 const Compliance = () => {
   const { setAppTitle } = useTitle();
   const { auth } = useAuth();
-
-  const [isOpen, setIsOpen] = useState(true);
-
-  const [businessRepresentative, setBusinessRepresentative] = useState([]);
-
-  const complianceState = useSelector((state) => state.compliance);
-  const { complianceData, complianceLoading, complianceSuccess, step } =
-    complianceState;
-
+  const navigate = useNavigate()
   const axiosPrivate = useAxiosPrivate();
+  const [businessRepresentative, setBusinessRepresentative] = useState([]);
+  const { complianceData, complianceLoading, complianceSuccess, step } = useSelector((state) => state.compliance);
   const complianceService = new ComplianceService(axiosPrivate);
-
   const [editOwnerIndex, setEditOwnerIndex] = useState(null);
-
   const dispatch = useDispatch();
-
   const user = auth?.data.merchants[0];
-
-  console.log("Compliance Step: ", step);
-
-  useEffect(() => {
-    console.log("Compliance data fetched successfully:", complianceData);
-  }, [complianceSuccess]);
-
+  
   useEffect(() => {
     setAppTitle("Compliance");
   }, []);
+  
+  useEffect(() => {
+    if (complianceData.progress === 5) {
+      navigate('/');
+    }
+  }, [complianceData]);
 
-  const handleNextStep = (val) => {
-    dispatch(complianceStep(step + 1));
+  const handleNextStep = async (val) => {
+    const progress = complianceData.progress;
+    if (progress > 0) {
+      await complianceService.updateComplianceData(
+        user?.merchantCode,
+        val,
+        dispatch
+      );
+    } else {
+      await complianceService.complianceUpload(
+        user?.merchantCode,
+        val,
+        dispatch
+      );
+    }
   };
 
   const handlePrevStep = () => {
@@ -55,13 +60,6 @@ const Compliance = () => {
   const handleEditRepresentative = (index) => {
     setEditOwnerIndex(index);
     dispatch(complianceStep(3));
-  };
-
-  const navigate = useNavigate();
-
-  const handleCloseButton = () => {
-    setIsOpen(false);
-    navigate("/");
   };
 
   const businessRepresentativeData = (representativeData) => {
@@ -77,29 +75,7 @@ const Compliance = () => {
       ]);
     }
 
-    handleNextStep();
-  };
-
-  const handleSaveStep = async (formData) => {
-    try {
-      if (step > 0) {
-        await complianceService.updateComplianceData(
-          dispatch,
-          user?.merchantCode,
-          formData
-        );
-      } else {
-        await complianceService.complianceUpload(
-          dispatch,
-          user?.merchantCode,
-          formData
-        );
-      }
-
-      handleNextStep();
-    } catch (error) {
-      console.error("Error saving compliance data:", error);
-    }
+    dispatch(complianceStep(4));
   };
 
   useEffect(() => {
@@ -119,19 +95,8 @@ const Compliance = () => {
     );
   return (
     <div className="">
-      <div className="flex border-0 border-b-1  justify-between items-center mb-4 p-1">
-        <div>
-          <h3 className="text-[18px] font-bold ">Activate your account</h3>
-        </div>
-
-        <div>
-          <button
-            className="bg-gray-200 w-full py-3 px-5 text-black text-[13px] rounded-md"
-            onClick={handleCloseButton}
-          >
-            Close
-          </button>
-        </div>
+      <div className="flex border-0 border-b-1 mb-4 p-1">
+        <h3 className="text-[18px] font-bold ">Activate your account</h3>
       </div>
       <div className="p-2 m--0 relative ">
         <div className="absolute top-[-1px] sm:top-4 left-[70%] md:left-0   bg-amber-300 px-2 py-1 rounded-md ">
@@ -152,15 +117,13 @@ const Compliance = () => {
             <FormThree
               handleNextStep={handleNextStep}
               handlePrevStep={handlePrevStep}
-              handleSaveStep={handleSaveStep}
-              merchantCode={user?.merchantCode}
             />
           )}
           {step === 3 && (
             <FormFour
               handleNextStep={handleNextStep}
               handlePrevStep={handlePrevStep}
-              handleSave={businessRepresentativeData}
+              businessRepresentativeData={businessRepresentativeData}
               editOwnerIndex={editOwnerIndex}
               editRepresentativeData={
                 editOwnerIndex !== null

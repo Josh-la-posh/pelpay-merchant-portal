@@ -32,7 +32,7 @@ class AuthService {
 
       toast.success("Login successful");
 
-      const from = location.state?.from?.pathname || "/";
+      const from = location.state?.from?.pathname || "/compliance";
       console.log("Navigating to the previous page or home: ", from);
       navigate(from, { replace: true });
     } catch (err) {

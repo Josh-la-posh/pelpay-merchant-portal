@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '@/services/hooks/useAuth';
 import AuthService from '@/services/api/authApi';
 import { Eye, EyeOff, Lock } from 'lucide-react';
-import { loginFailure } from '../../../redux/slices/authSlice';
 import UpdateInputField from '../../../components/UpdateInputField';
 import Button from '../../../components/ui/button';
 

@@ -1,73 +1,84 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
 import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck  } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
+import { useSelector } from 'react-redux';
 
 const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
-    const { appTitle } = useTitle();
-    const [tooltipVisible, setTooltipVisible] = useState(null);
-
-    const handleMouseEnter = (id) => {
-        setTooltipVisible(id); // Show tooltip on hover
-    };
-
-    const handleMouseLeave = () => {
-        setTooltipVisible(null);
-    };
-
-    const sidebarItems = [
-        {
+    const [sidebarItems, setSideBarItems] = useState([
+         {
             id: 1,
+            icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />,
+            title: 'Compliance',
+            url: '/compliance',
+            openSidebar: true
+        },
+        {
+            id: 2,
             icon: <LayoutDashboard size={isSidebarTextVisible ? '18' : '22'} />,
             title: 'Dashboard',
             url: '/',
             openSidebar: true
         },
         {
-            id: 2,
+            id: 3,
             icon: <Warehouse size={isSidebarTextVisible ? '18' : '22'} />,
             title: 'Merchant',
             url: '/merchants/profile',
             openSidebar: false
         },
         {
-            id: 3,
+            id: 4,
             icon: <Handshake size={isSidebarTextVisible ? '18' : '22'} />,
             title: 'Settlements',
             url: '/settlement/all',
             openSidebar: true
         },
         {
-            id: 4,
+            id: 5,
             icon: <ArrowLeftRight size={isSidebarTextVisible ? '18' : '22'} />,
             title: 'Transaction',
             url: '/transactions',
             openSidebar: true
         },
         {
-            id: 5,
+            id: 6,
             icon: <Settings size={isSidebarTextVisible ? '18' : '22'} />,
             title: 'Settings',
             url: '/settings/profile',
             openSidebar: false
         },
         {
-            id: 6,
+            id: 7,
             icon: <Headset size={isSidebarTextVisible ? '18' : '22'} />,
             title: 'Help Center',
             url: '/help-center',
             openSidebar: true
         },
-         {
-            id: 7,
-            icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />,
-            title: 'Compliance',
-            url: '/compliance',
-            openSidebar: true
-        },
-    ]
+    ])
+
+    const { appTitle } = useTitle();
+    const [tooltipVisible, setTooltipVisible] = useState(null);
+    const { complianceData, complianceLoading, complianceSuccess, step } = useSelector((state) => state.compliance);
+
+    const handleMouseEnter = (id) => {
+        setTooltipVisible(id);
+    };
+
+    const handleMouseLeave = () => {
+        setTooltipVisible(null);
+    };
+
+    useEffect(() => {
+        console.log(complianceData?.progress)
+    if (complianceData?.progress === 5) {
+      setSideBarItems((prevItems) =>
+        prevItems.filter((item) => item.title !== "Compliance")
+      );
+    }
+  }, [complianceData]);    
 
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
