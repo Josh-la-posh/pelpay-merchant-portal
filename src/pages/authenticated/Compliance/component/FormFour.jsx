@@ -36,7 +36,7 @@ const FormFour = ({
   });
 
   useEffect(() => {
-    console.log("Representative Data", editRepresentativeData)
+    
     if (editRepresentativeData) {
       setFormData(editRepresentativeData);
     } else {
@@ -64,7 +64,7 @@ const FormFour = ({
 
   const handleImageChange = (field, files) => {
     setFormData({ ...formData, [field]: files });
-    console.log("The files", files);
+    
   };
 
   const handleSubmit = async () => {
@@ -115,7 +115,7 @@ const FormFour = ({
 
       handleNextStep(payload);
       businessRepresentativeData(formData);
-      console.log("Updated owners array:", updatedOwners);
+      
     } catch (error) {
       console.error("Error saving owner:", error);
     }

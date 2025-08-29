@@ -20,7 +20,7 @@ const FormFive = ({
   const [newData, setNewData] = useState(representativeDatas);
   const [progressValue, SetProgressValue] = useState(4)
 
-  console.log("Compliance Data 5: ", complianceData);
+
 
   const formDataAxiosPrivate = useAxiosPrivate();
   const complianceService = new ComplianceService(formDataAxiosPrivate);
@@ -51,7 +51,7 @@ const FormFive = ({
     if (initialData !== null) {
       setNewData(initialData);
       setBusinessRepresentative(initialData)
-      console.log("Initial Data 5: ", initialData);
+      
       SetProgressValue(complianceData.progress)
       
       

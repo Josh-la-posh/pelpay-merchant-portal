@@ -23,7 +23,7 @@ class AuthService {
       );
 
       const data = response.data.responseData;
-      console.log("Login response data: ", response.data.responseData);
+   
 
       setAuth({ data, merchant: null });
       // localStorage.setItem("pelpay-merchant-auth", JSON.stringify(data));
