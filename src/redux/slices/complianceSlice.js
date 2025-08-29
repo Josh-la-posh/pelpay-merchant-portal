@@ -13,7 +13,6 @@ const complianceSlice = createSlice({
     initialState,
     reducers:{
     complianceStart: (state) => {
-
         state.complianceSuccess = null;
         state.complianceLoading = true;
         state.complianceError = null;
