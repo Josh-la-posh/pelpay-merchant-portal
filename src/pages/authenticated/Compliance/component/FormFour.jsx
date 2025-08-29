@@ -53,10 +53,8 @@ const FormFour = ({
         bvn: "",
         verificationType: "",
         verificationNumber: "",
-        progress: complianceData.progress || 4
+        progress: complianceData.progress || 3,
       });
-      console.log("Form Data", formData)
-      
     }
   }, [editRepresentativeData]);
 
@@ -85,14 +83,13 @@ const FormFour = ({
       formData.verificationNumber.length < 2 ||
       formData.verificationNumber.length > 7
     )
-    
       newErrors[7] = `${formData.verificationType} should be more than 10 characters`;
     setErr(newErrors);
     const newFormData = new FormData();
-    if (formData.progress === 3) newFormData.append("progress", 4)
+    if (formData.progress === 3) newFormData.append("progress", 4);
 
     if (!newErrors.every((e) => e === "")) return;
-   
+
     try {
       const existingOwners = Array.isArray(complianceData?.owners)
         ? complianceData.owners
@@ -272,7 +269,7 @@ const FormFour = ({
             !formData.bvn ||
             !formData.verificationType ||
             !formData.verificationNumber ||
-             complianceLoading ? "bg-priColor/35"
+            complianceLoading? "bg-priColor/35"
               : "bg-priColor"
           } w-full p-4 text-white text-[13px] rounded-md`}
           disabled={
