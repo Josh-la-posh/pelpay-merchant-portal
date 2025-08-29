@@ -19,8 +19,6 @@ const complianceSlice = createSlice({
             state.complianceError = null;
         },
         complianceSuccess: (state, action) => {
-            console.log("Compliance Success Data: ", action.payload)
-            // console.log("I am working noww")
             state.complianceLoading = false;
             state.complianceData = action.payload?.data ?? action.payload;
             state.complianceSuccess = true;
