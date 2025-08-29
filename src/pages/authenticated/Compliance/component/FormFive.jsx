@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import useAuth from "@/services/hooks/useAuth";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,9 @@ import useAxiosPrivate from "@/services/hooks/useFormAxios";
 
 const FormFive = ({
   handlePrevStep,
+  handleNextStep,
   representativeDatas = [],
+  setBusinessRepresentative,
   handleEditRepresentative,
 }) => {
   const { auth } = useAuth();
@@ -15,7 +17,10 @@ const FormFive = ({
   const complianceState = useSelector((state) => state.compliance);
   const { complianceData } = complianceState;
 
-  console.log("Compliance Data 5: ", complianceData);
+  const [newData, setNewData] = useState(representativeDatas);
+  const [progressValue, SetProgressValue] = useState(4)
+
+
 
   const formDataAxiosPrivate = useAxiosPrivate();
   const complianceService = new ComplianceService(formDataAxiosPrivate);
@@ -23,42 +28,38 @@ const FormFive = ({
 
   const initialData = complianceData?.owners;
 
-  const existingRecord = Array.isArray(initialData) ? initialData[0] : initialData || {};
 
-const handleSubmit = async () => {
-  try {
-    
-    const payload = {
-      owners: representativeDatas,  
-    };
+  const existingRecord = Array.isArray(initialData)
+    ? initialData[0]
+    : initialData || {};
 
-    let savedRecord;
-    if (existingRecord && Object.keys(existingRecord).length > 0) {
-      savedRecord = await complianceService.updateComplianceData(
-        payload,
-        dispatch,
-        user?.merchants[0]?.merchantCode
-      );
-      console.log("Updated compliance record 5:", savedRecord);
-    } else {
-      savedRecord = await complianceService.complianceUpload(
-        payload, 
-        dispatch,
-        user?.merchants[0]?.merchantCode
-      );
-      console.log("Created new compliance record 5:", savedRecord);
+  const handleSubmit = async () => {
+    try {
+      const finalFormData = new FormData();
+      finalFormData.append("owners", JSON.stringify(representativeDatas));
+      if(progressValue === 4) finalFormData.append("progress", 5)
       
+      handleNextStep(finalFormData);
+
+     
+    } catch (error) {
+      console.error("Error saving compliance reps:", error);
     }
-  } catch (error) {
-    console.error("Error saving compliance reps:", error);
-  }
-};
+  };
 
   useEffect(() => {
-    if(initialData){
-      console.log("Initial Data 5: ", initialData);
+    if (initialData !== null) {
+      setNewData(initialData);
+      setBusinessRepresentative(initialData)
+      
+      SetProgressValue(complianceData.progress)
+      
+      
     }
-  })
+    else{
+      setNewData(representativeDatas);
+    }
+  },[initialData]);
 
   return (
     <div className="max-w-[450px] ">
@@ -67,29 +68,29 @@ const handleSubmit = async () => {
         subtitle="A business representative is either an owner, director or shareholder of your business."
       />
 
-      {representativeDatas?.map((rep, index) => (
+      {newData?.map((rep, index) => (
         <div
           key={index}
-          className="grid grid-cols-12 md:grid-cols-11  border-b py-3 items-center "
+          className="grid grid-cols-7  border-b py-3 items-center "
         >
-          <div className="col-span-4">
+          <div className="col-span-2">
             <p className="text-[10px] md:text-[13px] text-gray-800">
               {rep.firstName} {rep.lastName}
             </p>
           </div>
 
           {rep.role ? (
-            <div className="col-span-3 md:col-span-2 ">
-              <p className="text-[11px] text-gray-600">{rep.roleInBusiness}</p>
+            <div className="col-span-2 ">
+              <p className="text-[11px] text-gray-600">{rep.role}</p>
             </div>
           ) : (
-            <div className="col-span-4 md:col-span-3">
+            <div className="col-span-2">
               <p className="text-[11px] text-gray-600">No role information</p>
             </div>
           )}
 
           {rep.percentOfBusiness ? (
-            <div className="col-span-3  ">
+            <div className="col-span-2  ">
               <p className=" text-[9px] md:text-[11px] text-gray-600">
                 {rep.percentOfBusiness}% of ownership
               </p>
@@ -101,7 +102,7 @@ const handleSubmit = async () => {
           <div className="col-span-1">
             <button
               className="text-blue-800 text-[11px]"
-              onClick={() => handleEditRepresentative(index, rep)}
+              onClick={() => handleEditRepresentative(index)}
             >
               Edit
             </button>
@@ -123,7 +124,10 @@ const handleSubmit = async () => {
         >
           Go back
         </button>
-        <button onClick={handleSubmit} className="bg-priColor w-full p-4 text-white text-[13px] rounded-md ">
+        <button
+          onClick={handleSubmit}
+          className="bg-priColor w-full p-4 text-white text-[13px] rounded-md "
+        >
           Save and continue
         </button>
       </div>

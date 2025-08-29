@@ -52,7 +52,7 @@ class ComplianceService {
       );
 
       const data = response.data?.responseData;
-      console.log("Compliance data fetched successfully22:", data);
+    
 
       let progress = 0;
 

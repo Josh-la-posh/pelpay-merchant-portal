@@ -11,7 +11,7 @@ class AuthService {
     this.location = location;
     this.navigate = navigate;
   }
-  baseUrl = import.meta.env.VITE_MERCHANT_BASE_URL_NEW;
+  baseUrl = import.meta.env.VITE_MERCHANT_BASE_URL;
 
   async submitLogin(email, password, setAuth, location, navigate, dispatch) {
     dispatch(loginStart());
@@ -23,7 +23,7 @@ class AuthService {
       );
 
       const data = response.data.responseData;
-      console.log("Login response data: ", response.data.responseData);
+   
 
       setAuth({ data, merchant: null });
       // localStorage.setItem("pelpay-merchant-auth", JSON.stringify(data));

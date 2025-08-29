@@ -45,6 +45,8 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
     if (formData.status_report)
       newFormData.append("status_report", formData.status_report);    
     if (formData.progress === 2) newFormData.append("progress", 3)
+       
+  
 
     handleNextStep(newFormData);
   };

@@ -6,14 +6,15 @@ import ComplianceUploader from "../../../../components/ComplianceUploader";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-
 const FormFour = ({
   handlePrevStep,
   handleNextStep,
   businessRepresentativeData,
   editRepresentativeData,
 }) => {
-  const { complianceData, complianceLoading, complianceSuccess } = useSelector((state) => state.compliance);
+  const { complianceData, complianceLoading, complianceSuccess } = useSelector(
+    (state) => state.compliance
+  );
 
   const [err, setErr] = useState(["", "", "", "", "", "", "", ""]);
   const initialData = complianceData?.owners;
@@ -22,15 +23,20 @@ const FormFour = ({
     firstName: "",
     lastName: "",
     dob: "",
-    nationality: "NGA",
-    roleInBusiness: "",
+    nationality: "Nigerian",
+    role: "",
+    address: "",
+    occupation: "",
+    mobile: "",
     percentOfBusiness: "",
     bvn: "",
     verificationType: "",
     verificationNumber: "",
+    progress: complianceData?.progress || 3
   });
 
   useEffect(() => {
+    
     if (editRepresentativeData) {
       setFormData(editRepresentativeData);
     } else {
@@ -38,18 +44,27 @@ const FormFour = ({
         firstName: "",
         lastName: "",
         dob: "",
-        nationality: "NGA",
-        roleInBusiness: "",
+        nationality: "Nigerian",
+        role: "",
+        address: "",
+        occupation: "",
+        mobile: "",
         percentOfBusiness: "",
         bvn: "",
         verificationType: "",
         verificationNumber: "",
+        progress: complianceData.progress || 3,
       });
     }
-  }, [editRepresentativeData]);  
+  }, [editRepresentativeData]);
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
+  };
+
+  const handleImageChange = (field, files) => {
+    setFormData({ ...formData, [field]: files });
+    
   };
 
   const handleSubmit = async () => {
@@ -60,9 +75,9 @@ const FormFour = ({
     if (formData.lastName.length < 1)
       newErrors[1] = "Last name should be more than 1 characters";
     if (!formData.dob) newErrors[2] = "Date of birth should not be empty";
-    if (!formData.roleInBusiness) newErrors[3] = "Select role";
+    if (!formData.role) newErrors[3] = "Select role";
     if (!formData.percentOfBusiness) newErrors[4] = "Enter business percentage";
-    if (formData.bvn.length <2) newErrors[5] = "Enter a valid BVN";
+    if (formData.bvn.length < 2) newErrors[5] = "Enter a valid BVN";
     if (!formData.verificationType) newErrors[6] = "Select ID";
     if (
       formData.verificationNumber.length < 2 ||
@@ -70,6 +85,8 @@ const FormFour = ({
     )
       newErrors[7] = `${formData.verificationType} should be more than 10 characters`;
     setErr(newErrors);
+    const newFormData = new FormData();
+    if (formData.progress === 3) newFormData.append("progress", 4);
 
     if (!newErrors.every((e) => e === "")) return;
 
@@ -80,26 +97,25 @@ const FormFour = ({
 
       let updatedOwners;
 
-       const ownerPayload = {
-          ...formData,
-          role: formData.roleInBusiness,
-          id: formData.id || uuidv4(),
-        };
+      const ownerPayload = {
+        ...formData,
+        role: formData.role,
+        id: formData.id || uuidv4(),
+      };
 
-      if (formData.id) {        
+      if (formData.id) {
         updatedOwners = existingOwners.map((owner) =>
           owner.id === formData.id ? { ...owner, ...formData } : owner
         );
-      } else {        
+      } else {
         updatedOwners = [...existingOwners, ownerPayload];
       }
 
       const payload = { ...complianceData, owners: updatedOwners };
 
       handleNextStep(payload);
-      businessRepresentativeData(formData)
-
-      console.log("Updated owners array:", updatedOwners);
+      businessRepresentativeData(formData);
+      
     } catch (error) {
       console.error("Error saving owner:", error);
     }
@@ -139,7 +155,7 @@ const FormFour = ({
       <ComplianceInputSelect
         label="Nationality"
         options={[
-          { value: "NGA", label: "Nigeria" },
+          { value: "Nigerian", label: "Nigerian" },
           { value: "GHA", label: "Ghana" },
         ]}
         value={formData.nationality}
@@ -155,8 +171,29 @@ const FormFour = ({
           { value: "Director", label: "Director" },
           { value: "Shareholder", label: "Shareholder" },
         ]}
-        value={formData.roleInBusiness}
-        onChange={(e) => handleChange("roleInBusiness", e.target.value)}
+        value={formData.role}
+        onChange={(e) => handleChange("role", e.target.value)}
+      />
+      <ComplianceInput
+        label="Occupation"
+        type="text"
+        errMsg={err[2]}
+        value={formData.occupation}
+        onChange={(e) => handleChange("occupation", e.target.value)}
+      />
+      <ComplianceInput
+        label="Mobile"
+        type="text"
+        errMsg={err[2]}
+        value={formData.mobile}
+        onChange={(e) => handleChange("mobile", e.target.value)}
+      />
+      <ComplianceInput
+        label="Address"
+        type="text"
+        errMsg={err[2]}
+        value={formData.address}
+        onChange={(e) => handleChange("address", e.target.value)}
       />
 
       <ComplianceInput
@@ -182,7 +219,7 @@ const FormFour = ({
         errMsg={err[6]}
         options={[
           { value: "", label: "Select a document" },
-          { value: "NIN", label: "National Identification Number (NIN)" },
+          { value: "nin", label: "National Identification Number (NIN)" },
           { value: "PASSPORT", label: "International Passport" },
           { value: "DRIVERS_LICENSE", label: "Driver's License" },
         ]}
@@ -193,7 +230,7 @@ const FormFour = ({
       {formData.verificationType && (
         <ComplianceInput
           label={
-            formData.verificationType === "NIN"
+            formData.verificationType === "nin"
               ? "Enter NIN Number"
               : formData.verificationType === "PASSPORT"
               ? "Enter Passport Number"
@@ -209,9 +246,9 @@ const FormFour = ({
       )}
 
       <ComplianceUploader
-        label=""
+        label="Upload image"
         value={formData.memorandum}
-        onChange={(e) => handleChange("memorandum", e.target.files)}
+        onChange={(e) => handleImageChange("memorandum", e.target.files)}
       />
 
       <div className="grid grid-cols-2 gap-4 mt-4">
@@ -227,19 +264,19 @@ const FormFour = ({
             !formData.firstName ||
             !formData.lastName ||
             !formData.dob ||
-            !formData.roleInBusiness ||
+            !formData.role ||
             !formData.percentOfBusiness ||
             !formData.bvn ||
             !formData.verificationType ||
-            !formData.verificationNumber
-              ? "bg-priColor/35"
+            !formData.verificationNumber ||
+            complianceLoading? "bg-priColor/35"
               : "bg-priColor"
           } w-full p-4 text-white text-[13px] rounded-md`}
           disabled={
             !formData.firstName ||
             !formData.lastName ||
             !formData.dob ||
-            !formData.roleInBusiness ||
+            !formData.role ||
             !formData.percentOfBusiness ||
             !formData.bvn ||
             !formData.verificationType ||
