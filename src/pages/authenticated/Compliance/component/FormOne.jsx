@@ -12,14 +12,23 @@ const FormOne = ({ handleNextStep }) => {
 
   const { complianceData, complianceLoading } = useSelector((state) => state.compliance);
 
-  const initialData = complianceData?.businessInfo;
+   const initialData = complianceData?.businessInfo;
 
   const [err, setErr] = useState(["", "", "", ""]);
+  const [oldData, setOldData] = useState({
+    legalBusinessName: initialData?.legalBusinessName || "",
+    tradingName: initialData?.tradingName || "",
+    businessDescription: initialData?.businessDescription || "",
+    ownershipType: initialData?.ownershipType || "limited_liability_company",
+    projectedSalesVolume: initialData?.projectedSalesVolume || "",
+    website: initialData?.website || "",
+    progress: complianceData?.progress || 0
+  });
   const [formData, setFormData] = useState({
     legalBusinessName: initialData?.legalBusinessName || "",
     tradingName: initialData?.tradingName || "",
     businessDescription: initialData?.businessDescription || "",
-    ownershipType: initialData?.ownershipType || "limited_liability_companyl",
+    ownershipType: initialData?.ownershipType || "limited_liability_company",
     projectedSalesVolume: initialData?.projectedSalesVolume || "",
     website: initialData?.website || "",
     progress: complianceData?.progress || 0
@@ -45,6 +54,15 @@ const FormOne = ({ handleNextStep }) => {
           website: initialData.website || "",
           progress: complianceData?.progress || 0
         });
+        setOldData({
+          legalBusinessName: initialData.legalBusinessName || "",
+          tradingName: initialData.tradingName || "",
+          businessDescription: initialData.businessDescription || "",
+          ownershipType: initialData.ownershipType || "individual",
+          projectedSalesVolume: initialData.projectedSalesVolume || "",
+          website: initialData.website || "",
+          progress: complianceData?.progress || 0
+        });
       }
     }
   }, [complianceData]);
@@ -55,8 +73,8 @@ const FormOne = ({ handleNextStep }) => {
       newErrors[0] = "Business name must be greater than 2 characters";
     if (formData.tradingName.length < 3)
       newErrors[1] = "Trading name must be greater than 2 characters";
-    if (formData.businessDescription.length < 10)
-      newErrors[2] = "Business description must be greater than 100 characters";
+    if (formData.businessDescription.length < 100)
+      newErrors[2] = "Business description must be at least 100 characters";
     if (formData.website.length < 3)
       newErrors[3] = "Website must be a valid website";
 
@@ -64,23 +82,21 @@ const FormOne = ({ handleNextStep }) => {
 
     if (!newErrors.every((e) => e === "")) return;
 
-    
+    const isEqual = Object.keys(formData).every(
+      (key) => formData[key] === oldData[key]
+    );
+  
     const newFormData = new FormData();
-    if (formData.legalBusinessName)
-      newFormData.append("legalBusinessName", formData.legalBusinessName);
-    if (formData.tradingName)
-      newFormData.append("tradingName", formData.tradingName);
-    if (formData.businessDescription)
-      newFormData.append("businessDescription", formData.businessDescription);
-    if (formData.projectedSalesVolume)
-      newFormData.append("projectedSalesVolume", formData.projectedSalesVolume);
-    if (formData.ownershipType)
-      newFormData.append("ownershipType", formData.ownershipType);
-    if (formData.website) newFormData.append("website", formData.website);
-    newFormData.append("progress", 1);
-    if (formData.progress === 0) newFormData.append("progress", 1)
 
-    handleNextStep(formData);
+    newFormData.append("legalBusinessName", formData.legalBusinessName);
+    newFormData.append("tradingName", formData.tradingName);
+    newFormData.append("businessDescription", formData.businessDescription);
+    newFormData.append("projectedSalesVolume", formData.projectedSalesVolume);
+    newFormData.append("ownershipType", formData.ownershipType);
+    newFormData.append("website", formData.website);
+    newFormData.append("progress", formData.progress)
+
+    handleNextStep(newFormData, isEqual);
   };
 
   return (

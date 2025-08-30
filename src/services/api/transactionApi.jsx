@@ -72,7 +72,6 @@ class TransactionService {
           `api/Transaction/bypayemtreference/${paymentReference}?merchantCode=${merchantCode}&env=${env}`
         );
         const data = response.data;
-        console.log('Response data is: ', data)
         dispatch(transactionSuccess(data.responseData));
         dispatch(transactionSecondSuccess(data));
       } catch (err) {

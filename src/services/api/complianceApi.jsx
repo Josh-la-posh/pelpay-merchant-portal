@@ -28,11 +28,9 @@ class ComplianceService {
     
       await this.fetchComplianceData(dispatch, merchantCode);
       toast.success("Compliance data uploaded successfully.");
-      console.log("Compliance data uploaded sucess:", data);
     } catch (err) {
       if (!err.response) {
         dispatch(complianceFailure("No response from server"));
-        console.error("Error uploading compliance data:", err);
       } else {
         dispatch(
           complianceFailure(
@@ -52,15 +50,10 @@ class ComplianceService {
       );
 
       const data = response.data?.responseData;
-    
-
       let progress = 0;
 
       if (data?.progress && data.progress > 0) progress = data?.progress;
-      
       dispatch(complianceStep(progress));
-
-     
       dispatch(complianceSuccess(data));
     } catch (err) {
       if (!err.response) {
@@ -71,7 +64,6 @@ class ComplianceService {
         );
       }
     }
-    console.log("Fetch compliance data process completed.");
   }
 
   async updateComplianceData(merchantCode, formData, dispatch) {
@@ -88,7 +80,6 @@ class ComplianceService {
       const data = response.data;
       dispatch(complianceSuccess(data));
       await this.fetchComplianceData(dispatch, merchantCode);
-      console.log("Compliance data updated successfully:", data);
       toast.success("Compliance data updated successfully.");
     } catch (err) {
       if (!err.response) {
@@ -105,7 +96,6 @@ class ComplianceService {
     try {
       const response = await this.axiosPrivate.get("api/complianceju");
       const data = response.data;
-      console.log("Compliance agreements documents fetched:", data);
       dispatch(complianceSuccess(data));
     } catch (err) {
       if (!err.response) {

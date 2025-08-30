@@ -72,7 +72,6 @@ const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
     };
 
     useEffect(() => {
-        console.log(complianceData?.progress)
     if (complianceData?.progress === 5) {
       setSideBarItems((prevItems) =>
         prevItems.filter((item) => item.title !== "Compliance")

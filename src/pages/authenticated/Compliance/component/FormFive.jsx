@@ -1,65 +1,24 @@
-import { useEffect, useState } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
-import useAuth from "@/services/hooks/useAuth";
-import { useDispatch, useSelector } from "react-redux";
-import ComplianceService from "@/services/api/complianceApi";
-import useAxiosPrivate from "@/services/hooks/useFormAxios";
+import { useSelector } from "react-redux";
 
 const FormFive = ({
   handlePrevStep,
   handleNextStep,
-  representativeDatas = [],
-  setBusinessRepresentative,
-  handleEditRepresentative,
+  handleEditRepresentative
 }) => {
-  const { auth } = useAuth();
-  const user = auth?.data;
-  const complianceState = useSelector((state) => state.compliance);
-  const { complianceData } = complianceState;
-
-  const [newData, setNewData] = useState(representativeDatas);
-  const [progressValue, SetProgressValue] = useState(4)
-
-
-
-  const formDataAxiosPrivate = useAxiosPrivate();
-  const complianceService = new ComplianceService(formDataAxiosPrivate);
-  const dispatch = useDispatch();
-
-  const initialData = complianceData?.owners;
-
-
-  const existingRecord = Array.isArray(initialData)
-    ? initialData[0]
-    : initialData || {};
+  const { businessRepresentatives } = useSelector((state) => state.compliance);
 
   const handleSubmit = async () => {
     try {
       const finalFormData = new FormData();
-      finalFormData.append("owners", JSON.stringify(representativeDatas));
-      if(progressValue === 4) finalFormData.append("progress", 5)
+      finalFormData.append("owners", JSON.stringify(businessRepresentatives));
+      finalFormData.append("progress", 5)
       
-      handleNextStep(finalFormData);
-
-     
+      handleNextStep(finalFormData, false);     
     } catch (error) {
       console.error("Error saving compliance reps:", error);
     }
   };
-
-  useEffect(() => {
-    if (initialData !== null) {
-      setNewData(initialData);
-      setBusinessRepresentative(initialData)
-      
-      SetProgressValue(complianceData.progress)
-      
-      
-    }
-    else{
-      setNewData(representativeDatas);
-    }
-  },[initialData]);
 
   return (
     <div className="max-w-[450px] ">
@@ -68,7 +27,7 @@ const FormFive = ({
         subtitle="A business representative is either an owner, director or shareholder of your business."
       />
 
-      {newData?.map((rep, index) => (
+      {businessRepresentatives?.map((rep, index) => (
         <div
           key={index}
           className="grid grid-cols-7  border-b py-3 items-center "
@@ -111,7 +70,7 @@ const FormFive = ({
       ))}
 
       <button
-        onClick={handlePrevStep}
+        onClick={() => handleEditRepresentative(null)}
         className="text-blue-600 mt-3 text-[11px]"
       >
         Add additional owners, directors or shareholders

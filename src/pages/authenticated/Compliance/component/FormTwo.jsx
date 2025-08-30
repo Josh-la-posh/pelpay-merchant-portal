@@ -8,6 +8,11 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
   const [err, setErr] = useState(["", ""]);  
 
   const initialData = complianceData;
+  const [oldData, setOldData] = useState({
+    rcNumber: initialData?.businessInfo?.rcNumber || "",
+    tin: initialData?.financialInfo?.tin || "",
+    progress: complianceData?.progress || 1
+  });
   const [formData, setFormData] = useState({
     rcNumber: initialData?.businessInfo?.rcNumber || "",
     tin: initialData?.financialInfo?.tin || "",
@@ -28,28 +33,36 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
         tin: initialData.financialInfo?.tin || "",
         progress: initialData.progress || 1
       });
+      setOldData({
+        rcNumber: initialData.businessInfo?.rcNumber || "",
+        tin: initialData.financialInfo?.tin || "",
+        progress: initialData.progress || 1
+      });
     }
   }, [initialData]);
 
 
 const handleSubmit = async () => {
     const newErrors = ["", ""];
-    if (formData.rcNumber.length < 5 || formData.rcNumber.length > 10)
+    if (formData.rcNumber.length < 10 || formData.rcNumber.length > 12)
       newErrors[0] =
         "Registration number should be between 10 and 12 characters";
     if (formData.tin.length < 10 || formData.tin.length > 12)
-      newErrors[1] =
-        "Tax Identification number should be between 10 and 12 characters";
+      newErrors[1] = "Tax Identification number should be between 10 and 12 characters";
     setErr(newErrors);
 
     if (!newErrors.every((e) => e === "")) return;
+
+    const isEqual = Object.keys(formData).every(
+      (key) => formData[key] === oldData[key]
+    );
 
     const newFormData = new FormData();
     if (formData.rcNumber) newFormData.append("rcNumber", formData.rcNumber);
     if (formData.tin) newFormData.append("tin", formData.tin);
     if (formData.progress === 1) newFormData.append("progress", 2)
     
-    handleNextStep(newFormData);
+    handleNextStep(newFormData, isEqual);
   };
 
   return (

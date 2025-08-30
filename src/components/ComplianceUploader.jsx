@@ -1,6 +1,5 @@
 
 const ComplianceUploader = ({ label, onChange, value }) => {
-  console.log('The value: ', value)
   return (
     <div className="mb-4">
       <label className="block text-[12px] text-gray-700 py-2" htmlFor={label}>

@@ -35,6 +35,7 @@ import ManagePermission from '../pages/authenticated/Settings/ManagePermission';
 import RoleAssignment from '../pages/authenticated/Settings/RoleAssignment';
 import MerchantLayout from '../layouts/MerchantLayout';
 import Compliance from '../pages/authenticated/Compliance/Compliance';
+import SuccessPage from '../pages/authenticated/SuccessPage';
 
 const RoutesSystem = () => {
   return (
@@ -112,6 +113,7 @@ const RoutesSystem = () => {
           </Route> */}
 
         </Route>
+        <Route path="/success" element={<SuccessPage />} />
       </Route>
     </Routes>
   );

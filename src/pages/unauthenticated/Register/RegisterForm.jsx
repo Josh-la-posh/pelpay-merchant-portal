@@ -69,7 +69,6 @@ const RegisterForm = () => {
         // e.preventDefault();
         try {
             const response = await axios.get('api/country');
-            // console.log(response.data);
             if (response.data.message === 'Successful') {
                 setCountryList(response.data.responseData);
                 setShowCountryListReload(false);

@@ -6,14 +6,16 @@ import AuthService from '@/services/api/authApi';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import UpdateInputField from '../../../components/UpdateInputField';
 import Button from '../../../components/ui/button';
+import useAxiosPrivate from '../../../services/hooks/useFormAxios';
 
 const LoginForm = () => {
   const { setAuth } = useAuth();
   const dispatch = useDispatch();
+  const axiosPrivate = useAxiosPrivate();
   const { loading, error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
-  const authService = new AuthService();
+  const authService = new AuthService(axiosPrivate);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

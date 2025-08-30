@@ -192,14 +192,11 @@ class MerchantService {
           'api/Merchant/adduser',
           JSON.stringify(formData)
         );
-        console.log('Real other response: ', response);
         toast('User added successfully');
       } catch (err) {
-          console.log('Real other response: ');
         if (!err.response) {
           toast('No response from server');
         } else {
-          console.log('Real response: ', err.response);
           const errMsg = err.response.data.message;
           toast.error(errMsg);
         }

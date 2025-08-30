@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
@@ -9,8 +9,6 @@ import FormFour from "./component/FormFour";
 import FormFive from "./component/FormFive";
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "../../../services/hooks/useFormAxios";
-// import useAxiosPrivate from "../../../services/hooks/useAxiosPrivate";
-import Spinner from "@/components/Spinner";
 import { complianceStep } from "../../../redux/slices/complianceSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -19,8 +17,7 @@ const Compliance = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-  const [businessRepresentative, setBusinessRepresentative] = useState([]);
-  const { complianceData, complianceLoading, complianceSuccess, step } =
+  const { complianceData, step, businessRepresentatives } =
     useSelector((state) => state.compliance);
   const complianceService = new ComplianceService(axiosPrivate);
   const [editOwnerIndex, setEditOwnerIndex] = useState(null);
@@ -29,28 +26,30 @@ const Compliance = () => {
 
   useEffect(() => {
     setAppTitle("Compliance");
-  }, []);
-
-  useEffect(() => {
     if (complianceData.progress === 5) {
-      navigate("/");
+      navigate("/success");
     }
-  }, [complianceData]);
+  }, [complianceData, navigate]);
 
-  const handleNextStep = async (val) => {
+  const handleNextStep = async (val, next) => {
     const progress = complianceData.progress;
-    if (progress > 0) {
-      await complianceService.updateComplianceData(
-        user?.merchantCode,
-        val,
-        dispatch
-      );
+
+    if (next) {
+      dispatch(complianceStep(step + 1));
     } else {
-      await complianceService.complianceUpload(
-        user?.merchantCode,
-        val,
-        dispatch
-      );
+      if (progress > 0) {
+        await complianceService.updateComplianceData(
+          user?.merchantCode,
+          val,
+          dispatch
+        );
+      } else {
+        await complianceService.complianceUpload(
+          user?.merchantCode,
+          val,
+          dispatch
+        );
+      }
     }
   };
 
@@ -64,35 +63,14 @@ const Compliance = () => {
     dispatch(complianceStep(3));
   };
 
-  const businessRepresentativeData = (representativeData) => {
-    if (editOwnerIndex !== null) {
-      const updated = [...businessRepresentative];
-      updated[editOwnerIndex] = representativeData;
-      setBusinessRepresentative(updated);
-      setEditOwnerIndex(null);
-    } else {
-      setBusinessRepresentative([
-        ...businessRepresentative,
-        representativeData,
-      ]);
-    }
-  };
-
   useEffect(() => {
     const loadData = async () => {
-      // console.log("Compliance data fetched", user);
       await complianceService.fetchComplianceData(dispatch, user?.merchantCode);
     };
 
     loadData();
   }, [dispatch]);
 
-  // if (complianceLoading)
-  //   return (
-  //     <div className="h-[40vh] w-full">
-  //       <Spinner />
-  //     </div>
-  //   );
   return (
     <div className="">
       <div className="flex border-0 border-b-1 mb-4 p-1">
@@ -121,12 +99,11 @@ const Compliance = () => {
           )}
           {step === 3 && (
             <FormFour
-              handleNextStep={handleNextStep}
               handlePrevStep={handlePrevStep}
-              businessRepresentativeData={businessRepresentativeData}
+              handleNextStep={handleNextStep}
               editRepresentativeData={
                 editOwnerIndex !== null
-                  ? businessRepresentative[editOwnerIndex]
+                  ? businessRepresentatives[editOwnerIndex]
                   : null
               }
             />
@@ -135,8 +112,6 @@ const Compliance = () => {
             <FormFive
               handlePrevStep={handlePrevStep}
               handleNextStep={handleNextStep}
-              representativeDatas={businessRepresentative || []}
-              setBusinessRepresentative={setBusinessRepresentative}
               handleEditRepresentative={handleEditRepresentative}
             />
           )}

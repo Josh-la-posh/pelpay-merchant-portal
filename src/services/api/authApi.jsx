@@ -5,13 +5,14 @@ import {
   loginSuccess,
 } from "@/redux/slices/authSlice";
 import axios from "./axios";
+import { complianceStep, complianceSuccess } from "../../redux/slices/complianceSlice";
 
 class AuthService {
-  constructor(location, navigate) {
-    this.location = location;
-    this.navigate = navigate;
+  constructor(axiosPrivate) {
+    this.axiosPrivate = axiosPrivate;
   }
   baseUrl = import.meta.env.VITE_MERCHANT_BASE_URL;
+  baseUrl2 = import.meta.env.VITE_MERCHANT_BASE_URL_NEW;
 
   async submitLogin(email, password, setAuth, location, navigate, dispatch) {
     dispatch(loginStart());
@@ -22,22 +23,21 @@ class AuthService {
         JSON.stringify({  email,  password })
       );
 
-      const data = response.data.responseData;
-   
+      const data = response.data.responseData;   
 
-      setAuth({ data, merchant: null });
-      // localStorage.setItem("pelpay-merchant-auth", JSON.stringify(data));
-      // localStorage.setItem("pelpay-merchant-token", data.accessToken);
+      await setAuth({ data, merchant: null });
+
+      console.log(data)
+      const token = data?.accessToken;
+      const merchantCode = data?.merchants[0]?.merchantCode;
+      
+      await this.fetchComplianceData(dispatch, merchantCode, navigate, token)
       dispatch(loginSuccess(data));
-
       toast.success("Login successful");
 
-      const from = location.state?.from?.pathname || "/compliance";
-      console.log("Navigating to the previous page or home: ", from);
-      navigate(from, { replace: true });
+
     } catch (err) {
       if (!err.response) {
-        console.log("The same error: ", err.response);
         dispatch(loginFailure("No Server Response"));
       } else {
         if (err.response.status === 400) {
@@ -51,6 +51,45 @@ class AuthService {
             dispatch(loginFailure(""));
           }, [2000]);
         }
+      }
+    }
+  }
+
+  async fetchComplianceData(dispatch, merchantCode, navigate, token) {
+      try {
+        const response = await axios.get(
+          `${this.baseUrl2}api/compliance?merchantCode=${merchantCode}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        // const response = await this.axiosPrivate.get(
+      //   `api/compliance?merchantCode=${merchantCode}`
+      // );
+
+      console.log('Working');
+
+      const data = response.data?.responseData;
+
+      let from;
+      const progress = data?.progress;
+
+      dispatch(complianceStep(progress));
+      dispatch(complianceSuccess(data));
+
+      if (progress === 5) {
+        from = location.state?.from?.pathname || "/";
+      } else {
+        from = location.state?.from?.pathname || "/compliance";
+      }
+      navigate(from, { replace: true });
+    } catch (err) {
+      if (!err.response) {
+      } else {
+        dispatch(
+        );
       }
     }
   }
