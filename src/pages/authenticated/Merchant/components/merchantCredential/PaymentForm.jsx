@@ -1,46 +1,45 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CustomModal from '@/components/Modal'
 import UpdateInputField from '@/components/UpdateInputField';
-import useAuth from '@/services/hooks/useAuth';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { X } from 'lucide-react';
 import Spinner from '../../../../../components/Spinner';
 
 function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
-    const { auth } = useAuth();
     const uniqueId = crypto.randomUUID();
     const iframeRef = useRef(null);
     const [openPopupWithIframe, setOpenPopupWithIframe] = useState(false);
     const [redirectUrl, setRedirectUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+
     const [formData, setFormData] = useState({
-        amount: '100',
-        currency: 'NGN',
+        amount: "100",
+        currency: "NGN",
         merchantRef: uniqueId,
-        narration: 'test',
-        callBackUrl: 'https://your_callback_url.com',
-        splitCode: '',
+        narration: "test",
+        callBackUrl: typeof window !== "undefined" ? window.location.origin : "",
+        splitCode: "",
         shouldTokenizeCard: false,
         customer: {
-            customerId: 'csg',
-            customerLastName: 'Chams',
-            customerFirstName: 'Switch',
-            customerEmail: 'chams@chamsswitch.com',
-            customerPhoneNumber: '',
-            customerAddress: '',
-            customerCity: '',
-            customerStateCode: '',
-            customerPostalCode: '',
-            customerCountryCode: 'NG'
+          customerId: "chams",
+          customerLastName: "Switch",
+          customerFirstName: "Chams",
+          customerEmail: "chams@chamsswitch.com",
+          customerPhoneNumber: "",
+          customerAddress: "",
+          customerCity: "",
+          customerStateCode: "",
+          customerPostalCode: "",
+          customerCountryCode: "NG",
         },
         integrationKey: selectedIntegrationKey,
-        notificationUrl: 'https://your_notification_url.com/',
-        mcc: '0',
-        merchantDescriptor: 'string',
-        channels: ["Card", "BankTransfer", "USSD"]
-
-    });
+        notificationUrl: "https://webhook-test-sigma.vercel.app/webhook",
+        mcc: "0",
+        merchantDescriptor: "string",
+        channels: ["Card", "BankTransfer", "USSD"],
+      });
 
     
     const callbackUrl = formData.callBackUrl ?? 'merchant.pelpay.ng';
