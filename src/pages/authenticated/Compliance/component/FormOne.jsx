@@ -94,7 +94,7 @@ const FormOne = ({ handleNextStep }) => {
     newFormData.append("projectedSalesVolume", formData.projectedSalesVolume);
     newFormData.append("ownershipType", formData.ownershipType);
     newFormData.append("website", formData.website);
-    newFormData.append("progress", formData.progress)
+    if (formData.progress === 0) newFormData.append("progress", 1)
 
     handleNextStep(newFormData, isEqual);
   };
