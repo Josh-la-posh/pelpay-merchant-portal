@@ -26,8 +26,6 @@ class AuthService {
       const data = response.data.responseData;   
 
       await setAuth({ data, merchant: null });
-
-      console.log(data)
       const token = data?.accessToken;
       const merchantCode = data?.merchants[0]?.merchantCode;
       
@@ -69,28 +67,32 @@ class AuthService {
       //   `api/compliance?merchantCode=${merchantCode}`
       // );
 
-      console.log('Working');
-
       const data = response.data?.responseData;
 
       let from;
-      const progress = data?.progress;
 
-      dispatch(complianceStep(progress));
-      dispatch(complianceSuccess(data));
-
-      if (progress === 5) {
-        from = location.state?.from?.pathname || "/";
-      } else {
+      if (data === null) {
         from = location.state?.from?.pathname || "/compliance";
+        navigate(from, { replace: true });
+        return;
+      } else {
+        const progress = data?.progress;
+        if (progress === 5) {
+          from = location.state?.from?.pathname || "/";
+        } else {
+          from = location.state?.from?.pathname || "/compliance";          
+        }
+        dispatch(complianceStep(progress));
+        dispatch(complianceSuccess(data));
       }
+
       navigate(from, { replace: true });
     } catch (err) {
-      if (!err.response) {
-      } else {
-        dispatch(
-        );
-      }
+      let from;
+      from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
+
+      console.log(err)
     }
   }
 

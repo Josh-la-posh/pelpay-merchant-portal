@@ -26,7 +26,7 @@ const Compliance = () => {
 
   useEffect(() => {
     setAppTitle("Compliance");
-    if (complianceData.progress === 5) {
+    if (complianceData?.progress === 5) {
       navigate("/success");
     }
   }, [complianceData, navigate]);
