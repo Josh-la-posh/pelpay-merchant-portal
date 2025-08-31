@@ -31,12 +31,12 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
       setFormData({
         rcNumber: initialData.businessInfo?.rcNumber || "",
         tin: initialData.financialInfo?.tin || "",
-        progress: initialData.progress || 1
+        progress: initialData?.progress || 1
       });
       setOldData({
         rcNumber: initialData.businessInfo?.rcNumber || "",
         tin: initialData.financialInfo?.tin || "",
-        progress: initialData.progress || 1
+        progress: initialData?.progress || 1
       });
     }
   }, [initialData]);

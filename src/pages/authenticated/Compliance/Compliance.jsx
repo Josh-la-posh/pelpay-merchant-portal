@@ -32,7 +32,7 @@ const Compliance = () => {
   }, [complianceData, navigate]);
 
   const handleNextStep = async (val, next) => {
-    const progress = complianceData.progress;
+    const progress = complianceData?.progress;
 
     if (next) {
       dispatch(complianceStep(step + 1));
