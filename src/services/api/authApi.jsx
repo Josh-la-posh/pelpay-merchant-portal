@@ -19,11 +19,11 @@ class AuthService {
 
     try {
       const response = await axios.post(
-        `${this.baseUrl}api/Account`,
+        `${this.baseUrl2}api/Account`,
         JSON.stringify({  email,  password })
       );
 
-      const data = response.data.responseData;   
+      const data = response?.data?.responseData;   
 
       await setAuth({ data, merchant: null });
       const token = data?.accessToken;
@@ -44,10 +44,11 @@ class AuthService {
             dispatch(loginFailure(""));
           }, [4000]);
         } else {
+          if (err.response?.data?.responseData?.status === 400) {
+              dispatch(loginFailure(err.response?.data?.responseData?.message));
+              return;
+          }
           dispatch(loginFailure("Login Failed"));
-          setTimeout(() => {
-            dispatch(loginFailure(""));
-          }, [2000]);
         }
       }
     }
@@ -106,7 +107,7 @@ class AuthService {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${this.baseUrl}/api/account/forget-password`,
+        `${this.baseUrl2}/api/account/forget-password`,
         JSON.stringify({ email })
       );
       const data = response.data;
@@ -115,17 +116,15 @@ class AuthService {
         setIsTokenSent(true);
         toast.success(data.message);
       }
-    } catch (error) {
-      if (!error.response) {
+    } catch (err) {
+      if (!err.response) {
         setErrMsg("No Server Response");
-        setTimeout(() => {
-          setErrMsg("");
-        }, [2000]);
       } else {
-        setErrMsg(error.response.data.message);
-        setTimeout(() => {
-          setErrMsg("");
-        }, [2000]);
+        if (err.response?.data?.responseData?.status === 400) {
+          setErrMsg(err.response?.data?.responseData?.message);
+          return;
+        }
+        setErrMsg(err.response.data.message);
       }
 
       errRef.current.focus();

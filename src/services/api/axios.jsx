@@ -8,6 +8,14 @@ export default axios.create({
   },
 });
 
+export const newAxios = axios.create({
+  baseURL: import.meta.env.VITE_MERCHANT_BASE_URL_NEW,
+  headers: {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  },
+});
+
 export const axiosPrivate = axios.create({
   baseURL: import.meta.env.VITE_MERCHANT_BASE_URL,
   headers: {

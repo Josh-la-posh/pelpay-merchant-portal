@@ -20,16 +20,12 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  // const [rememberMe, setRememberMe] = useState(false);
   const [errMsg, setErrMsg] = useState(error);
 
   useEffect(() => {
-    setErrMsg(error);
-
-    // setTimeout(() => {
-    //   setErrMsg('');
-    //   dispatch(loginFailure());
-    // }, 5000);
+    if (error) {
+      setErrMsg(error);      
+    }
   }, [error])
 
   const handleShowPassword = (e) => {
@@ -39,6 +35,7 @@ const LoginForm = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setErrMsg('');
     await authService.submitLogin(email, password, setAuth, location, navigate, dispatch);
   };
 

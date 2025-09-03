@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 // import Logo from '@/assets/logo.jpg';
 import { CheckCircle, Home, Mail, Phone, User } from 'lucide-react';
 import Button from '../../../components/ui/button';
+import { newAxios } from '../../../services/api/axios';
 
 const BUSINESS_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
 const NAME_REGEX = /^[a-zA-Z]{2,24}$/;
@@ -15,7 +16,7 @@ const NAME_REGEX = /^[a-zA-Z]{2,24}$/;
 const PHONE_REGEX = /^[0-9\s\-()]{10,15}$/;
 const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-const REGISTER_URL = '/api/onboard-merchant';
+const REGISTER_URL = '/api/account/signup';
 
 const RegisterForm = () => {
     // const userRef = useRef();
@@ -163,6 +164,7 @@ const RegisterForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrMsg('');
 
         const v1 = BUSINESS_REGEX.test(formData.businessName);
         const v2 = EMAIL_REGEX.test(formData.contactEmail);
@@ -178,7 +180,7 @@ const RegisterForm = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(REGISTER_URL,
+            await newAxios.post(REGISTER_URL,
                 JSON.stringify(formData),
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -195,15 +197,19 @@ const RegisterForm = () => {
                 contactPhoneNumber: '',
                 contactFirstName: '',
                 contactLastName: '',
-                industryCategoryId: 1,
+                // industryCategoryId: 1,
             });
 
         } catch (err) {
             if (err.response.status === 400) {
-                toast(err.response.data.message);
+                setErrMsg(err.response?.data?.message);
             } else if (!err.response) {
                 setErrMsg('No Server Response');
             } else {
+                if (err.response?.data?.responseData?.status === 400) {
+                    setErrMsg(err.response?.data?.responseData?.message);
+                    return;
+                }
                 setErrMsg('An error occured. Try again later');
             }
 
@@ -219,7 +225,7 @@ const RegisterForm = () => {
                 success ? (
                     <section className='pt-16'>
                         <div className='flex items-center justify-center h-[120px] mb-3'>
-                            <CheckCircle size='15px' className='text-green-600' />
+                            <CheckCircle size='70px' className='text-green-600' />
                         </div>
                         <p className='mb-4 text-[12px] text-center'>Your account has been created successfully!!!.</p>
                         <p className='mb-8 text-sm text-center'>Kindly follow the link send to your email for account activation.</p>
@@ -230,15 +236,14 @@ const RegisterForm = () => {
 
                     </section>
                 ) : (
-                    <section className="pt-8 overflow-x-scroll px-10 sm:px-0">
-                        <p ref={errRef} className={errMsg ? "errmsg" :
-                            "offscreen"} aria-live='asserive'>{errMsg}</p>
-
+                    <section className="pt-8 overflow-x-scroll px-10 sm:px-0">                        
                         <div className="lg:flex justify-center mb-8">
                             <img src='/assets/logo.jpg' />
                         </div>
                         <h2 className="text-2xl font-semibold mt-6 mb-4">Register</h2>
                         <h2 className="text-[15px] text-black/60 mb-6">Kindly fill the field below to login</h2>
+                        <p ref={errRef} className={errMsg ? "errmsg" :
+                            "offscreen"} aria-live='assertive'>{errMsg}</p>
                         <form onSubmit={handleSubmit}>
                             <AuthInputField
                                 label="Business Name"
@@ -368,7 +373,7 @@ const RegisterForm = () => {
                                         <Link to='' onClick={getCountry} className='text-priColor text-xs text-right cursor'>Retry</Link>
                                     </div>}
                                 </div>
-                                <div className="mb-6 w-full">
+                                {/* <div className="mb-6 w-full">
                                     <label className="text-black text-[11px] lg:text-[13px] mb-1 lg:mb-2 flex items-center" htmlFor="industry">
                                         Industry
                                     </label>
@@ -386,9 +391,9 @@ const RegisterForm = () => {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
+                                </div> */}
                             </div>
-                            {
+                            {/* {
                                 industryId !== null &&
                                 <div className="mb-6 w-full">
                                     <label className="text-black text-[11px] lg:text-[13px] mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
@@ -409,7 +414,7 @@ const RegisterForm = () => {
                                         ))}
                                     </select>
                                 </div>
-                            }
+                            } */}
                             <Button
                               type='submit'
                             //   disabled={loading || !validBusinessName || !validContactEmail || !validContactFirstName || !validContactLastName || !validContactPhoneNumber ? true : false}
