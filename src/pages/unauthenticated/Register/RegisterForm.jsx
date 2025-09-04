@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import '../auth.css';
 import { Link } from 'react-router-dom';
 import AuthInputField from '@/components/AuthInptField';
@@ -19,16 +19,8 @@ const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const REGISTER_URL = '/api/account/signup';
 
 const RegisterForm = () => {
-    // const userRef = useRef();
-    // const emailRef = useRef();
     const [countryList, setCountryList] = useState([]);
     const [showCountryListReload, setShowCountryListReload] = useState(false);
-    const [industryList, setIndustryList] = useState([]);
-    const [showIndustryListReload, setShowIndustryListReload] = useState(false);
-    const [industryCategoryList, setIndustryCategoryList] = useState([]);
-    const [showIndustryCategoryListReload, setShowIndustryCategoryListReload] = useState(false);
-    const [showIndustryCategories, setShowIndustryCategories] = useState(false);
-    const [industryId, setIndustryId] = useState(null);
     const errRef = useRef();
 
     const [validBusinessName, setValidBusinessName] = useState(false);
@@ -46,12 +38,6 @@ const RegisterForm = () => {
     const [validContactLastName, setValidContactLastName] = useState(false);
     const [contactLastNameFocus, setContactLastNameFocus] = useState(false);
 
-    // const [validIndustryCategoryId,setValidIndustryCategoryId] = useState(false);
-    // const [industryCategoryIdFocus,setIndustryCategoryIdFocus] = useState(false);
-
-    // const [validCountry,setValidCountry] = useState(false);
-    // const [countryFocus,setCountryFocus] = useState(false);
-
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
@@ -62,8 +48,7 @@ const RegisterForm = () => {
         contactEmail: '',
         contactPhoneNumber: '',
         contactFirstName: '',
-        contactLastName: '',
-        industryCategoryId: 1,
+        contactLastName: ''
     });
 
     const getCountry = async () => {
@@ -82,40 +67,10 @@ const RegisterForm = () => {
         }
     }
 
-    const getIndustry = async () => {
-        // e.preventDefault();
-        try {
-            const response = await axios.get('api/industry');
-            if (response.data.message === 'Successful') {
-                setIndustryList(response.data.responseData);
-                setShowIndustryListReload(false);
-            } else {
-                setShowIndustryListReload(true);
-            }
-        } catch (err) {
-            setShowIndustryListReload(true);
-        }
-    }
-
-    const getIndustryCategories = async (id) => {
-        try {
-            const response = await axios.get(`api/industry/categories/${id}`);
-            if (response.data.message === 'Successful') {
-                setIndustryCategoryList(response.data.responseData);
-                setShowIndustryCategoryListReload(false);
-            } else {
-                setShowIndustryCategoryListReload(true);
-            }
-        } catch (err) {
-            setShowIndustryCategoryListReload(true);
-        }
-    }
-
     useEffect(() =>  {
         if (countryList.length < 1) {
             getCountry();
         }
-        getIndustry();
     }, [])
 
     useEffect(() => {
@@ -157,11 +112,6 @@ const RegisterForm = () => {
         }));
     };
 
-    const handleCategoryChange = (e) => {
-        setIndustryId(e.target.value);
-        getIndustryCategories(e.target.value);
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrMsg('');
@@ -184,7 +134,6 @@ const RegisterForm = () => {
                 JSON.stringify(formData),
                 {
                     headers: { 'Content-Type': 'application/json' },
-                    // withCredentials: true
                 })
             setSuccess(true);
             toast.success("Registration successful! Please check your email to confirm your account.");
@@ -197,7 +146,6 @@ const RegisterForm = () => {
                 contactPhoneNumber: '',
                 contactFirstName: '',
                 contactLastName: '',
-                // industryCategoryId: 1,
             });
 
         } catch (err) {
@@ -373,48 +321,7 @@ const RegisterForm = () => {
                                         <Link to='' onClick={getCountry} className='text-priColor text-xs text-right cursor'>Retry</Link>
                                     </div>}
                                 </div>
-                                {/* <div className="mb-6 w-full">
-                                    <label className="text-black text-[11px] lg:text-[13px] mb-1 lg:mb-2 flex items-center" htmlFor="industry">
-                                        Industry
-                                    </label>
-                                    <select
-                                        id="industry"
-                                        name="industry"
-                                        value={formData.industry}
-                                        onChange={(e) => handleCategoryChange(e)}
-                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-transparent"
-                                        required
-                                    >
-                                        {industryList.map((industry) => (
-                                            <option key={industry.id} value={industry.id}>
-                                                {industry.industryName}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div> */}
                             </div>
-                            {/* {
-                                industryId !== null &&
-                                <div className="mb-6 w-full">
-                                    <label className="text-black text-[11px] lg:text-[13px] mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
-                                        Industry Category
-                                    </label>
-                                    <select
-                                        id="industryCategoryId"
-                                        name="industryCategoryId"
-                                        value={formData.industryCategoryId}
-                                        onChange={handleChange}
-                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-transparent"
-                                        required
-                                    >
-                                        {industryCategoryList.map((industry) => (
-                                            <option key={industry.id} value={industry.id}>
-                                                {industry.categoryName}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            } */}
                             <Button
                               type='submit'
                             //   disabled={loading || !validBusinessName || !validContactEmail || !validContactFirstName || !validContactLastName || !validContactPhoneNumber ? true : false}
