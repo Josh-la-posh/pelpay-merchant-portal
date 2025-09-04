@@ -39,16 +39,13 @@ class AuthService {
         dispatch(loginFailure("No Server Response"));
       } else {
         if (err.response.status === 400) {
-          dispatch(loginFailure(err.response.data.message));
-          setTimeout(() => {
-            dispatch(loginFailure(""));
-          }, [4000]);
+          dispatch(loginFailure(err.response?.data?.responseData?.message || err.response.data.message));
         } else {
           if (err.response?.data?.responseData?.status === 400) {
               dispatch(loginFailure(err.response?.data?.responseData?.message));
               return;
           }
-          dispatch(loginFailure("Login Failed"));
+          dispatch(loginFailure(err.response?.data?.responseData?.message || "Login Failed"));
         }
       }
     }
@@ -124,7 +121,7 @@ class AuthService {
           setErrMsg(err.response?.data?.responseData?.message);
           return;
         }
-        setErrMsg(err.response.data.message);
+        setErrMsg(err.response?.data?.responseData?.message || err.response.data.message);
       }
 
       errRef.current.focus();

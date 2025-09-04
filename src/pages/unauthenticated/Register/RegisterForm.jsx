@@ -202,7 +202,7 @@ const RegisterForm = () => {
 
         } catch (err) {
             if (err.response.status === 400) {
-                setErrMsg(err.response?.data?.message);
+                setErrMsg(err.response?.data?.responseData?.message || err.response?.data?.message);
             } else if (!err.response) {
                 setErrMsg('No Server Response');
             } else {
