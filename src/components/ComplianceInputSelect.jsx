@@ -1,6 +1,8 @@
-import React from 'react'
+// React import removed: using automatic JSX runtime
 
-const ComplianceInputSelect = ({ label, options, value, onChange, id }) => {
+import PropTypes from 'prop-types';
+
+const ComplianceInputSelect = ({ label, options = [], value, onChange, id }) => {
   return (
     <div className='mb-4'>
       <label className='block text-[13px] py-2'>{label}</label>
@@ -19,5 +21,16 @@ const ComplianceInputSelect = ({ label, options, value, onChange, id }) => {
     </div>
   )
 }
+
+
+ComplianceInputSelect.propTypes = {
+  label: PropTypes.string,
+  options: PropTypes.array,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
+  id: PropTypes.string,
+};
+
+// options defaulted in function parameters to avoid accessing before declaration
 
 export default ComplianceInputSelect

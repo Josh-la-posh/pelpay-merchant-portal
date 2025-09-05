@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 
 function NotificationSettings() {
@@ -191,3 +191,5 @@ function NotificationSettings() {
 }
 
 export default NotificationSettings;
+
+NotificationSettings.propTypes = {};

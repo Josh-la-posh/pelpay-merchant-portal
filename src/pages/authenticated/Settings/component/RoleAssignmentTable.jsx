@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -18,12 +18,12 @@ const RoleAssignmentTable = ({
     const { id } = useParams();
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
-    const roleService = new RoleService(axiosPrivate, auth);
+    const roleService = useMemo(() => new RoleService(axiosPrivate, auth), [axiosPrivate, auth]);
     const merchantCode = auth?.merchant?.merchantCode;
     const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
     const dispatch = useDispatch();
-    const { roles, rolesLoading, rolesError } = useSelector((state) => state.roles);
-    const [availableUserRoles, setAvailableUserRoles] = useState(roles);
+    const { roles } = useSelector((state) => state.roles || {});
+    const [availableUserRoles, setAvailableUserRoles] = useState(() => roles || []);
 
     const [formData, setFormData] = useState({
         roleId: 0,
@@ -48,9 +48,13 @@ const RoleAssignmentTable = ({
         setAvailableUserRoles(roles);
     }, [roles])
 
+    const availableRoles = useCallback(async () => {
+        await roleService.fetchRoles(aggregatorCode, merchantCode, dispatch);
+    }, [roleService, aggregatorCode, merchantCode, dispatch]);
+
     useEffect(() => {
         availableRoles();
-    }, []);
+    }, [availableRoles]);
 
     const handleRoleRefresh = () => {
         availableRoles();
@@ -68,13 +72,11 @@ const RoleAssignmentTable = ({
             resetState();
             handleRefresh();
         } catch (error) {
-
+            console.error(error);
         }
     }
 
-    const availableRoles = async () => {
-        await roleService.fetchRoles(aggregatorCode, merchantCode, dispatch);
-    }
+    // duplicate availableRoles removed; use memoized version above
  
     const columns = [
         {
@@ -125,7 +127,7 @@ const RoleAssignmentTable = ({
                                 Select Role
                             </option>
                             {
-                                availableUserRoles.map((role) => (
+                                Array.isArray(availableUserRoles) && availableUserRoles.map((role) => (
                                     <option 
                                         key={role.id}
                                         value={role.id}
@@ -170,3 +172,13 @@ const RoleAssignmentTable = ({
 };
 
 export default RoleAssignmentTable;
+
+// PropTypes
+import PropTypes from 'prop-types';
+
+RoleAssignmentTable.propTypes = {
+    filteredData: PropTypes.array,
+    errMsg: PropTypes.any,
+    handleRefresh: PropTypes.func,
+    isUserRoleLoading: PropTypes.bool,
+};

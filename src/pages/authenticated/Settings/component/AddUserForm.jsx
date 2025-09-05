@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 import CustomModal from '@/components/Modal'
 import useAuth from '@/services/hooks/useAuth';
 import UserService from '@/services/api/userApi';
@@ -7,14 +8,12 @@ import { Mail, Phone, User } from 'lucide-react';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import UpdateInputField from '@/components/UpdateInputField';
 
-function AddUserForm({handleModalClose}) {
+function AddUserForm({ handleModalClose }) {
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const userService = new UserService(axiosPrivate, auth);
     const dispatch = useDispatch();
-    const userDetails = auth?.data?.user;
     const [errMsg, setErrMsg] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -38,20 +37,18 @@ function AddUserForm({handleModalClose}) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const v1 = formData.firstName;
-        const v2 = formData.lastName;
-        const v3 = formData.email;
-        const v4 = formData.phoneNumber;
-        
-        if (v1 !== '' && v2 !== '' && v3 !== '' ** v4 !== '') {
+        const { firstName, lastName, email, phone } = formData;
+
+        if (firstName && lastName && email && phone) {
             addNewUser();
+            handleModalClose && handleModalClose();
         } else {
-            setErrMsg('All fields must be field');
+            setErrMsg('All fields are required');
             setTimeout(() => {
                 setErrMsg('');
             }, 2000);
         }
-    }
+    };
 
   return (
     <CustomModal handleOpenModal={handleModalClose}>
@@ -120,3 +117,7 @@ function AddUserForm({handleModalClose}) {
 }
 
 export default AddUserForm
+
+AddUserForm.propTypes = {
+    handleModalClose: PropTypes.func,
+};

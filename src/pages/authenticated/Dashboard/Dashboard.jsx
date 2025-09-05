@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -16,8 +16,8 @@ import TransactionForm from '../Transaction/components/TransactionForm';
 
 function Dashboard() {
     const { setAppTitle } = useTitle();
-    const axiosPrivate = useAxiosPrivate();
-    const dispatch = useDispatch();
+  const axiosPrivate = useAxiosPrivate();
+  const dispatch = useDispatch();
     const { auth } = useAuth();
     const [interval, setInterval] = useState('Daily');
     const [transactionMode, setTransactionMode] = useState('Count');
@@ -25,7 +25,7 @@ function Dashboard() {
     const user = auth?.data.user;
     const merchant = auth?.merchant;
     const merchantCode = merchant?.merchantCode;
-    const dashboardService = new DashboardService(axiosPrivate, auth);
+  const dashboardService = useMemo(() => new DashboardService(axiosPrivate, auth), [axiosPrivate, auth]);
     const { lumpsum, lumpsumLoading, lumpsumError, graph, graphLoading, graphError, transactions, transactionLoading, transactionError } = useSelector((state) => state.dashboard);
     const [isLumpsumLoading, setIsLumpsumLoading] = useState(lumpsumLoading);
     const [isGraphLoading, setIsGraphLoading] = useState(graphLoading);
@@ -34,9 +34,9 @@ function Dashboard() {
     const [selectedTransactionData, setSelectedTransactionData] = useState({});
     const env = 'None';
 
-    useEffect(() => {
-        setAppTitle('Dashboard');
-    }, []);
+  useEffect(() => {
+    setAppTitle('Dashboard');
+  }, [setAppTitle]);
 
     useEffect(() => {
       setIsLumpsumLoading(lumpsumLoading)
@@ -52,33 +52,35 @@ function Dashboard() {
       } else {
         setErrMsg(graphError);
       }
-    })
+    }, [lumpsumError, graphError]);
 
-    useEffect(() => {
-        loadData();
-    }, [merchant, interval, dispatch]);
-
-    useEffect(() => {
-        loadTransactions();
-    }, [merchant, dispatch]);
-
-    const handleRefresh = () => {
-      loadData();
-      loadTransactions();
-    }
-
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
       if (merchantCode) {
         await dashboardService.fetchLumpsum(merchantCode, env, interval, dispatch);
         await dashboardService.fetchGraph(merchantCode, interval, dispatch);
       }
-    };
+    }, [dashboardService, merchantCode, env, interval, dispatch]);
+
+  useEffect(() => {
+    if (!merchant) return;
+    loadData();
+  }, [merchant, interval, dispatch, dashboardService, loadData]);
   
-    const loadTransactions = async () => {
+    const loadTransactions = useCallback(async () => {
       if (merchantCode) {
         await dashboardService.fetchtransactions(merchantCode, env, dispatch);
       }
-    };
+    }, [dashboardService, merchantCode, env, dispatch]);
+
+  useEffect(() => {
+    if (!merchant) return;
+    loadTransactions();
+  }, [merchant, dispatch, dashboardService, loadTransactions]);
+
+    const handleRefresh = useCallback(() => {
+      loadData();
+      loadTransactions();
+    }, [loadData, loadTransactions]);
 
   const handleOpenModal = (val) => {
     setSelectedTransactionData(val);
@@ -169,7 +171,7 @@ function Dashboard() {
               <Spinner />
           </div>
           : transactionError 
-          ? <ErrorLayout errMsg={transactionError} handleRefresh={loadTransactions()}/>
+          ? <ErrorLayout errMsg={transactionError} handleRefresh={loadTransactions}/>
           : <TransactionTable
               filteredData={transactions}
               handleOpenModal={handleOpenModal}

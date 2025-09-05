@@ -1,11 +1,10 @@
-import React from "react";
 import PropTypes from "prop-types";
 
-const InputField = ({ label, placeholder, type = "text", id, value, onChange, required = false, textColor, inputClassName, labelClassName }) => {
+const InputField = ({ label, placeholder, type = "text", id, value, onChange, required = false, textColor, inputClassName = '', labelClassName = '' }) => {
   return (
     <div className="flex flex-col gap-2 mb-4">
       {label && (
-        <label className={`text-sm font-[600] ${textColor ? textColor : 'text-gray-700 dark:text-white'} ${labelClassName}`} htmlFor={id}>
+        <label className={`text-sm font-semibold ${textColor ? textColor : 'text-gray-700'} ${labelClassName}`} htmlFor={id}>
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
@@ -17,8 +16,8 @@ const InputField = ({ label, placeholder, type = "text", id, value, onChange, re
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        required
-        className={`border border-gray-300 rounded-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-transparent focus:border-primary ${textColor ? textColor : 'text-gray-700 dark:text-white'} placeholder:${textColor ? textColor : 'text-gray-700 dark:text-white'} ${inputClassName}`}
+        required={required}
+        className={`border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-priColor focus:ring-2 focus:ring-priColor/20 ${textColor ? textColor : 'text-gray-700'} ${inputClassName}`}
       />
     </div>
   );
@@ -28,9 +27,13 @@ InputField.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
   type: PropTypes.string,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  id: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
   required: PropTypes.bool,
+  inputClassName: PropTypes.string,
+  labelClassName: PropTypes.string,
+  textColor: PropTypes.string,
 };
 
 export default InputField;

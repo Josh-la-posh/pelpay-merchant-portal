@@ -5,12 +5,9 @@ import ComplianceInputSelect from "../../../../components/ComplianceInputSelect"
 import ComplianceUploader from "../../../../components/ComplianceUploader";
 import { useDispatch, useSelector } from "react-redux";
 import { addBusinessRepresentative, updateBusinessRepresentative } from "../../../../redux/slices/complianceSlice";
+import PropTypes from 'prop-types';
 
-const FormFour = ({
-  handlePrevStep,
-  handleNextStep,
-  editRepresentativeData,
-}) => {
+const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) => {
    const dispatch = useDispatch();
   const { complianceLoading } = useSelector((state) => state.compliance);
   const [err, setErr] = useState(["", "", "", "", "", "", "", "", "", "", ""]);
@@ -235,3 +232,9 @@ const FormFour = ({
 };
 
 export default FormFour;
+
+FormFour.propTypes = {
+  handlePrevStep: PropTypes.func,
+  handleNextStep: PropTypes.func,
+  editRepresentativeData: PropTypes.object,
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -23,7 +23,7 @@ function TransactionPage() {
   const merchantCode = auth?.merchant.merchantCode;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
-  const transactionService = new TransactionService(axiosPrivate, auth);
+  const transactionService = useMemo(() => new TransactionService(axiosPrivate, auth), [axiosPrivate, auth]);
   const [pageNumber, setPageNumber] = useState(transactionPageNumber);
   const [pageSize, setPageSize] = useState(transactionPageSize);
   const [totalSize, setTotalSize] = useState(transactionTotalSize);
@@ -53,19 +53,19 @@ function TransactionPage() {
       setTotalSize(transactionTotalSize);
     }, [transactionTotalSize]);
 
+  const loadData = useCallback(async () => {
+    if (merchantCode) {
+      await transactionService.fetchtransactions(merchantCode, env, pageNumber, pageSize, dispatch);
+    }
+  }, [merchantCode, env, pageNumber, pageSize, transactionService, dispatch]);
+
   useEffect(() => {
     loadData();
   }, [merchantCode, env, pageNumber, pageSize, dispatch]);
 
   const handleRefresh = () => {
-      loadData();
+    loadData();
   }
-  
-  const loadData = async () => {
-    if (merchantCode) {
-      await transactionService.fetchtransactions(merchantCode, env, pageNumber, pageSize, dispatch);
-    }
-  };
   
   const handleOpenModal = (val) => {
     setSelectedTransactionData(val);

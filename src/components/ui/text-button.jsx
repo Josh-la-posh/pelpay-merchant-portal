@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 
 const TextButton = ({ children, onClick, variant = "primary", className }) => {
-    const baseClass = "font-[700] text-md";
+    const baseClass = "font-bold text-md transition-colors duration-150";
     const variantClass =
       variant === "primary"
-        ? "text-primary hover:text-primary-dark dark:hover:text-white"
+        ? "text-priColor"
         : variant === "danger"
-        ? "text-danger"
-        : "";
+        ? "text-red-500"
+        : "text-gray-700";
   
     return (
       <button className={`${baseClass} ${variantClass} ${className}`} onClick={onClick}>

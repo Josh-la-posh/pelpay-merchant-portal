@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ function MerchantPage() {
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const axiosPrivate = useAxiosPrivate();
-  const aggregatorService = new AggregatorService(axiosPrivate);
+  const aggregatorService = useMemo(() => new AggregatorService(axiosPrivate), [axiosPrivate]);
   const dispatch = useDispatch();
   const { aggregatorMerchants } = useSelector((state) => state.aggregator);
   const [filteredData, setFilteredData] = useState(aggregatorMerchants);
@@ -21,8 +21,8 @@ function MerchantPage() {
   }, [aggregatorMerchants]);
 
   useEffect(() => {
-      setAppTitle('Merchant');
-      setSettingsTitle('Merchant');
+  setAppTitle('Merchant');
+  setSettingsTitle('Merchant');
   }, []);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function MerchantPage() {
         await aggregatorService.fetchAggregatorMerchants(dispatch);
     };
     loadData();
-  }, [dispatch]);
+  }, [aggregatorService, dispatch]);
 
   const handleFilteredData = (newData) => {
     setFilteredData(newData);

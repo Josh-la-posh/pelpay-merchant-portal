@@ -1,5 +1,5 @@
 // src/components/ToastProvider.jsx
-import React from 'react';
+// React import removed: using automatic JSX runtime
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import ExportPopup from '@/utils/exportPopup';
+// no hooks needed
+import PropTypes from 'prop-types';
 import DataTable from '@/components/Table';
 import { dateFormatter, timeFormatter } from '@/utils/dateFormatter';
-import CustomModal from '@/components/Modal';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
-import { toast } from 'react-toastify';
 import { EyeIcon } from 'lucide-react';
 
 const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage, drpp}) => {
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    // selectedIndex removed — not used
     
     const columns = [
         {
@@ -87,3 +84,14 @@ const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage
 };
 
 export default TransactionTable;
+
+TransactionTable.propTypes = {
+    filteredData: PropTypes.array,
+    handleOpenModal: PropTypes.func,
+    totalSize: PropTypes.number,
+    currentPage: PropTypes.number,
+    setCurrentPage: PropTypes.func,
+    rowsPerPage: PropTypes.number,
+    setRowsPerPage: PropTypes.func,
+    drpp: PropTypes.any,
+};

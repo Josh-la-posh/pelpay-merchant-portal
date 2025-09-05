@@ -1,51 +1,69 @@
+import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayouts';
 import RequireAuth from '../services/hooks/RequiredAuth';
-import LoginPage from '../pages/unauthenticated/Login/LoginPage';
-import RegisterPage from '../pages/unauthenticated/Register/RegisterPage';
-import ResetPasswordPage from '../pages/unauthenticated/ResetPassword/ResetPasswordPage';
-import ForgotPasswordPage from '../pages/unauthenticated/ForgotPassword/ForgotPasswordPage';
-import Dashboard from '../pages/authenticated/Dashboard/Dashboard';
-import CustomersPage from '../pages/authenticated/Customers/Customers';
-import DisputesPage from '../pages/authenticated/Disputes/Disputes';
-import Aggregator from '../pages/authenticated/Aggregator/Aggregator';
-import MerchantPage from '../pages/authenticated/Merchant/Merchant';
-import AllSettlement from '../pages/authenticated/Settlement/AllSettlement';
-import InvoicesPage from '../pages/authenticated/Invoices/Invoices';
-import TransactionPage from '../pages/authenticated/Transaction/Transaction';
-import HelpCenter from '../pages/authenticated/HelpCenter/HelpCenter';
-import SettlementConfiguration from '../pages/authenticated/Settlement/Configuration';
-import SettlementBankAccount from '../pages/authenticated/Settlement/BankAccount';
-import ProfilePage from '../pages/authenticated/Settings/Profile';
-import SecuritySettings from '../pages/authenticated/Settings/SecuritySettingsPage';
-import NotificationSettings from '../pages/authenticated/Settings/NotificationSettingsPage';
-import PrivacySettings from '../pages/authenticated/Settings/PrivacySettings';
-import AddMerchantPage from '../pages/authenticated/Merchant/AddMerchant';
-import MerchantProfile from '../pages/authenticated/Merchant/MerchantProfile';
-import MerchantProfileUpdate from '../pages/authenticated/Merchant/ProfileUpdate';
-import MerchantDomain from '../pages/authenticated/Merchant/MerchantDomain';
-import MerchantDocument from '../pages/authenticated/Merchant/MerchantDocument';
-import MerchantCredential from '../pages/authenticated/Merchant/MerchantCredentials';
-import SettlementBatchTransaction from '../pages/authenticated/Settlement/SettlementBatchTransaction';
-import ContactPage from '../pages/authenticated/Settings/Contact';
-import UserManagement from '../pages/authenticated/Settings/UserManagement';
-import SettingsLayout from '../layouts/SettingsLayout';
-import RolesAndPermission from '../pages/authenticated/Settings/Roles';
-import ManagePermission from '../pages/authenticated/Settings/ManagePermission';
-import RoleAssignment from '../pages/authenticated/Settings/RoleAssignment';
-import MerchantLayout from '../layouts/MerchantLayout';
-import Compliance from '../pages/authenticated/Compliance/Compliance';
-import SuccessPage from '../pages/authenticated/SuccessPage';
+import Spinner from '../components/Spinner';
+
+// unauthenticated pages
+const LoginPage = lazy(() => import('../pages/unauthenticated/Login/LoginPage'));
+const RegisterPage = lazy(() => import('../pages/unauthenticated/Register/RegisterPage'));
+const ResetPasswordPage = lazy(() => import('../pages/unauthenticated/ResetPassword/ResetPasswordPage'));
+const ForgotPasswordPage = lazy(() => import('../pages/unauthenticated/ForgotPassword/ForgotPasswordPage'));
+const VerifyEmailPage = lazy(() => import('../pages/unauthenticated/VerifyEmail/VerifyEmailPage'));
+
+// authenticated layouts
+const SettingsLayout = lazy(() => import('../layouts/SettingsLayout'));
+const MerchantLayout = lazy(() => import('../layouts/MerchantLayout'));
+
+// authenticated pages (lazy)
+const Dashboard = lazy(() => import('../pages/authenticated/Dashboard/Dashboard'));
+const CustomersPage = lazy(() => import('../pages/authenticated/Customers/Customers'));
+const DisputesPage = lazy(() => import('../pages/authenticated/Disputes/Disputes'));
+const Aggregator = lazy(() => import('../pages/authenticated/Aggregator/Aggregator'));
+const MerchantPage = lazy(() => import('../pages/authenticated/Merchant/Merchant'));
+const AllSettlement = lazy(() => import('../pages/authenticated/Settlement/AllSettlement'));
+const InvoicesPage = lazy(() => import('../pages/authenticated/Invoices/Invoices'));
+const TransactionPage = lazy(() => import('../pages/authenticated/Transaction/Transaction'));
+const HelpCenter = lazy(() => import('../pages/authenticated/HelpCenter/HelpCenter'));
+const SettlementConfiguration = lazy(() => import('../pages/authenticated/Settlement/Configuration'));
+const SettlementBankAccount = lazy(() => import('../pages/authenticated/Settlement/BankAccount'));
+const SettlementBatchTransaction = lazy(() => import('../pages/authenticated/Settlement/SettlementBatchTransaction'));
+
+// merchant pages
+const AddMerchantPage = lazy(() => import('../pages/authenticated/Merchant/AddMerchant'));
+const MerchantProfile = lazy(() => import('../pages/authenticated/Merchant/MerchantProfile'));
+const MerchantProfileUpdate = lazy(() => import('../pages/authenticated/Merchant/ProfileUpdate'));
+const MerchantDomain = lazy(() => import('../pages/authenticated/Merchant/MerchantDomain'));
+const MerchantDocument = lazy(() => import('../pages/authenticated/Merchant/MerchantDocument'));
+const MerchantCredential = lazy(() => import('../pages/authenticated/Merchant/MerchantCredentials'));
+
+// settings
+const ProfilePage = lazy(() => import('../pages/authenticated/Settings/Profile'));
+const SecuritySettings = lazy(() => import('../pages/authenticated/Settings/SecuritySettingsPage'));
+const NotificationSettings = lazy(() => import('../pages/authenticated/Settings/NotificationSettingsPage'));
+const PrivacySettings = lazy(() => import('../pages/authenticated/Settings/PrivacySettings'));
+const ContactPage = lazy(() => import('../pages/authenticated/Settings/Contact'));
+const UserManagement = lazy(() => import('../pages/authenticated/Settings/UserManagement'));
+const RolesAndPermission = lazy(() => import('../pages/authenticated/Settings/Roles'));
+const ManagePermission = lazy(() => import('../pages/authenticated/Settings/ManagePermission'));
+const RoleAssignment = lazy(() => import('../pages/authenticated/Settings/RoleAssignment'));
+
+// alias variables removed - use direct lazy imports where needed
+
+const Compliance = lazy(() => import('../pages/authenticated/Compliance/Compliance'));
+const SuccessPage = lazy(() => import('../pages/authenticated/SuccessPage'));
 
 const RoutesSystem = () => {
   return (
-    <Routes>
+    <Suspense fallback={<div className="p-6"><Spinner /></div>}>
+      <Routes>
 
       {/* public routes */}
 
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
       <Route path='/reset-password' element={<ResetPasswordPage />} />
+      <Route path='/verify-email' element={<VerifyEmailPage />} />
       <Route path='/forgot-password' element={<ForgotPasswordPage />} />
       {/* <Route path='/confirm-email' element={<ConfirmEmailPage />} /> */}
       {/* <Route path='/complete-registration' element={<RegisterMultiStepPage />} /> */}
@@ -115,7 +133,8 @@ const RoutesSystem = () => {
         </Route>
         <Route path="/success" element={<SuccessPage />} />
       </Route>
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 };
 

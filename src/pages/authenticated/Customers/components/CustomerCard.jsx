@@ -1,4 +1,4 @@
-import React from 'react'
+// React import removed: using automatic JSX runtime
 import Card from '@/components/dashboard/Card'
 import { Check, DollarSign, User } from 'lucide-react'
 

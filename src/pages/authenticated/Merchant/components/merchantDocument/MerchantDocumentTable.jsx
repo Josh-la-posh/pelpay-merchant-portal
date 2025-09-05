@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
 import DataTable from '@/components/Table';
 import { dateFormatter } from '@/utils/dateFormatter';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import MerchantService from '@/services/api/merchantApi';
 import { useDispatch } from 'react-redux';
-import { Cloud, Trash } from 'lucide-react';
+import { Cloud } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 const MerchantDocumentTable = ({filteredData, merchantCode}) => {
     const axiosPrivate = useAxiosPrivate();
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    // selectedIndex removed as action menu is not used currently
     const merchantService = new MerchantService(axiosPrivate);
     const dispatch = useDispatch();
     
@@ -78,9 +78,7 @@ const MerchantDocumentTable = ({filteredData, merchantCode}) => {
         await merchantService.deleteMerchantDocument(id, merchantCode, dispatch);
     }
     
-    const handleSelectedRow = (index) => {
-        setSelectedIndex(selectedIndex === index ? null : index);
-    };
+    // action handlers currently unused; implement when needed
 
     return (
         <div className="">
@@ -95,3 +93,8 @@ const MerchantDocumentTable = ({filteredData, merchantCode}) => {
 };
 
 export default MerchantDocumentTable;
+
+MerchantDocumentTable.propTypes = {
+    filteredData: PropTypes.array,
+    merchantCode: PropTypes.string,
+};

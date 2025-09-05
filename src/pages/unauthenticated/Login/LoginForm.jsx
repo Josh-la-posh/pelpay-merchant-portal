@@ -84,7 +84,7 @@ const LoginForm = () => {
           {loading ? 'Logging in...' : 'Log in'}
         </Button>
         <div className="text-center mt-4">
-          <Link to="/register" className="text-[12px] lg:text-sm">Don't have an account? <span className='text-priColor hover:underline'> Sign Up</span></Link>
+          <Link to="/register" className="text-[12px] lg:text-sm">Don&apos;t have an account? <span className='text-priColor hover:underline'> Sign Up</span></Link>
         </div>
       </form>
     </section>

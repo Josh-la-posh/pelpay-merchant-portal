@@ -61,7 +61,7 @@ class TransactionService {
         } else {
             toast('Failed to download transactions data. Try again.');
         }
-      } finally {
+  console.error('downloadTransactionReceipt error:', err);
       }
     }
   
@@ -80,7 +80,7 @@ class TransactionService {
         } else {
             dispatch(transactionFailure('Failed to load Customer transactions. Try again.'));
         }
-      } finally {
+  console.error('fetchtransactionsByPaymentReference error:', err);
       }
     }
   
@@ -99,7 +99,7 @@ class TransactionService {
         } else {
             dispatch(transactionFailure('Failed to load Customer transactions. Try again.'));
         }
-      } finally {
+  console.error('fetchtransactionsByDate error:', err);
       }
     }
   
@@ -119,7 +119,7 @@ class TransactionService {
         } else {
             dispatch(transactionFailure('Failed to create transaction. Try again.'));
         }
-      } finally {
+  console.error('searchTransaction error:', err);
       }
     }
   
@@ -138,7 +138,7 @@ class TransactionService {
         } else {
             dispatch(transactionFailure('Failed to load Customer transactions. Try again.'));
         }
-      } finally {
+  console.error('fetchtransactionsByCustomerEmail error:', err);
       }
     }
   
@@ -157,7 +157,7 @@ class TransactionService {
         } else {
             dispatch(transactionFailure('Failed to load Customer transactions. Try again.'));
         }
-      } finally {
+  console.error('fetchtransactions error:', err);
       }
     }
   
@@ -197,7 +197,7 @@ class TransactionService {
         } else {
             toast('Failed to download transaction receipt. Try again.');
         }
-      } finally {
+  console.error('fetchTransactionReceipt error:', err);
       }
     }
   }

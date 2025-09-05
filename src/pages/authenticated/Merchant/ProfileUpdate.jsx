@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
 import MerchantService from '@/services/api/merchantApi';
@@ -10,12 +10,9 @@ function MerchantProfileUpdate() {
     const { merchantCode } = useParams();
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
-    const merchantService = new MerchantService(axiosPrivate);
+    const merchantService = useMemo(() => new MerchantService(axiosPrivate), [axiosPrivate]);
     const dispatch = useDispatch();
-    const { 
-        merchantBusinessTypes,
-        merchantRegistrationTypes 
-        } = useSelector((state) => state.merchant);
+    const { merchantBusinessTypes, merchantRegistrationTypes } = useSelector((state) => state.merchant);
     const { merchantProfile } = useSelector((state) => state.merchant);
 
     // profile updte
@@ -23,17 +20,13 @@ function MerchantProfileUpdate() {
     const [registrationTypes, setRegistrationTypes] = useState(merchantRegistrationTypes);
     const [businessTypes, setBusinessTypes] = useState(merchantBusinessTypes);
     const [industryList, setIndustryList] = useState([]);
-    const [showIndustryListReload, setShowIndustryListReload] = useState(false);
     const [industryCategoryList, setIndustryCategoryList] = useState([]);
-    const [showIndustryCategoryListReload, setShowIndustryCategoryListReload] = useState(false);
     const [showIndustryCategories, setShowIndustryCategories] = useState(false);
 
     // address update
 
-    const [countryList, setCountryList] = useState([]);
-    const [showCountryListReload, setShowCountryListReload] = useState(false);
+    // country/show reload states removed (not used in this view)
     const [stateList, setStateList] = useState([]);
-    const [cityList, setCityList] = useState([]);
 
     // profile data
     const [validBusinessDescription, setValidBusinessDescription] = useState(false);
@@ -95,6 +88,34 @@ function MerchantProfileUpdate() {
         })
     }, [merchantProfile])
 
+    const getIndustryCategories = useCallback(async (id) => {
+        try {
+            const response = await axiosPrivate.get(`api/industry/categories/${id}`);
+            if (response.data.message === 'Successful') {
+                const result = response.data.responseData;
+                setIndustryCategoryList(result);      
+                setFormData((prevState) => ({
+                    ...prevState,
+                    industryCategoryId: result[0].id,
+                }));
+                setShowIndustryCategories(true);
+            } else {
+                setShowIndustryCategories(false);
+            }
+        } catch (err) {
+            console.error(err);
+            setShowIndustryCategories(false);
+        }
+    }, [axiosPrivate]);
+
+    const getBusinessType = useCallback(() => {
+        merchantService.fetchMerchantProfileBusinessType(dispatch);
+    }, [merchantService, dispatch]);
+
+    const getRegistrationType = useCallback(() => {
+        merchantService.fetchMerchantProfileRegistrationType(dispatch);
+    }, [merchantService, dispatch]);
+
     useEffect(() => {
       const loadData = async () => {
         if (merchantCode) {
@@ -102,7 +123,7 @@ function MerchantProfileUpdate() {
         }
       };
       loadData();
-    }, [merchantCode, dispatch]);
+    }, [merchantCode, dispatch, merchantService]);
     
     useEffect(() => {
         getCountry();
@@ -120,78 +141,44 @@ function MerchantProfileUpdate() {
         setBusinessTypes(merchantBusinessTypes);
     }, [merchantBusinessTypes])
 
-    const getCountry = async () => {
+    const getCountry = useCallback(async () => {
         try {
             const response = await axiosPrivate.get('api/country');
             if (response.data.message === 'Successful') {
-                setCountryList(response.data.responseData);
-
                 const selectedStateList = response.data.responseData
-                    .find(country => country.id === 'NG').states;
-        
+                    .find(country => country.id === 'NG')?.states || [];
+
                 setStateList(selectedStateList);
-                setShowCountryListReload(false);
             } else {
-                setShowCountryListReload(true);
+                // failed to load countries
             }
         } catch (err) {
-            setShowCountryListReload(true);
+            console.error(err);
         }
-    }
+    }, [axiosPrivate]);
 
-    const getIndustry = async () => {
+    const getIndustry = useCallback(async () => {
         try {
             const response = await axiosPrivate.get('api/industry');
             if (response.data.message === 'Successful') {
                 const result = response.data.responseData;
                 setIndustryList(result);
-                getIndustryCategories(result[0].id)
-                setShowIndustryListReload(false);
+                if (result && result[0]) getIndustryCategories(result[0].id)
             } else {
-                setShowIndustryListReload(true);
+                // failed to load industries
             }
         } catch (err) {
-            setShowIndustryListReload(true);
+            console.error(err);
         }
-    }
-
-    const getIndustryCategories = async (id) => {
-        try {
-            const response = await axiosPrivate.get(`api/industry/categories/${id}`);
-            if (response.data.message === 'Successful') {
-                const result = response.data.responseData;
-                setIndustryCategoryList(result);      
-                setFormData((prevState) => ({
-                    ...prevState,
-                    industryCategoryId: result[0].id,
-                }));
-                setShowIndustryCategories(true);
-                setShowIndustryCategoryListReload(false);
-            } else {
-                setShowIndustryCategoryListReload(true);
-                setShowIndustryCategories(false);
-            }
-        } catch (err) {
-            setShowIndustryCategoryListReload(true);
-            setShowIndustryCategories(false);
-        }
-    }
+    }, [axiosPrivate, getIndustryCategories]);
     
     useEffect(() => {
         getBusinessType();
-    }, [])
+    }, [getBusinessType])
     
     useEffect(() => {
         getRegistrationType();
-    }, [])
-
-    const getBusinessType = () => {
-        merchantService.fetchMerchantProfileBusinessType(dispatch);
-    }
-
-    const getRegistrationType = () => {
-        merchantService.fetchMerchantProfileRegistrationType(dispatch);
-    }
+    }, [getRegistrationType])
 
     const handleAddressChange = (e) => {
         const { name, value } = e.target;
@@ -209,48 +196,48 @@ function MerchantProfileUpdate() {
         }));
     };
 
-    const handleCountryChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
+    // const handleCountryChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData((prevState) => ({
+    //         ...prevState,
+    //         [name]: value,
+    //     }));
 
-        const selectedStateList = countryList
-            .find(country => country.id === e.target.value).states;
+    //     const selectedStateList = countryList
+    //         .find(country => country.id === e.target.value).states;
 
-        setStateList(selectedStateList);
-    }
+    //     setStateList(selectedStateList);
+    // }
 
     const handleStateChange = () => {}
 
-    const handleCityChange = () => {}
+    // const handleCityChange = () => {}
 
-    const handleStatusChange = (e) => {
-        const { name, value } = e.target;
+    // const handleStatusChange = (e) => {
+    //     const { name, value } = e.target;
     
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    }
+    //     setFormData((prevState) => ({
+    //         ...prevState,
+    //         [name]: value,
+    //     }));
+    // }
 
-    const handleWhitelistedChange = (e) => {
-        const { name, value } = e.target;
+    // const handleWhitelistedChange = (e) => {
+    //     const { name, value } = e.target;
     
-        var result;
+    //     var result;
 
-        if (value === 'true') {
-            result = true;
-        } else {
-            result = false;
-        }
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: result,
-        }));
+    //     if (value === 'true') {
+    //         result = true;
+    //     } else {
+    //         result = false;
+    //     }
+    //     setFormData((prevState) => ({
+    //         ...prevState,
+    //         [name]: result,
+    //     }));
         
-    }
+    // }
 
     const handleIndustryChange = (e) => {
         getIndustryCategories(e.target.value);
@@ -303,7 +290,7 @@ function MerchantProfileUpdate() {
       }
     };
     loadData();
-  }, [merchantCode, dispatch]);
+  }, [merchantCode, dispatch, merchantService]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

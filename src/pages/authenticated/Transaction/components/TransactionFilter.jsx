@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowDownWideNarrow, ArrowLeft, CalendarDays, Cloud, Search } from 'lucide-react';
 // import { ReactComponent as MastercardIcon } from '@/assets/Mastercard.svg';
 // import { ReactComponent as StanbicIcon } from '@/assets/Stanbic.svg';
@@ -14,10 +14,11 @@ import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import useAuth from '@/services/hooks/useAuth';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { dateFormatter } from '../../../../utils/dateFormatter';
+import PropTypes from 'prop-types';
+// import { dateFormatter } from '../../../../utils/dateFormatter';
 import { formatEncodedDate } from '../../../../utils/formatEncodedDate';
 
-function TransactionFilter({filteredData, setFilteredData, transactions, handleRefresh, setFilteredDataResult}) {
+function TransactionFilter({filteredData = [], setFilteredData = () => {}, transactions = [], handleRefresh = () => {}, setFilteredDataResult = () => {}}) {
     const navigate = useNavigate();
     const { auth } = useAuth();
     const dispatch = useDispatch();
@@ -79,7 +80,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
             setEndDate(null);
             setStartDate(null);
         }
-    }, [searchMode])
+    }, [searchMode, setFilteredData, transactions])
 
     useEffect(() => {
         setCanSearch(false);
@@ -92,7 +93,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
             return matchSearch;
         });
         setFilteredData(filteredTransactions);
-    }, [transactions, search]);
+    }, [transactions, search, setFilteredData]);
 
     useEffect(() => {
         setCanSearch(false);
@@ -104,7 +105,7 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
             return matchFilter;
         });
         setFilteredDataResult(filteredTransactions);
-    }, [filterStatus, filteredData]);
+    }, [filterStatus, filteredData, setFilteredDataResult]);
 
     const handleFilteredDataChange = (val) => {
         setCanSearch(false);
@@ -386,5 +387,13 @@ function TransactionFilter({filteredData, setFilteredData, transactions, handleR
     </div>
   )
 }
+
+TransactionFilter.propTypes = {
+    filteredData: PropTypes.array,
+    setFilteredData: PropTypes.func,
+    transactions: PropTypes.array,
+    handleRefresh: PropTypes.func,
+    setFilteredDataResult: PropTypes.func,
+};
 
 export default TransactionFilter

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 function SecurityNotifications() {
     const [notifications, setNotifications] = useState({

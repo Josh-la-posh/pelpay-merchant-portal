@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../auth.css';
 import AuthInputField from '@/components/AuthInptField';
@@ -80,7 +80,7 @@ const ForgotPasswordForm = () => {
                     <div className="text-[13px] h-[screen]">
                         <div className="h-full flex flex-col justify-center items-center gap-6 pt-[20px] my-8">
                             <CheckCircle size='36px' className='text-green-600'/>
-                            <p className='text-[13px] text-center'>"Kindly follow the link send to your email for password reset</p>
+                            <p className='text-[13px] text-center'>Kindly follow the link sent to your email for password reset</p>
                             <Link to='/login' className='text-priColor hover:underline'>Proceed to Login page</Link>
                         </div>
                     </div>

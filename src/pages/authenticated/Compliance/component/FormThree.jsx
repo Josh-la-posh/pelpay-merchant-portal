@@ -2,16 +2,16 @@ import { useState } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceUploader from "../../../../components/ComplianceUploader";
 import { useSelector } from "react-redux";
+import PropTypes from 'prop-types';
 
 const FormThree = ({ handleNextStep, handlePrevStep }) => {
   const { complianceData } = useSelector((state) => state.compliance);
   const initialData = complianceData?.documents;
 
-  const [oldData, setOldData] = useState({
+  const oldData = {
     director_id:
-      initialData?.find(
-        (doc) => doc?.documentType === "director_id"
-      )?.originalName || null,
+      initialData?.find((doc) => doc?.documentType === "director_id")
+        ?.originalName || null,
     certificate_of_incorporation:
       initialData?.find(
         (doc) => doc?.documentType === "certificate_of_incorporation"
@@ -19,8 +19,8 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
     status_report:
       initialData?.find((doc) => doc?.documentType === "status_report")
         ?.originalName || null,
-    progress: complianceData?.progress || 2
-  });
+    progress: complianceData?.progress || 2,
+  };
 
   const [formData, setFormData] = useState({
     director_id:
@@ -123,3 +123,8 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
 };
 
 export default FormThree;
+
+FormThree.propTypes = {
+  handleNextStep: PropTypes.func,
+  handlePrevStep: PropTypes.func,
+};

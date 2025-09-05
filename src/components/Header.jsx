@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+// no local state needed here
 import useTitle from '../services/hooks/useTitle';
 import useAuth from '../services/hooks/useAuth';
 import {AlignJustify} from 'lucide-react';
 import MerchantSelector from './MerchantSelector';
+import PropTypes from 'prop-types';
 
-const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
+const Header = ({ openSidebar = true, setOpenSidebar, setIsSidebarTextVisible }) => {
   const {auth} = useAuth();
   const { appTitle } = useTitle();
   const merchants = auth?.data?.merchants || [];
-  const [merchant, setMerchant] = useState(merchants[0] || {});
-
-  const handleMerchantChange = (selectedMerchant) => {
-    setMerchant(selectedMerchant);
-  };
+  const handleMerchantChange = () => {};
 
   const handleSidebar = () => {
     setOpenSidebar(!openSidebar);
@@ -33,6 +30,12 @@ const Header = ({ openSidebar, setOpenSidebar, setIsSidebarTextVisible }) => {
       <MerchantSelector merchants={merchants} onMerchantChange={handleMerchantChange} />
     </header>
   );
+};
+
+Header.propTypes = {
+  openSidebar: PropTypes.bool,
+  setOpenSidebar: PropTypes.func.isRequired,
+  setIsSidebarTextVisible: PropTypes.func.isRequired,
 };
 
 export default Header;

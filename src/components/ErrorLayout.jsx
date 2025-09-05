@@ -1,6 +1,6 @@
-import React from 'react'
+import PropTypes from 'prop-types';
 
-function ErrorLayout({errMsg, handleRefresh}) {
+function ErrorLayout({errMsg = 'Something went wrong', handleRefresh = () => { }}) {
   return (
     <div className="h-full w-full flex items-center justify-center bg-gray-200/50 z-50">
         <div className="flex flex-col items-center">
@@ -15,5 +15,10 @@ function ErrorLayout({errMsg, handleRefresh}) {
     </div>
   )
 }
+
+ErrorLayout.propTypes = {
+  errMsg: PropTypes.string,
+  handleRefresh: PropTypes.func,
+};
 
 export default ErrorLayout

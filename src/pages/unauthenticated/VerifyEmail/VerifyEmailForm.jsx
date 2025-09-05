@@ -5,10 +5,10 @@ import axios from '@/services/api/axios';
 import AuthInputField from '@/components/AuthInptField';
 import { CheckCircle, Lock } from 'lucide-react';
 
-const RESET_PASSWORD_URL = '/api/account/reset-password';
+const CONFIRM_ACCOUNT_URL = 'api/account/confirm-account';
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{7,24}$/;
 
-const ResetPasswordForm = () => {
+const VerifyEmailForm = () => {
     const errRef = useRef();
     const [password, setPassword] = useState('');
     const [validPassword, setValidPassword] = useState(false);
@@ -21,7 +21,6 @@ const ResetPasswordForm = () => {
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState(false);
     const [success, setSuccess] = useState(false);
-    // navigate was unused and removed
 
     useEffect(() => {
         const result = PWD_REGEX.test(password);
@@ -63,7 +62,7 @@ const ResetPasswordForm = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(RESET_PASSWORD_URL,
+            const response = await axios.post(CONFIRM_ACCOUNT_URL,
                 JSON.stringify({token, password, confirmPassword}),
                  {
                     headers: {
@@ -94,7 +93,7 @@ const ResetPasswordForm = () => {
                         <div className="flex justify-center">
                             <img src='/assets/logo.jpg' />
                         </div>
-                        <h2 className="text-2xl font-semibold mt-6 mb-4">Reset Password</h2>
+                        <h2 className="text-2xl font-semibold mt-6 mb-4">Verify Account</h2>
                         <p ref={errRef} className={errMsg ? "errmsg" :
                             "offscreen"} aria-live='asserive'>{errMsg}</p>
                         <form onSubmit={handleSubmit} className='space-y-6'>
@@ -153,7 +152,7 @@ const ResetPasswordForm = () => {
                     <div className="text-[13px]">
                         <div className="flex flex-col justify-center items-center gap-6 py-[20px] px-[40px] mb-4">
                             <CheckCircle size='32px' className='text-green-600' />
-                            <p className='text-[13px] text-center'>Password Reset Successful.</p>
+                            <p className='text-[13px] text-center'>Password Saved Successful.</p>
                         </div>
                         <Link to='/login' className='text-blue-800 hover:underline'>Proceed to Login</Link>
                     </div>
@@ -162,4 +161,4 @@ const ResetPasswordForm = () => {
     );
 };
 
-export default ResetPasswordForm;
+export default VerifyEmailForm;

@@ -1,12 +1,13 @@
 import ReactApexChart from "react-apexcharts";
 import { processLumpsumData } from "@/data/processedLumpsumData";
+import PropTypes from 'prop-types';
 
-function DashboardPie({graph, type}) {
+function DashboardPie({ graph = [], type = 'Count' }) {
     const {
         finalLumpsumCount,
         finalLumpsumVolume,
         totalTransactionsCount
-    } = processLumpsumData(graph);
+    } = processLumpsumData(graph || []);
 
     const pieSeries = type === 'Count' ? finalLumpsumCount : finalLumpsumVolume;
     const pieOptions = {
@@ -79,3 +80,8 @@ function DashboardPie({graph, type}) {
   }
 
   export default DashboardPie;
+
+DashboardPie.propTypes = {
+    graph: PropTypes.array,
+    type: PropTypes.string,
+};

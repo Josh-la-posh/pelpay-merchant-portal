@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import DataTable from '@/components/Table';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { Link } from 'react-router-dom';
@@ -11,14 +12,14 @@ import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
 import useAuth from '@/services/hooks/useAuth';
 
-const MerchantTable = ({filteredData, handleOpenModal}) => {
+const MerchantTable = ({ filteredData }) => {
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
-    const merchantService = new MerchantService(axiosPrivate);
-    const userService = new UserService(axiosPrivate);
+    const merchantService = useMemo(() => new MerchantService(axiosPrivate), [axiosPrivate]);
+    const userService = useMemo(() => new UserService(axiosPrivate), [axiosPrivate]);
     const dispatch = useDispatch();
-    const { aggregatorUser } = useSelector((state) => state.users);
-    const [users, setUsers] = useState(aggregatorUser);
+    const { aggregatorUser } = useSelector((state) => state.users || {});
+    const [users, setUsers] = useState(() => aggregatorUser || []);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState({
@@ -118,9 +119,14 @@ const MerchantTable = ({filteredData, handleOpenModal}) => {
         setUsers(aggregatorUser);
     }, [aggregatorUser])
 
+    const fetchUsers = useCallback(async () => {
+        const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
+        await userService.fetchUserByAggregatorCode(aggregatorCode, 1, 20, dispatch);
+    }, [auth, userService, dispatch]);
+
     useEffect(() => {
         fetchUsers();
-    }, [])
+    }, [fetchUsers]);
 
     const handleUserChange = (e) => {
         const {value} = e.target;
@@ -146,12 +152,14 @@ const MerchantTable = ({filteredData, handleOpenModal}) => {
             merchantId: ''
         });
     }
+    
+    const loadData = async () => {
+        await merchantService.addUserMerchant(formData);
+    };
 
-    const getDataToParent = (id) => {
-        handleOpenModal(filteredData[id]);
-    }
+    // getDataToParent removed - not used in this component
 
-    const handleSubmit = (e) => {
+    const handleSubmit = () => {
         const v1 = formData.userId;
 
         if (v1 === '') {
@@ -164,15 +172,6 @@ const MerchantTable = ({filteredData, handleOpenModal}) => {
     const handleSelectedRow = (index) => {
         setSelectedIndex(selectedIndex === index ? null : index);
     };
-    
-    const loadData = async () => {
-        await merchantService.addUserMerchant(formData);
-    };
-    
-    const fetchUsers = async () => {
-        const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
-        await userService.fetchUserByAggregatorCode(aggregatorCode, 1, 20, dispatch);
-    };
 
     return (
         <div className="">
@@ -184,14 +183,14 @@ const MerchantTable = ({filteredData, handleOpenModal}) => {
                     <h2 className='mb-8'>New User</h2>
 
                     <div className="flex mt-8 gap-3">
-                        <select id='users' value={users.id} onChange={handleUserChange} className='flex-grow px-4 py-2 outline-gray-400' defaultValue='Select User'>
+                        <select id='users' value={formData.userId} onChange={handleUserChange} className='flex-grow px-4 py-2 outline-gray-400'>
+                            <option value="">Select User</option>
                             {
-                                users &&
-                                users.map((user) =>
-                                 (<option key={user.id} value={user.id} className='text-xs max-w-fit'>
-                                    {user.firstName} {user.lastName}
-                                </option>)
-                                )
+                                Array.isArray(users) && users.map((user) => (
+                                    <option key={user.id} value={user.id} className='text-xs max-w-fit'>
+                                        {user.firstName} {user.lastName}
+                                    </option>
+                                ))
                             }
                         </select>
                         <button
@@ -219,3 +218,7 @@ const MerchantTable = ({filteredData, handleOpenModal}) => {
 };
 
 export default MerchantTable;
+
+MerchantTable.propTypes = {
+    filteredData: PropTypes.array,
+};

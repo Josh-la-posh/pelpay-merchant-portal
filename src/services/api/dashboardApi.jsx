@@ -21,8 +21,7 @@ class DashboardService {
         } else {
             dispatch(lumpsumFailure('Failed to load dashboard data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchGraph(merchantCode, interval, dispatch) {
@@ -39,8 +38,7 @@ class DashboardService {
         } else {
             dispatch(graphFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     
@@ -64,8 +62,7 @@ class DashboardService {
       } else {
           dispatch(transactionFailure('Failed to load Customer transactions. Try again.'));
       }
-    } finally {
-    }
+  }
   }
   }
   

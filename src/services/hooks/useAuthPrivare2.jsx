@@ -24,8 +24,7 @@ const useNoHeaderAxiosPrivate = () => {
         const responseIntercept = noHeaderAxiosPrivate.interceptors.response.use(
             response => response,
             async (error) => {
-                const prevRequest = error?.config;
-                if (error.response.status === 401) {
+                if (error?.response?.status === 401) {
                     try {
                         toast.error('Session expired.\n Redirecting to login');
                         setTimeout(() => {
@@ -34,6 +33,7 @@ const useNoHeaderAxiosPrivate = () => {
                             navigate('/login', {state: {from: location}, replace: true});
                         }, 2000);
                     } catch (err) {
+                        console.error('useNoHeaderAxiosPrivate response interceptor error', err);
                     }
                 }
                 // if (error?.response?.status === 401 && !prevRequest?.sent) {
@@ -55,7 +55,7 @@ const useNoHeaderAxiosPrivate = () => {
             noHeaderAxiosPrivate.interceptors.request.eject(requestIntercept);
             noHeaderAxiosPrivate.interceptors.response.eject(responseIntercept);
         }
-    }, [auth, refresh, navigate, setAuth]);
+    }, [auth, refresh, navigate, setAuth, location]);
 
     return noHeaderAxiosPrivate;
 }

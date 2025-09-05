@@ -1,5 +1,7 @@
 
-const ComplianceUploader = ({ label, onChange, value }) => {
+import PropTypes from 'prop-types';
+
+const ComplianceUploader = ({ label, onChange = () => {}, value = '' }) => {
   return (
     <div className="mb-4">
       <label className="block text-[12px] text-gray-700 py-2" htmlFor={label}>
@@ -23,3 +25,9 @@ const ComplianceUploader = ({ label, onChange, value }) => {
 };
 
 export default ComplianceUploader;
+
+ComplianceUploader.propTypes = {
+  label: PropTypes.string,
+  onChange: PropTypes.func,
+  value: PropTypes.string,
+};

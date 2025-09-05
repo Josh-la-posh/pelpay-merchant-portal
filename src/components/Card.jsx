@@ -17,8 +17,8 @@ const Card = ({ title, value, icon, color, color2 }) => {
 
 Card.propTypes = {
     title: PropTypes.string,
-    value: PropTypes.string,
-    icon: PropTypes.func,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    icon: PropTypes.node,
     color: PropTypes.string,
     color2: PropTypes.string
 

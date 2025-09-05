@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -22,10 +22,10 @@ function ProfilePage() {
     const [errMsg, setErrMsg] = useState('');
   
     const [formData, setFormData] = useState({
-        firstName: userDetails.firstName ?? '',
-        lastName: userDetails.lastName ?? '',
-        email: userDetails.email ?? '',
-        phone: userDetails.phoneNumber ?? ''
+        firstName: userDetails?.firstName ?? '',
+        lastName: userDetails?.lastName ?? '',
+        email: userDetails?.email ?? '',
+        phone: userDetails?.phoneNumber ?? ''
     });
               
     useEffect(() => {
@@ -81,7 +81,7 @@ function ProfilePage() {
         const v3 = formData.email;
         const v4 = formData.phoneNumber;
         
-        if (v1 !== '' && v2 !== '' && v3 !== '' ** v4 !== '') {
+    if (v1 !== '' && v2 !== '' && v3 !== '' && v4 !== '') {
             updateUserData();
             isLoading ? setEditing(true) : setEditing(false);
         } else {

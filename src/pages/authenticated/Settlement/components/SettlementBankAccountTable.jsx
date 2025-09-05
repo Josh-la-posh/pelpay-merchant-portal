@@ -1,8 +1,7 @@
-import React from 'react';
 import DataTable from '@/components/Table';
+import PropTypes from 'prop-types';
 
 const SettlementBankAccountTable = ({filteredData}) => {
-    
     const columns = [
         {
             header: 'Bank Name',
@@ -41,6 +40,10 @@ const SettlementBankAccountTable = ({filteredData}) => {
             />
         </div>
     );
+};
+
+SettlementBankAccountTable.propTypes = {
+    filteredData: PropTypes.array,
 };
 
 export default SettlementBankAccountTable;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +16,7 @@ function MerchantDocument() {
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const axiosPrivate = useAxiosPrivate();
-  const merchantService = new MerchantService(axiosPrivate);
+  const merchantService = useMemo(() => new MerchantService(axiosPrivate), [axiosPrivate]);
   const dispatch = useDispatch();
   const { merchantDocument, merchantDocumentError, merchantDocumentLoading } = useSelector((state) => state.merchant);
   const [filteredData, setFilteredData] = useState(merchantDocument);
@@ -26,7 +26,7 @@ function MerchantDocument() {
   useEffect(() => {
       setAppTitle('Merchant');
       setSettingsTitle('Document');
-  }, []);
+  }, [setAppTitle, setSettingsTitle]);
           
   useEffect(() => {
     setFilteredData(merchantDocument);
@@ -40,17 +40,17 @@ function MerchantDocument() {
       setErrMsg(merchantDocumentError);
   }, [merchantDocumentError]);
 
+  const loadData = useCallback(async () => {
+    await merchantService.fetchMerchantDocument(merchantCode, dispatch);
+  }, [merchantService, merchantCode, dispatch]);
+
   useEffect(() => {
     loadData();
-  }, [merchantCode, dispatch]);
+  }, [merchantCode, dispatch, loadData]);
 
   const handleRefresh = () => {
-      loadData();
+    loadData();
   }
-  
-  const loadData = async () => {
-      await merchantService.fetchMerchantDocument(merchantCode, dispatch);
-  };
 
   if (isLoading) return (
       <div className='h-[40vh] w-full'>

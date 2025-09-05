@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
 import MerchantService from '@/services/api/merchantApi';
 import UserService from '@/services/api/userApi';
-import { Link } from 'react-router-dom';
 import useAuth from '@/services/hooks/useAuth';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
-import { Plus, X } from 'lucide-react';
 import { toast } from 'react-toastify';
-import Spinner from '@/components/Spinner';
-import ErrorLayout from '@/components/ErrorLayout';
+import { useCallback, useMemo } from 'react';
+import Spinner from '../../../components/Spinner';
+import ErrorLayout from '../../../components/ErrorLayout';
+import { Plus, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import MerchantProfileContent from './components/merchantProfile/MerchantProfileContent';
 
 function MerchantProfile() {
@@ -19,11 +20,11 @@ function MerchantProfile() {
     const { setAppTitle } = useTitle();
     const { setSettingsTitle } = useSettingsTitle();
     const axiosPrivate = useAxiosPrivate();
-    const merchantService = new MerchantService(axiosPrivate);
-    const userService = new UserService(axiosPrivate);
+    const merchantService = useMemo(() => new MerchantService(axiosPrivate), [axiosPrivate]);
+    const userService = useMemo(() => new UserService(axiosPrivate), [axiosPrivate]);
     const dispatch = useDispatch();
-    const { aggregatorUser, aggregatorUserLoading } = useSelector((state) => state.users);
-    const [users, setUsers] = useState(aggregatorUser);
+    const { aggregatorUser } = useSelector((state) => state.users || {});
+    const [users, setUsers] = useState(() => aggregatorUser || []);
     const [canAddUser, setCanAddUser] = useState(false);
     const { merchantProfile, merchantProfileLoading, merchantProfileError } = useSelector((state) => state.merchant);
     const [isLoading, setIsLoading] = useState(merchantProfileLoading);
@@ -53,14 +54,25 @@ function MerchantProfile() {
         setUsers(aggregatorUser);
         setFormData((prev) => ({
             ...prev,
-            userId: aggregatorUser[0]?.id
+            userId: Array.isArray(aggregatorUser) && aggregatorUser.length ? aggregatorUser[0]?.id : ''
         }))
 
     }, [aggregatorUser])
 
+    const fetchUsers = useCallback(async () => {
+        const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
+        await userService.fetchUserByAggregatorCode(aggregatorCode, 1, 20, dispatch);
+    }, [auth, userService, dispatch]);
+
     useEffect(() => {
         fetchUsers();
-    }, [])
+    }, [fetchUsers]);
+
+    const loadData = useCallback(async () => {
+        if (merchantCode) {
+            await merchantService.fetchMerchantProfile(merchantCode, dispatch);
+        }
+    }, [merchantCode, merchantService, dispatch]);
 
     const handleUserChange = (e) => {
         const {value} = e.target;
@@ -74,13 +86,13 @@ function MerchantProfile() {
     useEffect(() => {
         setAppTitle('Merchant');
         setSettingsTitle('Profile')
-    }, []);
+    }, [setAppTitle, setSettingsTitle]);
 
     useEffect(() => {
         loadData();
-    }, [merchantCode, dispatch]);
+    }, [merchantCode, dispatch, loadData]);
     
-    const handleSubmit = (e) => {
+    const handleSubmit = () => {
         const v1 = formData.userId;
         if (v1 === '') {
             toast('User Id cannot be empty');
@@ -93,20 +105,11 @@ function MerchantProfile() {
         loadData();
     }
     
-    const loadData = async () => {
-        if (merchantCode) {
-            await merchantService.fetchMerchantProfile(merchantCode, dispatch);
-        }
-    };
-    
     const addMerchant = async () => {
         await merchantService.addUserMerchant(formData);
     };
     
-    const fetchUsers = async () => {
-        const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
-        await userService.fetchUserByAggregatorCode(aggregatorCode, 1, 20, dispatch);
-    };
+    // Duplicate fetchUsers removed to fix redeclaration error.
 
     const restoreDefault = () => {
         setIsExpanded(false);
@@ -144,15 +147,13 @@ function MerchantProfile() {
                         <div className="flex justify-end">
                             { canAddUser &&
                                 <div className ="flex flex-row items-center justify-center gap-2">
-                                    <select id='users' value={users.id} onChange={handleUserChange} className='flex-grow text-xs px-4 py-2 border border-gray-300 rounded-md outline-gray-400' defaultValue='Select User'>
-                                        {
-                                            users &&
-                                            users.map((user) =>
-                                            (<option key={user.id} value={user.id} className='text-xs max-w-fit'>
+                                    <select id='users' value={formData.userId} onChange={handleUserChange} className='flex-grow text-xs px-4 py-2 border border-gray-300 rounded-md outline-gray-400'>
+                                        <option value="">Select User</option>
+                                        {Array.isArray(users) && users.map((user) => (
+                                            <option key={user.id} value={user.id} className='text-xs max-w-fit'>
                                                 {user.firstName} {user.lastName}
-                                            </option>)
-                                            )
-                                        }
+                                            </option>
+                                        ))}
                                     </select>
                                     <button
                                         className='text-white border border-gray-300 bg-priColor text-xs font-[600]  py-2 px-5 rounded-md flex justify-between items-center'

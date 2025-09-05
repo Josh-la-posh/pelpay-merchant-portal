@@ -1,6 +1,8 @@
 import HeroSection from './HeroSection';
 
-const AuthLayout = ({children}) => {
+import PropTypes from 'prop-types';
+
+const AuthLayout = ({children = null}) => {
   return (
     <div className="block md:bg-[transparent] md:flex h-screen overflow-hidden">
       <div className="h-full lg:w-[55%] hidden lg:block">
@@ -18,3 +20,7 @@ const AuthLayout = ({children}) => {
 };
 
 export default AuthLayout;
+
+AuthLayout.propTypes = {
+  children: PropTypes.node,
+};

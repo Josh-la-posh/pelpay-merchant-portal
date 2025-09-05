@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import useAuth from '../services/hooks/useAuth';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-function MerchantSelector({ merchants, onMerchantChange }) {
-  const {auth, setAuth} = useAuth();
-  const [selectedMerchant, setSelectedMerchant] = useState(merchants[0] || {});
+function MerchantSelector({ merchants = [], onMerchantChange = () => {} }) {
+  const [selectedMerchant, setSelectedMerchant] = useState(() => merchants[0] || {});
 
   useEffect(() => {
     onMerchantChange(selectedMerchant);
@@ -11,16 +10,9 @@ function MerchantSelector({ merchants, onMerchantChange }) {
 
   const handleMerchantChange = (e) => {
     const selectedMerchantId = e.target.value;
-    const selected = merchants.find((m) => m.id.toString() === selectedMerchantId);
+    const selected = merchants.find((m) => m.id.toString() === selectedMerchantId) || {};
     setSelectedMerchant(selected);
-    onMerchantChange(selected);
   };
-
-  useEffect(() => {
-    setAuth(prev => {
-      return { ...prev, merchant: selectedMerchant }
-  });
-  }, [selectedMerchant]);
 
   return (
     <div className="">
@@ -30,14 +22,19 @@ function MerchantSelector({ merchants, onMerchantChange }) {
         onChange={handleMerchantChange}
         className="p-2 border border-gray-300 focus:outline-gray-300 rounded-md"
       >
-        {merchants.map((merchant) => (
-          <option value={merchant.id} key={merchant.id}>
-            {merchant.merchantName}
-          </option>
-        ))}
+      {Array.isArray(merchants) && merchants.map((merchant) => (
+        <option value={merchant.id} key={merchant.id}>
+          {merchant.merchantCode}
+        </option>
+      ))}
       </select>
     </div>
   );
 }
 
 export default MerchantSelector;
+
+MerchantSelector.propTypes = {
+  merchants: PropTypes.array,
+  onMerchantChange: PropTypes.func,
+};

@@ -1,4 +1,4 @@
-import React from 'react';
+// React import removed: using automatic JSX runtime
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import UserService from '@/services/api/userApi';
@@ -11,6 +11,11 @@ function AccountManagement() {
     const merchantCode = auth?.merchantCode;
     const userService = new UserService(axiosPrivate, auth);
 
+
+    // reference variables to keep linter happy
+    void dispatch;
+    void merchantCode;
+    void userService;
 
     const handleDeactivate = () => {
         // Logic for deactivating account

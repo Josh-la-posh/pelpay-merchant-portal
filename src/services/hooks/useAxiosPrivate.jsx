@@ -36,6 +36,7 @@ const useAxiosPrivate = () => {
                                 navigate('/login', {state: {from: location}, replace: true});
                             }, 2000);
                         } catch (err) {
+                            console.error('useAxiosPrivate response interceptor error', err);
                         }
                     }
                     // try {

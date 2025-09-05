@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import AuthInputField from '@/components/AuthInptField';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
@@ -12,7 +12,7 @@ import { Contact } from 'lucide-react';
 const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 function ContactPage() {
-    const errRef = useRef();
+    // errRef not used
     const { auth } = useAuth();
     const dispatch = useDispatch();
     const { merchantContact } = useSelector((state) => state.merchant);

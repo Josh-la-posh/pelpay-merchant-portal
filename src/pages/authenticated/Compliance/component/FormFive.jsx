@@ -1,11 +1,8 @@
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import { useSelector } from "react-redux";
+import PropTypes from 'prop-types';
 
-const FormFive = ({
-  handlePrevStep,
-  handleNextStep,
-  handleEditRepresentative
-}) => {
+const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) => {
   const { businessRepresentatives } = useSelector((state) => state.compliance);
 
   const handleSubmit = async () => {
@@ -95,3 +92,9 @@ const FormFive = ({
 };
 
 export default FormFive;
+
+FormFive.propTypes = {
+  handlePrevStep: PropTypes.func,
+  handleNextStep: PropTypes.func,
+  handleEditRepresentative: PropTypes.func,
+};

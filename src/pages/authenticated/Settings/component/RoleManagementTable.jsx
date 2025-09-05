@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -94,15 +94,16 @@ const RoleManagementTable = ({filteredData}) => {
         }));
     }
 
-    useState(() => {
+    useEffect(() => {
         setIsUpdate(updateRolesLoading);
     }, [updateRolesLoading]);
 
-    useState(() => {
+    useEffect(() => {
         setUpdateErrMsg(updateErrMsg);
-        setTimeout(() => {
-            setUpdateErrMsg('');
-        }, 2000);
+        if (updateErrMsg) {
+            const t = setTimeout(() => setUpdateErrMsg(''), 2000);
+            return () => clearTimeout(t);
+        }
     }, [updateErrMsg]);
 
     const handleEdit = (row) => {
@@ -273,3 +274,9 @@ const RoleManagementTable = ({filteredData}) => {
 };
 
 export default RoleManagementTable;
+
+import PropTypes from 'prop-types';
+
+RoleManagementTable.propTypes = {
+    filteredData: PropTypes.array,
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import UserService from '@/services/api/userApi';
@@ -20,7 +20,7 @@ function UserManagement() {
   const [isLoading, setIsLoading] = useState(aggregatorUserLoading);
   const [errMsg, setErrMsg] = useState(aggregatorUserError);
   const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
-  const userService = new UserService(axiosPrivate, auth);
+  const userService = useMemo(() => new UserService(axiosPrivate, auth), [axiosPrivate, auth]);
   const [pageNumber, setPageNumber] = useState(aggregatorUserPageNumber);
   const [pageSize, setPageSize] = useState(aggregatorUserPageSize);
   const [totalSize, setTotalSize] = useState(aggregatorUserTotalSize);
@@ -54,19 +54,19 @@ function UserManagement() {
     setTotalSize(aggregatorUserTotalSize);
   }, [aggregatorUserTotalSize]);
 
-  useEffect(() => {
-    loadData();
-  }, [aggregatorCode, dispatch]);
-
-  const handleRefresh = () => {
-      loadData();
-  }
-  
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (aggregatorCode) {
       await userService.fetchUserByAggregatorCode(aggregatorCode, pageNumber, pageSize, dispatch);
     }
-  };
+  }, [aggregatorCode, pageNumber, pageSize, userService, dispatch]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const handleRefresh = () => {
+    loadData();
+  }
 
   const handleModalOpen = () => {
     setIsModalOpen(true);

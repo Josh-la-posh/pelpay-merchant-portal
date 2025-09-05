@@ -21,8 +21,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // fetch aggregator merchants
@@ -41,8 +40,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorMerchantFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // update aggregator
@@ -61,8 +59,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // aggregator bank
@@ -82,8 +79,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorBankFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // fetch aggregator bank by id
@@ -101,8 +97,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorBankFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // add aggregator bank
@@ -120,8 +115,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorBankFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // update aggregator bank by id
@@ -140,8 +134,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorBankFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // deactivate aggregator bank
@@ -159,8 +152,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorBankFailure('Failed to deactivate bank. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // activate aggregator bank
@@ -178,8 +170,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorBankFailure('Failed to activate bank. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // set aggregator bank as primary account
@@ -198,8 +189,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorBankFailure('Failed to set as primary account. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
 
@@ -220,8 +210,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorDocumentFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // fetch aggregator document
@@ -239,8 +228,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorDocumentFailure('Failed to load data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // download aggregator document
@@ -258,8 +246,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorDocumentFailure('Failed to download data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // post aggregator document
@@ -278,8 +265,7 @@ class AggregatorService {
         } else {
             dispatch(aggregatorDocumentFailure('Failed to download data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   }
   

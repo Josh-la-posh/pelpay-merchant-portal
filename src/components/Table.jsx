@@ -1,20 +1,30 @@
-import React from "react";
 import PropTypes from 'prop-types';
 
-  const DataTable = ({ data, columns, drpp, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage }) => {
+    const DataTable = ({
+        data = [],
+        columns = [],
+        drpp = '',
+        totalSize,
+        currentPage = 1,
+        setCurrentPage = () => {},
+        rowsPerPage = 10,
+        setRowsPerPage = () => {},
+    }) => {
 
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-    };
+        const handlePageChange = (newPage) => {
+                setCurrentPage(newPage);
+        };
 
-    const handleRowsPerPageChange = (e) => {
-        setRowsPerPage(parseInt(e.target.value, 10));
-        setCurrentPage(1);
-    };
+        const handleRowsPerPageChange = (e) => {
+                setRowsPerPage(parseInt(e.target.value, 10));
+                setCurrentPage(1);
+        };
 
-    const totalPages = Math.ceil(totalSize / rowsPerPage);
-    
-    const getPageNumbers = () => {
+        const effectiveTotalSize = typeof totalSize === 'number' ? totalSize : (Array.isArray(data) ? data.length : 0);
+        const effectiveRowsPerPage = rowsPerPage || 10;
+        const totalPages = Math.max(1, Math.ceil(effectiveTotalSize / effectiveRowsPerPage));
+
+        const getPageNumbers = () => {
     const pages = [];
     const delta = 2; // Number of pages before and after currentPage
 
@@ -48,7 +58,7 @@ import PropTypes from 'prop-types';
     return pages;
   };
 
-  const pageNumbers = getPageNumbers();
+    const pageNumbers = getPageNumbers();
 
     return (
         <>
@@ -69,14 +79,14 @@ import PropTypes from 'prop-types';
                     </thead>
                     <tbody className="divide-y-4 divide-gray-300 dark:divider-[#20263D] border border-gray-300 dark:border-[#20263D]">
                     {
-                        data?.length === 0 ? (
+                        (!Array.isArray(data) || data.length === 0) ? (
                             <tr>
                                 <td colSpan={columns.length} className="px-6 py-4 whitespace-nowrap text-center text-gray-500">
                                     No data available
                                 </td>
                             </tr>
                         ) : (
-                            data.map((row, rowIndex) => (
+                            Array.isArray(data) && data.map((row, rowIndex) => (
                                 <tr key={rowIndex} className="hover:bg-gray-200">
                                     <td className="px-4 py-3 whitespace-nowrap text-xs lg:text-sm text-gray-500">{rowIndex + 1}</td>
                                     {columns.map((column, colIndex) => (
@@ -162,4 +172,10 @@ DataTable.propTypes = {
         render: PropTypes.func,
     })).isRequired,
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
+    drpp: PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.number]),
+    totalSize: PropTypes.number,
+    currentPage: PropTypes.number,
+    setCurrentPage: PropTypes.func,
+    rowsPerPage: PropTypes.number,
+    setRowsPerPage: PropTypes.func,
 };

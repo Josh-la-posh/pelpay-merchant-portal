@@ -1,18 +1,18 @@
-import React from "react";
 import PropTypes from "prop-types";
 
 const Checkbox = ({ label, checked, onChange, id }) => {
   return (
-    <label htmlFor={id} className="flex items-center gap-2 cursor-pointer">
+    <label htmlFor={id} className="flex items-center gap-2 cursor-pointer select-none">
       <input
         type="checkbox"
         id={id}
         name={id}
         checked={checked}
         onChange={onChange}
-        className="w-5 h-5 accent-primary cursor-pointer"
+        className="w-5 h-5 rounded border border-gray-300 cursor-pointer"
+        style={{ accentColor: 'var(--color-priColor)' }}
       />
-      <span className="text-primary font-[700]">{label}</span>
+      <span className="text-gray-700 font-semibold">{label}</span>
     </label>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import AuthInputField from '@/components/AuthInptField';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -21,16 +21,16 @@ function AddMerchantPage() {
     useEffect(() => {
         setAppTitle('Merchant');
         setSettingsTitle('New')
-    }, []);
+    }, [setAppTitle, setSettingsTitle]);
 
     const [countryList, setCountryList] = useState([]);
     const [showCountryListReload, setShowCountryListReload] = useState(false);
     const [stateList, setStateList] = useState([]);
     const [industryList, setIndustryList] = useState([]);
-    const [showIndustryListReload, setShowIndustryListReload] = useState(false);
-    const [industryCategoryList, setIndustryCategoryList] = useState([]);
-    const [showIndustryCategoryListReload, setShowIndustryCategoryListReload] = useState(false);
-    const [showIndustryCategories, setShowIndustryCategories] = useState(false);
+        const [, setShowIndustryListReload] = useState(false);
+        const [industryCategoryList, setIndustryCategoryList] = useState([]);
+        const [, setShowIndustryCategoryListReload] = useState(false);
+        // showIndustryCategories not needed here; industryId controls whether categories are shown
     const [industryId, setIndustryId] = useState(null);
     const errRef = useRef();
 
@@ -58,12 +58,11 @@ function AddMerchantPage() {
     const [validBvn, setValidBvn] = useState(false);
     const [bvnFocus, setBvnFocus] = useState(false);
 
-    const [validPostalCode, setValidPostalCode] = useState(false);
+    const [validPostalCode] = useState(false);
     const [postalCodeFocus, setPostalCodeFocus] = useState(false);
 
-    const [validAccountNumber, setValidAccountNumber] = useState(false);
 
-    const [validAccountBalance, setValidAccountBalance] = useState(false);
+    const [validAccountBalance] = useState(false);
     const [accountBalanceFocus, setAccountAmountFocus] = useState(false);
 
     const [validAddress, setValidAddress] = useState(false);
@@ -84,8 +83,8 @@ function AddMerchantPage() {
     // const [validCountry,setValidCountry] = useState(false);
     // const [countryFocus,setCountryFocus] = useState(false);
 
-    const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
+    const [, setErrMsg] = useState('');
+    const [, setSuccess] = useState(false);
 
 
     const [formData, setFormData] = useState({
@@ -108,44 +107,29 @@ function AddMerchantPage() {
         notificationURL: '',
     });
 
-    const getCountry = async () => { 
+    const getCountry = useCallback(async () => { 
         try {
             const response = await axiosPrivate.get('api/country');
             if (response.data.message === 'Successful') {
-                setCountryList(response.data.responseData);
+                const responseData = response.data.responseData || [];
+                setCountryList(responseData);
 
-                // const selectedStateList = response.data.responseData
-                //     .find(country => country.id === 'NG').states;
-
-                const selectedStateList = response.data.responseData[0].states;
-        
+                // pick first available states safely
+                const selectedStateList = (responseData[0] && responseData[0].states) ? responseData[0].states : [];
                 setStateList(selectedStateList);
                 setShowCountryListReload(false);
             } else {
                 setShowCountryListReload(true);
             }
         } catch (err) {
+            console.error(err);
             setShowCountryListReload(true);
         }
-    }
+    }, [axiosPrivate]);
 
-    const getIndustry = async () => {
-        try {
-            const response = await axiosPrivate.get('api/industry');
-            if (response.data.message === 'Successful') {
-                const result = response.data.responseData;
-                setIndustryList(result);
-                getIndustryCategories(result[0].id)
-                setShowIndustryListReload(false);
-            } else {
-                setShowIndustryListReload(true);
-            }
-        } catch (err) {
-            setShowIndustryListReload(true);
-        }
-    }
+    // duplicate getIndustryCategories removed (kept earlier declaration)
 
-    const getIndustryCategories = async (id) => {
+    const getIndustryCategories = useCallback(async (id) => {
         try {
             const response = await axiosPrivate.get(`api/industry/categories/${id}`);
             if (response.data.message === 'Successful') {
@@ -153,27 +137,45 @@ function AddMerchantPage() {
                 setIndustryCategoryList(result);        
                 setFormData((prevState) => ({
                     ...prevState,
-                    industryCategoryId: result[0].id,
+                    industryCategoryId: result[0]?.id || prevState.industryCategoryId || 1,
                 }));
-                setShowIndustryCategories(true);
+                // no-op: industryId controls visibility in this component
                 setShowIndustryCategoryListReload(false);
             } else {
                 setShowIndustryCategoryListReload(true);
-                setShowIndustryCategories(false);
+                // no-op: industryId controls visibility in this component
             }
         } catch (err) {
+            console.error(err);
             setShowIndustryCategoryListReload(true);
-            setShowIndustryCategories(false);
+            // no-op: industryId controls visibility in this component
         }
-    }
+    }, [axiosPrivate]);
+
+    const getIndustry = useCallback(async () => {
+        try {
+            const response = await axiosPrivate.get('api/industry');
+            if (response.data.message === 'Successful') {
+                const result = response.data.responseData || [];
+                setIndustryList(result);
+                if (result.length) getIndustryCategories(result[0].id);
+                setShowIndustryListReload(false);
+            } else {
+                setShowIndustryListReload(true);
+            }
+        } catch (err) {
+            console.error(err);
+            setShowIndustryListReload(true);
+        }
+    }, [axiosPrivate, getIndustryCategories]);
 
     useEffect(() =>  {
         getCountry();
-    }, [])
+    }, [getCountry])
 
     useEffect(() =>  {
         getIndustry();
-    }, [])
+    }, [getIndustry])
 
     useEffect(() => {
         const result = BUSINESS_REGEX.test(formData.businessName);
@@ -215,10 +217,7 @@ function AddMerchantPage() {
         setValidBvn(result);
     }, [formData.bvn])
 
-    useEffect(() => {
-        const result = ACCOUNT_REGEX.test(formData.accountNumber);
-        setValidAccountNumber(result);
-    }, [formData.accountNumber])
+    // account number validation not currently used in UI; removed to silence lint
 
     useEffect(() => {
         const result = formData.address.length > 4;
@@ -279,10 +278,8 @@ function AddMerchantPage() {
             [name]: value,
         }));
 
-        const selectedStateList = countryList
-            .find(country => country.id === e.target.value).states;
-
-        setStateList(selectedStateList);
+        const found = Array.isArray(countryList) ? countryList.find(country => country.id === e.target.value) : null;
+        setStateList(found?.states || []);
     }
 
     const handleStateChange = (e) => {
@@ -291,11 +288,6 @@ function AddMerchantPage() {
             ...prevState,
             [name]: value,
         }));
-
-        // const selectedStateList = countryList
-        //     .find(country => country.id === e.target.value).states;
-
-        // setStateList(selectedStateList);
     }
 
     const handleCategoryChange = (e) => {
@@ -319,7 +311,7 @@ function AddMerchantPage() {
         setLoading(true);
 
         try {
-            const response = await axiosPrivate.post('',
+            await axiosPrivate.post('',
                 JSON.stringify(formData),
                 {
                     headers: { 'Content-Type': 'application/json' },

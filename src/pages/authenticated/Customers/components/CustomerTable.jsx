@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import DataTable from '@/components/Table';
 import { Search } from 'lucide-react';
 
@@ -26,23 +27,17 @@ const columns = [
     },
 ];
 
-const CustomerTable = ({customerData, handleOpenModal}) => {
+const CustomerTable = ({ customerData = [] }) => {
     const [search, setSearch] = useState('');
     const [filterStatus, setFilterStatus] = useState(null);
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    // selectedIndex state removed as action menu is not currently used
 
-    const processedData = customerData.map(row => ({
+    const processedData = Array.isArray(customerData) ? customerData.map(row => ({
         ...row,
         fullName: `${row.customerFirstName} ${row.customerLastName}`,
-    }));
+    })) : [];
 
-    const getVal = (id, name) => {
-        handleOpenModal(filteredData[id], name);
-    }
-
-    const handleSelectedRow = (index) => {
-        setSelectedIndex(selectedIndex === index ? null : index);
-    };
+    // handle row actions via handleOpenModal directly when needed
 
     const handleSearch = (e) => {
         setSearch(e.target.value);
@@ -121,3 +116,7 @@ const CustomerTable = ({customerData, handleOpenModal}) => {
 };
 
 export default CustomerTable;
+
+CustomerTable.propTypes = {
+    customerData: PropTypes.array,
+};

@@ -41,16 +41,16 @@ function AuthInputField({ label, type, validName, valueName, id, onChange, setOn
     )
 }
 AuthInputField.propTypes = {
-label: PropTypes.string,
-type: PropTypes.string,
-validName: PropTypes.string,
-valueName: PropTypes.string,
-id: PropTypes.string,
-onChange: PropTypes.func,
-errNote: PropTypes.string,
-setOnFocus: PropTypes.func,
-nameFocus: PropTypes.bool,
-icon: PropTypes.node,
+    label: PropTypes.string,
+    type: PropTypes.string,
+    validName: PropTypes.bool,
+    valueName: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    id: PropTypes.string,
+    onChange: PropTypes.func,
+    errNote: PropTypes.node,
+    setOnFocus: PropTypes.func,
+    nameFocus: PropTypes.bool,
+    icon: PropTypes.node,
 };
 
 export default AuthInputField

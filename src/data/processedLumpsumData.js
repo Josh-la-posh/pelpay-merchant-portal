@@ -1,7 +1,6 @@
 export const processLumpsumData = (lumpsum) => {
 
-    const totalCount = lumpsum && Array.isArray(lumpsum)
-        ? lumpsum.reduce((t, sum) => sum + t.transactionCount, 0) : 0;
+    // totalCount was unused; compute totalTransactionsCount below instead
 
     const lumpsumCount = lumpsum && Array.isArray(lumpsum)
         ? lumpsum.map((item) => {

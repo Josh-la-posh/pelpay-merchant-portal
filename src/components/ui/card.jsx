@@ -1,13 +1,15 @@
+import PropTypes from 'prop-types';
+
 const Card = ({
     color,
     color2,
     value, 
     title,
     icon,
-    className,
-    iconClassName,
-    valueClassName,
-    titleClassName,
+    className = '',
+    iconClassName = '',
+    valueClassName = '',
+    titleClassName = '',
 }) => {
 
     return(
@@ -23,5 +25,17 @@ const Card = ({
         </div>
     );
 }
+
+Card.propTypes = {
+    color: PropTypes.string,
+    color2: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string,
+    icon: PropTypes.node,
+    className: PropTypes.string,
+    iconClassName: PropTypes.string,
+    valueClassName: PropTypes.string,
+    titleClassName: PropTypes.string,
+};
 
 export default Card;

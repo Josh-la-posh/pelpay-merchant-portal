@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ function Aggregator() {
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const axiosPrivate = useAxiosPrivate();
-  const aggregatorService = new AggregatorService(axiosPrivate);
+  const aggregatorService = useMemo(() => new AggregatorService(axiosPrivate), [axiosPrivate]);
   const dispatch = useDispatch();
   const { aggregator, aggregatorLoading, aggregatorError } = useSelector((state) => state.aggregator);
   const [aggregatorData, setAggregatorData] = useState(aggregator);
@@ -36,17 +36,17 @@ function Aggregator() {
       setErrMsg(aggregatorError);
   }, [aggregatorError]);
 
+  const loadData = useCallback(async () => {
+    await aggregatorService.fetchAggregator(dispatch);
+  }, [aggregatorService, dispatch]);
+
   useEffect(() => {
     loadData();
-  }, [dispatch]);
+  }, [loadData]);
 
   const handleRefresh = () => {
     loadData();
   }
-  
-  const loadData = async () => {
-    await aggregatorService.fetchAggregator(dispatch);
-  };
 
   if (isLoading) return (
       <div className='h-[40vh] w-full'>

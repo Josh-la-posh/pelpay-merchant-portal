@@ -21,8 +21,7 @@ class CustomerService {
         } else {
             dispatch(customerFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchCustomerByEmail(merchantCode, customerEmail, dispatch) {
@@ -39,8 +38,7 @@ class CustomerService {
         } else {
             dispatch(customerFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchCustomerById(merchantCode, customerId, dispatch) {
@@ -57,8 +55,7 @@ class CustomerService {
         } else {
             dispatch(customerFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   }
   

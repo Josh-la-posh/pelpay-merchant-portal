@@ -1,4 +1,4 @@
-import React from 'react';
+// React import removed: using automatic JSX runtime
 
 const HeroSection = () => {
   return (

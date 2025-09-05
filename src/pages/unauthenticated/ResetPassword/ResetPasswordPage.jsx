@@ -1,4 +1,4 @@
-import React from 'react';
+// React import removed: using automatic JSX runtime
 import ResetPasswordForm from './ResetPasswordForm';
 import AuthLayout from '@/components/AuthLayout';
 

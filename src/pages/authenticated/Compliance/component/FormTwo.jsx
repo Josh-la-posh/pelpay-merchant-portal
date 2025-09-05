@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceInput from "../../../../components/ComplianceInput";
 import { useSelector } from "react-redux";
+import PropTypes from 'prop-types';
 
 const FormTwo = ({ handleNextStep, handlePrevStep }) => {
-  const { complianceData } = useSelector((state) => state.compliance);;
-  const [err, setErr] = useState(["", ""]);  
-
+  const { complianceData } = useSelector((state) => state.compliance);
+  const [err, setErr] = useState(["", ""]);
   const initialData = complianceData;
   const [oldData, setOldData] = useState({
     rcNumber: initialData?.businessInfo?.rcNumber || "",
@@ -41,8 +41,7 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
     }
   }, [initialData]);
 
-
-const handleSubmit = async () => {
+  const handleSubmit = async () => {
     const newErrors = ["", ""];
     if (formData.rcNumber.length < 10 || formData.rcNumber.length > 12)
       newErrors[0] =
@@ -116,3 +115,8 @@ const handleSubmit = async () => {
 };
 
 export default FormTwo;
+
+FormTwo.propTypes = {
+  handleNextStep: PropTypes.func,
+  handlePrevStep: PropTypes.func,
+};

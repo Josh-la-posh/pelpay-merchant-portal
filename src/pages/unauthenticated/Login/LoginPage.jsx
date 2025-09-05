@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import useAuth from '@/services/hooks/useAuth';
 import LoginForm from './LoginForm';
@@ -12,7 +12,7 @@ const LoginPage = () => {
   useEffect(() => {
     dispatch(logout());
     setAuth({});
-  }, []);
+  }, [dispatch, setAuth]);
 
   return (
     <AuthLayout>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import ChangePassword from './component/security/ChangePassword';
 import AccountManagement from './component/security/AccountManagement';
 import SecurityNotifications from './component/security/SecurityNotification';
@@ -6,13 +6,13 @@ import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import useTitle from '@/services/hooks/useTitle';
 
 function SecuritySettings() {
-    const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+    // const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
     const { setSettingsTitle } = useSettingsTitle();
     const { setAppTitle } = useTitle();
 
-    const handle2FAToggle = () => {
-        setTwoFactorEnabled(!twoFactorEnabled);
-    };
+    // const handle2FAToggle = () => {
+    //     setTwoFactorEnabled(!twoFactorEnabled);
+    // };
 
     useEffect(() => {
         setAppTitle('Settings');

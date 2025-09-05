@@ -21,8 +21,7 @@ class SettlementService {
         } else {
             dispatch(settlementFailure('Failed to load settlement data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async getSettlementBatchTransaction(merchantCode, pageNumber, pageSize, id, dispatch) {
@@ -40,8 +39,7 @@ class SettlementService {
         } else {
             dispatch(settlementTransactionFailure('Failed to load settlement data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // settlement configuration
@@ -61,8 +59,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationFailure('Failed to create settlement data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async updateSettlementConfiguration(id, data, dispatch) {
@@ -80,8 +77,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationFailure('Failed to update settlement data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchSettlementConfigurationById(id, dispatch) {
@@ -98,8 +94,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationFailure('Failed to load settlement data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchSettlementConfigurationBySettlementCode(settlementCode, dispatch) {
@@ -116,8 +111,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationFailure('Failed to load settlement data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchSettlementConfiguration(merchantCode, pageNumber, pageSize, dispatch) {
@@ -134,8 +128,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationFailure('Failed to load settlement data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // settlement configuration detail
@@ -154,8 +147,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationDetailFailure('Failed to load settlement configuration detail data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async createSettlementConfigurationDetail(configId, merchantCode, data, dispatch) {
@@ -173,8 +165,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationDetailFailure('Failed to create settlement configuration detail data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async updateSettlementConfigurationDetail(detailId, data, dispatch) {
@@ -192,8 +183,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationDetailFailure('Failed to update settlement configuration detail data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async activateSettlementConfigurationDetail(detailId, data, dispatch) {
@@ -210,8 +200,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationDetailFailure('Failed to activate settlement configuration detail data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async deactivateSettlementConfigurationDetail(detailId, data, dispatch) {
@@ -228,8 +217,7 @@ class SettlementService {
         } else {
             dispatch(settlementConfigurationDetailFailure('Failed to deactivate settlement configuration detail data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   }
   

@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import { useState, useEffect } from 'react';
+// redux and axios imports will be re-enabled once submit logic is implemented
 import CustomModal from '@/components/Modal';
 import Spinner from '@/components/Spinner';
 import { v4 as uuidv4 } from 'uuid';
 import AuthInputField from '@/components/AuthInptField';
 
 
-const CUSTOMER_URL = '/api/customers';
-const ADD_CUSTOMER_URL ='add';
-const UPDATE_CUSTOMER_URL ='edit';
+// API endpoints not used in this placeholder form - keep for future implementation
 
 function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCode }) {
-  const axiosPrivate = useAxiosPrivate();
-  const dispatch = useDispatch();
-  const customers = useSelector(state => state.customer);
-  const [loading, setLoading] = useState(false);
+  // axiosPrivate, dispatch and customers will be used when form submission is implemented
+  // keep them commented to avoid lint errors during incremental refactor
+  // const axiosPrivate = useAxiosPrivate();
+  // const dispatch = useDispatch();
+  // const customers = useSelector(state => state.customer);
+  const [loading] = useState(false);
   const [formData, setFormData] = useState({
     merchantCode: merchantCode,
     customerId: uuidv4(),
@@ -50,9 +49,7 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
     }
   }, [selectedCustomerData]);
 
-  useEffect(() => {
-
-  }, [])
+  // no-op effect intentionally left for future behavior
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,49 +59,8 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
     });
   };
 
-  const handleToggle = () => {
-    setFormData({
-      ...formData,
-      status: title === 'View' ? formData.status : formData.status === false ? true : false,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    // e.preventDefault();
-    // setLoading(true);
-    // try {
-    //   if (selectedCustomerData) {
-    //     const updateRequest = await axiosPrivate.put(`${CUSTOMER_URL}/${UPDATE_CUSTOMER_URL}/${selectedCustomerData.customerId}`, JSON.stringify(formData));
-    //     if (updateRequest.status === 200) {
-    //       const response = await axiosPrivate.get(`${CUSTOMER_URL}/${merchantData.merchantCode}`);
-    //       const result = response.data.responseData;
-    //       dispatch(customerData(result));
-    //       setLoading(false);
-    //       toast.success('Customer updated successfully');
-    //       handleOpenModal();
-    //     } else {
-    //     }
-    //   } else {
-    //     const addRequest = await axiosPrivate.post(`${CUSTOMER_URL}/${ADD_CUSTOMER_URL}`, JSON.stringify(formData));
-    //     if (addRequest.status === 200) {
-    //       const response = await axiosPrivate.get(`${CUSTOMER_URL}/${merchantData.merchantCode}`);
-    //       const result = response.data.responseData;
-    //       dispatch(customerData(result));
-    //       setLoading(false);
-    //       toast.success('Customer added successfully');
-    //       handleOpenModal();
-    //     }
-    //   }
-    // } catch (err) {
-    //   if (!err.response) {
-    //     toast.error('No Server Response')
-    //   } else {
-    //     toast.error('An unexpected error occurred');
-    //   }
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+  // Submission logic will be implemented later; stub left intentionally
+  const handleSubmit = async () => {};
 
   if (loading) return <Spinner />
 
@@ -313,3 +269,12 @@ function CustomerForm({ handleOpenModal, selectedCustomerData, title, merchantCo
 }
 
 export default CustomerForm;
+
+// PropTypes
+import PropTypes from 'prop-types';
+CustomerForm.propTypes = {
+  handleOpenModal: PropTypes.func,
+  selectedCustomerData: PropTypes.object,
+  title: PropTypes.string,
+  merchantCode: PropTypes.string,
+};

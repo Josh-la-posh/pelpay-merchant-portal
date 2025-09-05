@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import useTitle from '@/services/hooks/useTitle';
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,11 +18,11 @@ function MerchantCredential() {
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const axiosPrivate = useAxiosPrivate();
-  const merchantService = new MerchantService(axiosPrivate);
+  const merchantService = useMemo(() => new MerchantService(axiosPrivate), [axiosPrivate]);
   const dispatch = useDispatch();
-  const { merchantCredentials, merchantCredentialsLoading, merchantCredentialsError } = useSelector((state) => state.merchant);
-  const credential = merchantCredentials?.integrations;
-  const [userData, setUserData] = useState(credential);
+  const { merchantCredentials, merchantCredentialsLoading, merchantCredentialsError } = useSelector((state) => state.merchant || {});
+  const credential = merchantCredentials?.integrations || [];
+  const [userData, setUserData] = useState(() => credential || []);
   const [viewSecret, setViewSecret] = useState(false);
   const [viewKey, setViewKey] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,10 +35,10 @@ function MerchantCredential() {
   useEffect(() => {
       setAppTitle('Merchant');
       setSettingsTitle('Credential')
-  }, []);
+  }, [setAppTitle, setSettingsTitle]);
 
   useEffect(() => {
-    setUserData(credential);
+    setUserData(merchantCredentials?.integrations || []);
   }, [merchantCredentials])
             
   useEffect(() => {
@@ -49,17 +49,19 @@ function MerchantCredential() {
       setErrMsg(merchantCredentialsError);
   }, [merchantCredentialsError]);
 
+  const loadData = useCallback(async () => {
+      if (merchantCode) {
+          await merchantService.fetchMerchantCredentials(merchantCode, dispatch);
+      }
+  }, [merchantCode, merchantService, dispatch]);
+
   useEffect(() => {
     loadData();
-  }, [merchantCode, dispatch]);
+  }, [loadData]);
 
   const handleRefresh = () => {
       loadData();
   }
-  
-  const loadData = async () => {
-      await merchantService.fetchMerchantCredentials(merchantCode, dispatch);
-  };
 
   const handleIntegrationKey = (index) => {
     setViewKey((prev) => ({
@@ -77,11 +79,11 @@ function MerchantCredential() {
           clientSecret: merchantCredentials?.clientSecret
         }
       );
-      setSelectedIntegrationKey(userData[index].integrationKey);
+  setSelectedIntegrationKey(userData?.[index]?.integrationKey || '');
       const data = response.data.access_token;
       setAccessToken(data);
       setIsModalOpen(true);
-    } catch (e) {
+    } catch {
       toast('An error occurred. Try again later');
     }
 

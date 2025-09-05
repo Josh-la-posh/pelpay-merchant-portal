@@ -23,11 +23,12 @@ class AuthService {
         JSON.stringify({  email,  password })
       );
 
-      const data = response?.data?.responseData;   
+      const data = response?.data?.responseData;
+      const merchant = data?.merchants[0];
+      const merchantCode = merchant?.merchantCode;
 
-      await setAuth({ data, merchant: null });
+      await setAuth({ data, merchant });
       const token = data?.accessToken;
-      const merchantCode = data?.merchants[0]?.merchantCode;
       
       await this.fetchComplianceData(dispatch, merchantCode, navigate, token)
       dispatch(loginSuccess(data));
@@ -90,7 +91,8 @@ class AuthService {
       from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
 
-      console.log(err)
+      // log error for debugging
+  console.error('fetchComplianceData error:', err);
     }
   }
 
@@ -104,7 +106,7 @@ class AuthService {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${this.baseUrl2}/api/account/forget-password`,
+        `${this.baseUrl2}api/account/forget-password`,
         JSON.stringify({ email })
       );
       const data = response.data;
@@ -125,6 +127,7 @@ class AuthService {
       }
 
       errRef.current.focus();
+  console.error('submitForgotPassword error:', err);
     } finally {
       setLoading(false);
     }

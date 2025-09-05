@@ -1,13 +1,14 @@
 import ReactApexChart from "react-apexcharts";
 import { processGraphData } from "@/data/processedGraphData";
+import PropTypes from 'prop-types';
 
-function DashboardChart({graph, type}) {
+function DashboardChart({ graph = [], type = 'Count' }) {
     const {
         successfulGraphCount,
         successfulGraphVolume,
         dataDate,
         totalCounts
-    } = processGraphData(graph);
+    } = processGraphData(graph || []);
 
     const chartSeries = [{
         name: "Transactions",
@@ -41,3 +42,8 @@ function DashboardChart({graph, type}) {
   }
 
   export default DashboardChart;
+
+DashboardChart.propTypes = {
+    graph: PropTypes.array,
+    type: PropTypes.string,
+};

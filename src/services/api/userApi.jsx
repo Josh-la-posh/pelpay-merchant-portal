@@ -1,6 +1,5 @@
 import { toast } from "react-toastify";
 import { aggregatorUserFailure, aggregatorUserStart, aggregatorUserSuccess, newUserFailure, newUserStart, newUserSuccess, usersFailure, usersStart, usersSuccess } from "@/redux/slices/userSlice";
-import { useEffect } from "react";
 
 class userService {
     constructor(axiosPrivate, auth, setAuth) {
@@ -12,7 +11,7 @@ class userService {
     async createUser(merchantCode, data, dispatch) {
         dispatch(usersStart());
       try {
-        const response = await this.axiosPrivate.post(
+        await this.axiosPrivate.post(
           `api/Users/createuser/${merchantCode}`,
           JSON.stringify({data})
         );
@@ -23,7 +22,7 @@ class userService {
         } else {
             dispatch(usersFailure('Failed to create user. Try again.'));
         }
-      } finally {
+  console.error('createUser error:', err);
       }
     }
   
@@ -41,7 +40,7 @@ class userService {
         } else {
             dispatch(usersFailure('Failed to load users. Try again.'));
         }
-      } finally {
+  console.error('fetchUsersByMerchantCode error:', err);
       }
     }
   
@@ -59,7 +58,7 @@ class userService {
         } else {
             dispatch(aggregatorUserFailure('Failed to load users. Try again.'));
         }
-      } finally {
+  console.error('fetchUsersMerchantByAggregatorCode error:', err);
       }
     }
   
@@ -77,7 +76,7 @@ class userService {
         } else {
             dispatch(usersFailure('Failed to load users. Try again.'));
         }
-      } finally {
+  console.error('fetchUserMerchantByAggregatorCode error:', err);
       }
     }
   
@@ -95,7 +94,7 @@ class userService {
         } else {
             dispatch(aggregatorUserFailure('Failed to load users. Try again.'));
         }
-      } finally {
+  console.error('fetchUserByAggregatorCode error:', err);
       }
     }
   
@@ -113,7 +112,7 @@ class userService {
         } else {
             dispatch(newUserFailure('Failed to load users. Try again.'));
         }
-      } finally {
+  console.error('fetchUserProfile error:', err);
       }
     }
   
@@ -133,14 +132,14 @@ class userService {
         } else {
             dispatch(newUserFailure('Failed to update user data. Try again.'));
         }
-      } finally {
+  console.error('updateUserData error:', err);
       }
     }
   
     async activateUser(userId, merchantCode, aggregatorCode, dispatch) {
         dispatch(usersStart());
       try {
-        const response = await this.axiosPrivate.put(
+        await this.axiosPrivate.put(
           `api/Users/activate`,
           JSON.stringify({userId, merchantCode})
         );
@@ -152,14 +151,14 @@ class userService {
         } else {
             dispatch(usersFailure('Failed to activate user. Try again.'));
         }
-      } finally {
+  console.error('activateUser error:', err);
       }
     }
   
     async deactivateUser(userId, merchantCode, aggregatorCode, dispatch) {
         dispatch(usersStart());
       try {
-        const response = await this.axiosPrivate.put(
+        await this.axiosPrivate.put(
           `api/Users/deactivate`,
           JSON.stringify({userId, merchantCode})
         );
@@ -171,7 +170,7 @@ class userService {
         } else {
             dispatch(usersFailure('Failed to deactivate user data. Try again.'));
         }
-      } finally {
+  console.error('deactivateUser error:', err);
       }
     }
   }

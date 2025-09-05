@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import ExportPopup from '@/utils/exportPopup';
 import DataTable from '@/components/Table';
 import { dateFormatter } from '@/utils/dateFormatter';
@@ -180,3 +181,10 @@ const InvoiceTable = ({filteredData, handleOpenModal, isExportPopupOpen, setIsEx
 };
 
 export default InvoiceTable;
+
+InvoiceTable.propTypes = {
+    filteredData: PropTypes.array,
+    handleOpenModal: PropTypes.func,
+    isExportPopupOpen: PropTypes.bool,
+    setIsExportPopupOpen: PropTypes.func,
+};

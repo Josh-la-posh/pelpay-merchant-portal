@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ExportPopup from '@/utils/exportPopup';
 import DataTable from '@/components/Table';
 import { dateFormatter } from '@/utils/dateFormatter';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import PropTypes from 'prop-types';
 
-const MerchantDomainTable = ({filteredData, handleOpenModal, isExportPopupOpen, setIsExportPopupOpen}) => {
-    const axiosPrivate = useAxiosPrivate();
+const MerchantDomainTable = ({ filteredData, handleOpenModal: _handleOpenModal, isExportPopupOpen, setIsExportPopupOpen }) => {
+    // axiosPrivate not used here yet
     const [selectedIndex, setSelectedIndex] = useState(null);
+    // keep prop reference for future use (prevents unused variable lint)
+    void _handleOpenModal;
     
     const columns = [
         {
@@ -46,9 +49,7 @@ const MerchantDomainTable = ({filteredData, handleOpenModal, isExportPopupOpen, 
         },
     ];
 
-    const getDataToParent = (id) => {
-        handleOpenModal(filteredData[id]);
-    }
+    // getDataToParent removed - keep handleOpenModal signature for future use
     
     const handleSelectedRow = (index) => {
         setSelectedIndex(selectedIndex === index ? null : index);
@@ -77,3 +78,10 @@ const MerchantDomainTable = ({filteredData, handleOpenModal, isExportPopupOpen, 
 };
 
 export default MerchantDomainTable;
+
+MerchantDomainTable.propTypes = {
+    filteredData: PropTypes.array,
+    handleOpenModal: PropTypes.func,
+    isExportPopupOpen: PropTypes.bool,
+    setIsExportPopupOpen: PropTypes.func,
+};

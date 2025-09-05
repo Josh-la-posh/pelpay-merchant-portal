@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AuthInputField from '@/components/AuthInptField';
 import { toast } from 'react-toastify';
 import { Lock } from 'lucide-react';
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{7,24}$/;
-const EMPTY_FIELD = '';
 
 function ChangePassword() {
-    const errRef = useRef();
+    // errRef not used currently; remove to silence lint until needed
     const [validCurrentPassword, setValidCurrentPassword] = useState(false);
     const [CurrentPasswordFocus, setCurrentPasswordFocus] = useState(false);
 

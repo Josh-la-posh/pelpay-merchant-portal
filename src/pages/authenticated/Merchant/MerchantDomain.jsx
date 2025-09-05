@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,21 +10,20 @@ function MerchantDomain() {
   const { merchantCode } = useParams();
   const { setAppTitle } = useTitle();
   const axiosPrivate = useAxiosPrivate();
-  const merchantService = new MerchantService(axiosPrivate);
+  const merchantService = useMemo(() => new MerchantService(axiosPrivate), [axiosPrivate]);
   const dispatch = useDispatch();
   const { merchantDomain } = useSelector((state) => state.merchant);
-  const [filteredData, setFilteredData] = useState(merchantDomain);
 
   useEffect(() => {
       setAppTitle('Merchant Domain');
-  }, []);
+  }, [setAppTitle]);
 
   useEffect(() => {
     const loadData = async () => {
         await merchantService.fetchMerchantDomain(merchantCode, dispatch);
     };
     loadData();
-  }, [merchantCode, dispatch]);
+  }, [merchantCode, dispatch, merchantService]);
 
   return (
     <div>

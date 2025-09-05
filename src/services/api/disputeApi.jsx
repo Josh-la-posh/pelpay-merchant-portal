@@ -20,8 +20,7 @@ class DisputeService {
         } else {
             dispatch(disputeFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async searchDisputes(merchantCode, pageNumber, pageSize, env, dispatch, transactionReference, sDate, eDate, status, customerEmail, disputeStatus) {
@@ -40,8 +39,7 @@ class DisputeService {
         } else {
             dispatch(disputeFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async approveDisputes(merchantCode, comment, disputeId, dispatch) {
@@ -60,8 +58,7 @@ class DisputeService {
         } else {
             dispatch(disputeFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async declineDisputes(merchantCode, comment, disputeId, dispatch) {
@@ -80,8 +77,7 @@ class DisputeService {
         } else {
             dispatch(disputeFailure('Failed to load Customer data. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   }
   

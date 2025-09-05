@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 
 const SettingsContext = createContext({});
 
@@ -21,3 +22,7 @@ export const SettingsProvider = ({children}) => {
 }
 
 export default SettingsContext;
+
+SettingsProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import PermissionService from '@/services/api/permissionApi';
@@ -17,17 +17,17 @@ function ManagePermission() {
     const [permissionLists, setPermissionLists] = useState(permissions);
     const [filteredData, setFilteredData] = useState(aggregatorPermissions);
     const [isAggregatorPermissionsLoading, setIsAggregatorPermissionsLoading] = useState(aggregatorPermissionsLoading);
-    const [isPermissionsLoading, setIsPermissionsLoading] = useState(permissionsLoading);
+    const [, setIsPermissionsLoading] = useState(permissionsLoading);
     const [errMsg, setErrMsg] = useState(permissionsError);
     const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
-    const permisssionService = new PermissionService(axiosPrivate, auth);
+    const permisssionService = useMemo(() => new PermissionService(axiosPrivate, auth), [axiosPrivate, auth]);
     const [pageNumber, setPageNumber] = useState(aggregatorPermissionsPageNumber);
     const [pageSize, setPageSize] = useState(aggregatorPermissionsPageSize);
     const [totalSize, setTotalSize] = useState(aggregatorPermissionsTotalSize);
 
     useEffect(() => {
         setSettingsTitle('Roles');
-    }, []);
+    }, [setSettingsTitle]);
 
     useEffect(() => {
         setFilteredData(aggregatorPermissions);
@@ -51,11 +51,11 @@ function ManagePermission() {
 
     useEffect(() => {
         loadPermissions();
-    }, []);
+    }, [loadPermissions]);
 
     useEffect(() => {
         loadAggregatorPermissions();
-    }, []);
+    }, [loadAggregatorPermissions]);
           
     useEffect(() => {
     setPageNumber(aggregatorPermissionsPageNumber);
@@ -77,17 +77,17 @@ function ManagePermission() {
         loadPermissions();
     }
     
-    const loadPermissions = async () => {
+    const loadPermissions = useCallback(async () => {
         if (id) {
             await permisssionService.fetchRolePermission(id, aggregatorCode, dispatch);
         }
-    };
-    
-    const loadAggregatorPermissions = async () => {
+    }, [id, permisssionService, aggregatorCode, dispatch]);
+
+    const loadAggregatorPermissions = useCallback(async () => {
         if (id) {
             await permisssionService.fetchAggregatorRolePermission(id, aggregatorCode, pageSize, pageNumber, dispatch);
         }
-    };
+    }, [id, permisssionService, aggregatorCode, pageSize, pageNumber, dispatch]);
 
     return (
         <ManagePermissionTable

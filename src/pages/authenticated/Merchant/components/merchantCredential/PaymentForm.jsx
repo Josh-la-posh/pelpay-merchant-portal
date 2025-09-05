@@ -6,13 +6,14 @@ import { toast } from 'react-toastify';
 import { X } from 'lucide-react';
 import Spinner from '../../../../../components/Spinner';
 
-function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
+import PropTypes from 'prop-types';
+
+function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
     const uniqueId = crypto.randomUUID();
     const iframeRef = useRef(null);
     const [openPopupWithIframe, setOpenPopupWithIframe] = useState(false);
     const [redirectUrl, setRedirectUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
 
     const [formData, setFormData] = useState({
         amount: "100",
@@ -40,7 +41,6 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
         merchantDescriptor: "string",
         channels: ["Card", "BankTransfer", "USSD"],
       });
-
     
     const callbackUrl = formData.callBackUrl ?? 'merchant.pelpay.ng';
 
@@ -59,10 +59,6 @@ function PaymentForm({selectedIntegrationKey, accessToken, setIsModalOpen}) {
             [name]: value
         }))
     }
-
-    const openIframePopup = () => {
-        setOpenPopupWithIframe(true);
-    };
 
     const closeIframePopup = () => {
         setOpenPopupWithIframe(false);
@@ -336,3 +332,9 @@ const styles = {
 };
 
 export default PaymentForm;
+
+PaymentForm.propTypes = {
+    selectedIntegrationKey: PropTypes.string,
+    accessToken: PropTypes.string,
+    setIsModalOpen: PropTypes.func,
+};

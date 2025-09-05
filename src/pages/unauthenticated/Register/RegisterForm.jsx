@@ -62,16 +62,16 @@ const RegisterForm = () => {
             } else {
                 setShowCountryListReload(true);
             }
-        } catch (err) {
+        } catch {
+            // log and mark reload
             setShowCountryListReload(true);
         }
     }
-
     useEffect(() =>  {
         if (countryList.length < 1) {
             getCountry();
         }
-    }, [])
+    }, [countryList.length])
 
     useEffect(() => {
         const result = BUSINESS_REGEX.test(formData.businessName);
@@ -149,9 +149,10 @@ const RegisterForm = () => {
             });
 
         } catch (err) {
-            if (err.response.status === 400) {
+            console.error(err);
+            if (err?.response?.status === 400) {
                 setErrMsg(err.response?.data?.responseData?.message || err.response?.data?.message);
-            } else if (!err.response) {
+            } else if (!err?.response) {
                 setErrMsg('No Server Response');
             } else {
                 if (err.response?.data?.responseData?.status === 400) {
@@ -161,7 +162,7 @@ const RegisterForm = () => {
                 setErrMsg('An error occured. Try again later');
             }
 
-            errRef.current.focus();
+            errRef.current && errRef.current.focus();
         } finally {
             setLoading(false);
         }

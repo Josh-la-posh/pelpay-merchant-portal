@@ -1,23 +1,26 @@
 import Card from '@/components/Card';
 import { Check, CircleDollarSign, ShoppingCart, Smile } from 'lucide-react';
+import { useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 function DashboardCards({ lumpsum }) {
-    const totalRevenue = lumpsum && Array.isArray(lumpsum)
-      ? lumpsum.filter(data => data.transactionStatus === 'Successful')
-        .reduce((sum, data) => sum + data.transactionVolume, 0)
-      : 0;
+    const totalRevenue = useMemo(() => {
+      if (!lumpsum || !Array.isArray(lumpsum)) return 0;
+      return lumpsum.filter(data => data.transactionStatus === 'Successful')
+        .reduce((sum, data) => sum + data.transactionVolume, 0);
+    }, [lumpsum]);
 
-      const totalCounts = lumpsum && Array.isArray(lumpsum)
-      ? lumpsum.reduce((sum, t) => sum + t.transactionCount, 0)
-      : 0;
+    const totalCounts = useMemo(() => {
+      if (!lumpsum || !Array.isArray(lumpsum)) return 0;
+      return lumpsum.reduce((sum, t) => sum + t.transactionCount, 0);
+    }, [lumpsum]);
 
-      const successfulTransaction = lumpsum && Array.isArray(lumpsum)
-      ? lumpsum.find(item => item.transactionStatus === "Successful")?.transactionCount
-      : 0;
+    const successfulTransaction = useMemo(() => {
+      if (!lumpsum || !Array.isArray(lumpsum)) return 0;
+      return lumpsum.find(item => item.transactionStatus === "Successful")?.transactionCount ?? 0;
+    }, [lumpsum]);
 
-      const failedTransaction = lumpsum && Array.isArray(lumpsum)
-      ? lumpsum.find(item => item.transactionStatus === "Failed")?.transactionCount
-      : 0;
+  // failedTransaction intentionally omitted (not currently displayed)
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-1 gap-4 xl:gap-0 mb-8 md:mb-0">
@@ -40,3 +43,7 @@ function DashboardCards({ lumpsum }) {
 }
 
 export default DashboardCards
+
+DashboardCards.propTypes = {
+  lumpsum: PropTypes.array,
+};

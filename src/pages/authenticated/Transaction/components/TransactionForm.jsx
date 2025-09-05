@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomModal from '@/components/Modal';
 import { dateFormatter } from '@/utils/dateFormatter';
 import { Cloud } from 'lucide-react';
@@ -7,8 +7,9 @@ import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import TransactionService from '@/services/api/transactionApi';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
-function TransactionForm({ handleCloseModal, data }) {
+function TransactionForm({ handleCloseModal, data = {} }) {
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const [viewResponse, setViewResponse] = useState(false);
@@ -18,26 +19,28 @@ function TransactionForm({ handleCloseModal, data }) {
 
   useEffect(() => {
     settransactionData(data);
-  }, [data])
+  }, [data]);
 
   useEffect(() => {
-    fetchTransactionJson()
-  }, [])
+    const fetchTransactionJson = async () => {
+      const id = data?.paymentReference;
+      try {
+        const response = await axios.get(`https://api.pelpay.ng/api/WebHook/payment/${id}`);
+        setTransactionJsonData(response.data);
+      } catch (e) {
+        console.error('Error fetching transaction json', e);
+      }
+    };
+
+    fetchTransactionJson();
+  }, [data]);
   
   const downloadTransaction = async () => {
     const transactionId = transactionData?.id;
     await transactionService.fetchTransactionReceipt(transactionId, dispatch);
   };
 
-  const fetchTransactionJson = async () => {
-    const id = transactionData?.paymentReference;
-    try {
-      const response = await axios.get(`https://api.pelpay.ng/api/WebHook/payment/${id}`);
-      const data = response.data;
-      setTransactionJsonData(response.data);
-    } catch (e) {
-    }
-  }
+  
 
   const resendNotification = async () => {
     const id = transactionData?.paymentReference;
@@ -46,8 +49,14 @@ function TransactionForm({ handleCloseModal, data }) {
       const data = response.data.responseData;
       toast(data);
     } catch (e) {
+  console.error('Error resending notification', e);
     }
   }
+
+TransactionForm.propTypes = {
+  handleCloseModal: PropTypes.func,
+  data: PropTypes.object,
+};
 
   return (
     <CustomModal handleOpenModal={handleCloseModal} width='w-[90%] md:w-[70%]'>
@@ -56,7 +65,7 @@ function TransactionForm({ handleCloseModal, data }) {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 mb-4">
         <div className="space-y-3 text-md font-[700] text-gray-600 mb-4">
-            <p>Account Number: <span className='font-[400]'>{data.accountNumberMask}</span></p>
+            <p>Account Number: <span className='font-[400]'>{data?.accountNumberMask}</span></p>
             <p>Amount: <span className='font-[400]'>{data.currencyCode} {data.amountCollected}</span></p>
             <p>Reference: <span className='font-[400]'>{data.paymentReference}</span></p>
             <p>Customer Name: <span className='font-[400]'>{data.customerName}</span></p>
@@ -88,9 +97,9 @@ function TransactionForm({ handleCloseModal, data }) {
           <div className="mt-4 text-gray-600">
               <p className='mb-3'>Transaction Logs</p>
               <ul className='list-disc pl-5 space-y-3'>
-                <li className='text-sm font-[700]'>Transaction Initiated: <span className='font-[400]'>{dateFormatter(data.createdDate)}</span></li>
-                <li className='text-sm font-[700]'>Transaction Completed: <span className='font-[400]'>{dateFormatter(data.modifiedDate)}</span></li>
-                <li className='text-sm font-[700]'>Callback Sent Response Code: <span className='font-[400]'>{data.isNotified === true ? '200' : '400'}</span></li>
+                <li className='text-sm font-[700]'>Transaction Initiated: <span className='font-[400]'>{dateFormatter(data?.createdDate)}</span></li>
+                <li className='text-sm font-[700]'>Transaction Completed: <span className='font-[400]'>{dateFormatter(data?.modifiedDate)}</span></li>
+                <li className='text-sm font-[700]'>Callback Sent Response Code: <span className='font-[400]'>{data?.isNotified === true ? '200' : '400'}</span></li>
               </ul>
           </div>
 

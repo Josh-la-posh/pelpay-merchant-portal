@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { X } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { utils, writeFile } from 'xlsx';
@@ -27,7 +29,7 @@ const ExportPopup = ({ isOpen, onClose, data, elementId }) => {
             pdf.addImage(imgData, 'PNG', 0, 0);
             pdf.save('table.pdf');
         } catch (error) {
-            
+            console.error('exportToPDF failed', error);
         }
     };
 
@@ -67,6 +69,13 @@ const ExportPopup = ({ isOpen, onClose, data, elementId }) => {
             </div>
         </div>
     );
+};
+
+ExportPopup.propTypes = {
+    isOpen: PropTypes.bool,
+    onClose: PropTypes.func,
+    data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    elementId: PropTypes.string,
 };
 
 export default ExportPopup;

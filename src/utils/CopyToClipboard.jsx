@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const CopyToClipboardField = ({text, value, successMessage = "Copied to clipboard!", className }) => {
+const CopyToClipboardField = ({ text, value, successMessage = "Copied to clipboard!", className }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -25,3 +26,10 @@ const CopyToClipboardField = ({text, value, successMessage = "Copied to clipboar
 };
 
 export default CopyToClipboardField;
+
+CopyToClipboardField.propTypes = {
+  text: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  successMessage: PropTypes.string,
+  className: PropTypes.string,
+};

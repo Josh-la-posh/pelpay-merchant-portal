@@ -1,60 +1,62 @@
-import React from 'react'
+// React import removed: using automatic JSX runtime
 import MerchantProfileContent from '../../Merchant/components/merchantProfile/MerchantProfileContent';
+import PropTypes from 'prop-types';
 
-function AggregatorProfile({aggregatorData}) {
-  return (
-    <div className='bg-white p-5 grid grid-cols-1 md:grid-cols-2 text-xs md:text-sm gap-4'>
-        <MerchantProfileContent
-            title='Aggregator Name'
-            value={aggregatorData.aggregatorName ?? 'N/A'}
-        />
+function AggregatorProfile({ aggregatorData = {} }) {
+    const data = Array.isArray(aggregatorData) ? aggregatorData[0] || {} : aggregatorData || {};
+    return (
+        <div className='bg-white p-5 grid grid-cols-1 md:grid-cols-2 text-xs md:text-sm gap-4'>
+            <MerchantProfileContent
+                title='Aggregator Name'
+                value={data.aggregatorName ?? 'N/A'}
+            />
         <MerchantProfileContent
             title='Aggregator Code'
-            value={aggregatorData.aggregatorCode ?? 'N/A'}
+            value={data.aggregatorCode ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Status'
-            value={aggregatorData.status ?? 'N/A'}
+            value={data.status ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Registration Type'
-            value={aggregatorData.registrationType ?? 'N/A'}
+            value={data.registrationType ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Address'
-            value={aggregatorData.registrationType ?? 'N/A'}
+            value={data.registrationType ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Country'
-            value={aggregatorData.countryCode ?? 'N/A'}
+            value={data.countryCode ?? 'N/A'}
         />
         <MerchantProfileContent
             title='State'
-            value={aggregatorData.stateCode ?? 'N/A'}
+            value={data.stateCode ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Business Type'
-            value={aggregatorData.businessType ?? 'N/A'}
+            value={data.businessType ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Business Description'
-            value={aggregatorData.registrationType ?? 'N/A'}
+            value={data.registrationType ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Charge Type'
-            value={aggregatorData.chargeType ?? 'N/A'}
+            value={data.chargeType ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Approved'
-            value={aggregatorData.isApproved === true ? 'True' : 'False' ?? 'N/A'}
+            value={data.isApproved === true ? 'True' : data.isApproved === false ? 'False' : 'N/A'}
         />
         <MerchantProfileContent
             title='Contact Email'
-            value={aggregatorData.contactEmail ?? 'N/A'}
+            value={data.contactEmail ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Support Email'
-            value={aggregatorData.supportEmail ?? 'N/A'}
+            value={data.supportEmail ?? 'N/A'}
         />
         {/* <div className="font-[500]">
             Dispute Email: 
@@ -79,3 +81,7 @@ function AggregatorProfile({aggregatorData}) {
 }
 
 export default AggregatorProfile;
+
+AggregatorProfile.propTypes = {
+    aggregatorData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};

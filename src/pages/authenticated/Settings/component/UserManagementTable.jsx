@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+// no hooks required
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -8,7 +8,7 @@ import { CheckCircle, ToggleLeft, ToggleRight, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const UserManagementTable = ({filteredData, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    // selectedIndex state removed (not used)
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const dispatch = useDispatch();
@@ -104,9 +104,7 @@ const UserManagementTable = ({filteredData, totalSize, currentPage, setCurrentPa
             : deactivateAccount(id, merchantCode, dispatch);
     }
     
-    const handleSelectedRow = (index) => {
-        setSelectedIndex(selectedIndex === index ? null : index);
-    };
+    // selected row handler removed (not used in current table)
 
     return (
         <div className="">
@@ -124,3 +122,14 @@ const UserManagementTable = ({filteredData, totalSize, currentPage, setCurrentPa
 };
 
 export default UserManagementTable;
+
+import PropTypes from 'prop-types';
+
+UserManagementTable.propTypes = {
+    filteredData: PropTypes.array,
+    totalSize: PropTypes.number,
+    currentPage: PropTypes.number,
+    setCurrentPage: PropTypes.func,
+    rowsPerPage: PropTypes.number,
+    setRowsPerPage: PropTypes.func,
+};

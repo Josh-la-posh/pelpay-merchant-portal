@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -18,7 +18,7 @@ function AllSettlementPage() {
   const dispatch = useDispatch();
   const { settlement, settlementPageSize, settlementPageNumber, settlementTotalSize, settlementLoading, settlementError } = useSelector(state => state.settlement);
   const merchantCode = auth?.merchant.merchantCode;
-  const settlementservice = new SettlementService(axiosPrivate);
+  const settlementservice = useMemo(() => new SettlementService(axiosPrivate), [axiosPrivate]);
   const [filteredData, setFilteredData] = useState(settlement);
   const [isLoading, setIsLoading] = useState(settlementLoading);
   const [errMsg, setErrMsg] = useState(settlementError);
@@ -54,19 +54,19 @@ function AllSettlementPage() {
     setTotalSize(settlementTotalSize);
   }, [settlementTotalSize]);
 
+  const loadData = useCallback(async () => {
+    if (merchantCode) {
+      await settlementservice.fetchSettlement(merchantCode, pageNumber, pageSize, dispatch);
+    }
+  }, [merchantCode, pageNumber, pageSize, settlementservice, dispatch]);
+
   useEffect(() => {
     loadData();
-  }, [merchantCode, pageNumber, pageSize, dispatch]);
+  }, [loadData]);
 
   const handleRefresh = () => {
     loadData();
   }
-  
-  const loadData = async () => {
-    if (merchantCode) {
-      await settlementservice.fetchSettlement(merchantCode, pageNumber, pageSize, dispatch);
-    }
-  };
 
   if (isLoading) return (
     <div className='h-[80vh] w-full'>

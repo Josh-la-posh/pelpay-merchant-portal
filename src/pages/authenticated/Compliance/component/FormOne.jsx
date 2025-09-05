@@ -5,6 +5,7 @@ import ComplianceInput from "../../../../components/ComplianceInput";
 import ComplianceTextArea from "../../../../components/ComplianceTextArea";
 import ComplianceInputSelect from "../../../../components/ComplianceInputSelect";
 import { useSelector } from "react-redux";
+import PropTypes from 'prop-types';
 
 const FormOne = ({ handleNextStep }) => {
   const { auth } = useAuth();
@@ -187,3 +188,7 @@ const FormOne = ({ handleNextStep }) => {
 };
 
 export default FormOne;
+
+FormOne.propTypes = {
+  handleNextStep: PropTypes.func,
+};

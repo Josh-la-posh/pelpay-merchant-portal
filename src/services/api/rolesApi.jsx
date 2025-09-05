@@ -22,7 +22,7 @@ class RoleService {
         } else {
             // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
         }
-      } finally {
+        console.error('fetchRolesByAggregatorCode error:', err);
       }
     }
   
@@ -42,7 +42,7 @@ class RoleService {
           toast('Failed to fetch user roles');
             dispatch(userRolesFailure('Failed to fetch user roles'));
         }
-      } finally {
+        console.error('fetchRolesByUserId error:', err);
       }
     }
   
@@ -61,13 +61,13 @@ class RoleService {
         } else {
             dispatch(rolesFailure('Failed to load Customer permission. Try again.'));
         }
-      } finally {
+        console.error('fetchRoles error:', err);
       }
     }
   
     async createRole(aggregatorCode, formData, merchantCode, dispatch) {
       try {
-        const response = await this.axiosPrivate.post(
+        await this.axiosPrivate.post(
           `api/Roles/${aggregatorCode}`,
           JSON.stringify(formData)
         );
@@ -79,14 +79,14 @@ class RoleService {
         } else {
           dispatch(updateRolesFailure('Failed to update role details. Try again.'));
         }
-      } finally {
+        console.error('createRole error:', err);
       }
     }
   
     async updateRolesById(id, merchantCode, aggregatorCode, formData, dispatch) {
       dispatch(updateRolesStart());
       try {
-        const response = await this.axiosPrivate.put(
+        await this.axiosPrivate.put(
           `api/Roles/${id}/${merchantCode}?aggregatorCode=${aggregatorCode}`,
           JSON.stringify(formData)
         );
@@ -99,13 +99,13 @@ class RoleService {
         } else {
           dispatch(updateRolesFailure('Failed to update role details. Try again.'));
         }
-      } finally {
+        console.error('updateRolesById error:', err);
       }
     }
   
     async activateRole(id, aggregatorCode, merchantCode, dispatch) {
       try {
-        const response = await this.axiosPrivate.put(
+        await this.axiosPrivate.put(
           `api/Roles/${id}/activate/${aggregatorCode}`
         );
         toast('Role activated successfully');
@@ -116,16 +116,15 @@ class RoleService {
         } else {
             toast('Failed to activate role. Try again.');
         }
-      } finally {
+        console.error('activateRole error:', err);
       }
     }
   
     async deactivateRole(id, aggregatorCode, merchantCode, dispatch) {
       try {
-        const response = await this.axiosPrivate.put(
+        await this.axiosPrivate.put(
           `api/Roles/${id}/deactivate/${aggregatorCode}`
         );
-        
         toast('Role deactivated successfully');
         await this.fetchRoles(aggregatorCode, merchantCode, dispatch);
       } catch (err) {
@@ -134,13 +133,13 @@ class RoleService {
         } else {
             toast('Failed to deactivate role. Try again.');
         }
-      } finally {
+        console.error('deactivateRole error:', err);
       }
     }
   
     async removeRole(roleId, userId) {
       try {
-        const response = await this.axiosPrivate.put(
+        await this.axiosPrivate.put(
           `api/Roles/${roleId}/user/${userId}/remove`
         );
         toast('User role removed successfully');
@@ -151,7 +150,7 @@ class RoleService {
           
             // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
         }
-      } finally {
+        console.error('removeRole error:', err);
       }
     }
 
@@ -171,14 +170,14 @@ class RoleService {
           } else {
               // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
           }
-        } finally {
+          console.error('fetchAllUserRoles error:', err);
         }
       }
   
     async addUserRole(merchantCode, formData) {
 
         try {
-          const response = await this.axiosPrivate.post(
+          await this.axiosPrivate.post(
             `api/UserRoles/addrole/${merchantCode}`,
             JSON.stringify(formData)
           );
@@ -189,13 +188,13 @@ class RoleService {
           } else {            
             toast.error(err.response.data.message)
           }
-        } finally {
+          console.error('addUserRole error:', err);
         }
       }
   
       async removeUserRole(userRoleId, merchantCode) {
         try {
-          const response = await this.axiosPrivate.post(
+          await this.axiosPrivate.post(
             `api/UserRoles/removerole/${userRoleId}/merchant/${merchantCode}`,
           );
           toast('User role removed successfully');
@@ -205,7 +204,7 @@ class RoleService {
           } else {
               // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
           }
-        } finally {
+          console.error('removeUserRole error:', err);
         }
       }
   
@@ -222,7 +221,7 @@ class RoleService {
             } else {
                 // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
             }
-          } finally {
+            console.error('fetchUserRolesBytMerchantCode error:', err);
           }
         }
 

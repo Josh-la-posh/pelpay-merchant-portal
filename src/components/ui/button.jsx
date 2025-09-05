@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
 
 const Button = ({ children, onClick, variant = "primary", className, type, disabled }) => {
-    const baseClass = "w-full px-4 py-2 rounded-md font-[600] text-lg";
+    const baseClass = "w-full px-4 py-2 rounded-md font-semibold text-lg transition-colors duration-150";
     const variantClass =
       variant === "primary"
-        ? "bg-priColor/80 hover:bg-priColor text-white dark:text-black"
-        : "bg-red-500 hover:bg-gray-600";
+        ? "bg-priColor text-white hover:opacity-95"
+        : "bg-gray-200 text-gray-800 hover:bg-gray-300";
   
     return (
       <button
         type={type}
-        className={`${baseClass} ${variantClass} ${className}`}
+  className={`${baseClass} ${variantClass} ${className}`}
         onClick={onClick}
         disabled={disabled}
       >

@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import PropTypes from 'prop-types';
 
 const TitleContext = createContext({});
 
@@ -20,3 +21,7 @@ export const TitleProvider = ({ children }) => {
 }
 
 export default TitleContext;
+
+TitleProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+};

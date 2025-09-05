@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function MerchantDomainFilter() {
-    const [canSearch, setCanSearch] = useState(false);
+    const [canSearch] = useState(false);
     const [formData, setFormData] = useState({
         name : '',
         code : ''

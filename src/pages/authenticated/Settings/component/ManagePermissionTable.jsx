@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
@@ -14,7 +14,7 @@ const ManagePermissionTable = ({
     isLoading,
     errMsg,
     handleRefresh,
-    permissionLists,
+    permissionLists = [],
     handleOptionRefresh,
     totalSize,
     currentPage,
@@ -91,7 +91,7 @@ const ManagePermissionTable = ({
             cancelEditing();
             handleRefresh();
         } catch (error) {
-
+            console.error(error);
         }
     }
 
@@ -104,7 +104,7 @@ const ManagePermissionTable = ({
             cancelEditing();
             handleRefresh();
         } catch (error) {
-
+            console.error(error);
         }
     }
 
@@ -119,7 +119,7 @@ const ManagePermissionTable = ({
             cancelEditing();
             handleRefresh();
         } catch (error) {
-            
+            console.error(error);
         }
     }
 
@@ -133,7 +133,7 @@ const ManagePermissionTable = ({
             cancelEditing();
             handleRefresh();
         } catch (error) {
-
+            console.error(error);
         }
     }
 
@@ -237,7 +237,7 @@ const ManagePermissionTable = ({
                                 Select Permission
                             </option>
                             {
-                                permissionLists.map((list) => (
+                                Array.isArray(permissionLists) && permissionLists.map((list) => (
                                     <option 
                                         key={list.id}
                                         value={list.id}
@@ -318,3 +318,20 @@ const ManagePermissionTable = ({
 };
 
 export default ManagePermissionTable;
+
+// PropTypes
+import PropTypes from 'prop-types';
+
+ManagePermissionTable.propTypes = {
+    filteredData: PropTypes.array,
+    isLoading: PropTypes.bool,
+    errMsg: PropTypes.any,
+    handleRefresh: PropTypes.func,
+    permissionLists: PropTypes.array,
+    handleOptionRefresh: PropTypes.func,
+    totalSize: PropTypes.number,
+    currentPage: PropTypes.number,
+    setCurrentPage: PropTypes.func,
+    rowsPerPage: PropTypes.number,
+    setRowsPerPage: PropTypes.func,
+};

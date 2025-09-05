@@ -5,8 +5,9 @@ import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, 
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
+const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     const [sidebarItems, setSideBarItems] = useState([
          {
             id: 1,
@@ -60,24 +61,15 @@ const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
     ])
 
     const { appTitle } = useTitle();
-    const [tooltipVisible, setTooltipVisible] = useState(null);
-    const { complianceData, complianceLoading, complianceSuccess, step } = useSelector((state) => state.compliance);
+    const { complianceData } = useSelector((state) => state.compliance || {});
 
-    const handleMouseEnter = (id) => {
-        setTooltipVisible(id);
-    };
-
-    const handleMouseLeave = () => {
-        setTooltipVisible(null);
-    };
-
-    useEffect(() => {
-    if (complianceData?.progress === 5) {
-      setSideBarItems((prevItems) =>
-        prevItems.filter((item) => item.title !== "Compliance")
-      );
-    }
-  }, [complianceData]);    
+            useEffect(() => {
+                if (complianceData?.progress === 5) {
+                    setSideBarItems((prevItems) =>
+                        prevItems.filter((item) => item.title !== 'Compliance')
+                    );
+                }
+            }, [complianceData]);
 
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
@@ -130,3 +122,8 @@ const Sidebar = ({handleSidebar, isSidebarTextVisible}) => {
 };
 
 export default Sidebar;
+
+Sidebar.propTypes = {
+    handleSidebar: PropTypes.func.isRequired,
+    isSidebarTextVisible: PropTypes.bool,
+};

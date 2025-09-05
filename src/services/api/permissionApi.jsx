@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-import { invoiceFailure, invoiceStart } from "@/redux/slices/invoiceSlice";
 import { aggregatorPermissionsFailure, aggregatorPermissionsStart, aggregatorPermissionsSuccess, permissionsFailure, permissionsStart, permissionsSuccess, updatePermissionsFailure, updatePermissionsStart, updatePermissionsSuccess } from "@/redux/slices/permissionSlice";
 
 class PermissionService {
@@ -12,19 +11,15 @@ class PermissionService {
   
     async fetchPermission() {
       try {
-        const response = await this.axiosPrivate.get(
-          'api/Permissions'
-        );
-        
-        return response.data;
+  const res = await this.axiosPrivate.get('api/Permissions');
+  return res.data;
       } catch (err) {
         if (!err.response) {
             // dispatch(invoiceFailure('No response from server'));
         } else {
             // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
         }
-      } finally {
-      }
+  }
     }
 
     // role permission
@@ -43,8 +38,7 @@ class PermissionService {
         } else {
             dispatch(permissionsFailure('Failed to load permissions. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchAggregatorRolePermission(roleId, aggregatorCode, pageSize, pageNumber, dispatch) {
@@ -61,13 +55,12 @@ class PermissionService {
         } else {
             dispatch(aggregatorPermissionsFailure('Failed to load Customer permission. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
-    async createRolePermission(merchantCode, formData, dispatch) {
+    async createRolePermission(merchantCode, formData) {
       try {
-        const response = await this.axiosPrivate.post(
+        await this.axiosPrivate.post(
           `api/RolePermission/${merchantCode}`,
           JSON.stringify(formData)
         );
@@ -78,14 +71,13 @@ class PermissionService {
       } else {
           toast('Failed to load Customer permission. Try again.');
         }
-      } finally {
-      }
+  }
     }
   
     async updateAggregatorRolePermission(roleId, aggregatorCode, formData, dispatch) {
       try {
         dispatch(updatePermissionsStart());
-        const response = await this.axiosPrivate.put(
+        await this.axiosPrivate.put(
           `api/RolePermission/${roleId}/aggregator/${aggregatorCode}`,
           JSON.stringify(formData)
         );
@@ -99,15 +91,12 @@ class PermissionService {
           toast('Failed to load Customer permission. Try again.');
           dispatch(updatePermissionsFailure());
         }
-      } finally {
-      }
+  }
     }
   
     async activateAggregatorRolePermission(roleId, aggregatorCode) {
       try {
-        const response = await this.axiosPrivate.put(
-          `api/RolePermission/activate/${roleId}/aggregator/${aggregatorCode}`
-        );
+  await this.axiosPrivate.put(`api/RolePermission/activate/${roleId}/aggregator/${aggregatorCode}`);
         toast('Permission activated successfully');
       } catch (err) {
         if (!err.response) {
@@ -115,15 +104,12 @@ class PermissionService {
       } else {
           toast('Failed to load Customer permission. Try again.');
         }
-      } finally {
-      }
+  }
     }
   
     async deactivateAggregatorRolePermission(roleId, aggregatorCode) {
       try {
-        const response = await this.axiosPrivate.put(
-          `api/RolePermission/deactivate/${roleId}/aggregator/${aggregatorCode}`
-        );
+  await this.axiosPrivate.put(`api/RolePermission/deactivate/${roleId}/aggregator/${aggregatorCode}`);
         toast('Permission deactivated successfully');
       } catch (err) {
         if (!err.response) {
@@ -131,24 +117,19 @@ class PermissionService {
         } else {
             toast('Failed to load Customer permission. Try again.');
         }
-      } finally {
-      }
+  }
     }
   
     async fetchUserRolePermission(aggregatorCode) {
       try {
-        const response = await this.axiosPrivate.get(
-          `api/RolePermission/user/${aggregatorCode}`
-        );
-        
-        return response.data;
+  const res = await this.axiosPrivate.get(`api/RolePermission/user/${aggregatorCode}`);
+  return res.data;
       } catch (err) {
         if (!err.response) {
             toast('No response from server');
         } else {
             toast('Failed to load Customer permission. Try again.');
         }
-      } finally {
       }
     }
 
@@ -166,8 +147,7 @@ class PermissionService {
       //     } else {
       //         // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
       //     }
-      //   } finally {
-      //   }
+  //   }
       // }
 
   }

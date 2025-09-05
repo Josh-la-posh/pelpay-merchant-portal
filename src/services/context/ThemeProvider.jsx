@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 
 const ThemeContext = createContext();
 
@@ -28,3 +29,7 @@ export const ThemeProvider = ({ children }) => {
 
 // Custom hook for theme access
 export const useTheme = () => useContext(ThemeContext);
+
+ThemeProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};

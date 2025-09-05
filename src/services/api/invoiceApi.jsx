@@ -21,8 +21,7 @@ class InvoiceService {
         } else {
             dispatch(invoiceFailure('Failed to create invoice. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchInvoices(merchantCode, pageNumber, pageSize, dispatch) {
@@ -40,8 +39,7 @@ class InvoiceService {
         } else {
             dispatch(invoiceFailure('Failed to load Customer invoices. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async fetchInvoiceByInvoiceNumber(merchantCode, invoiceNumber, dispatch) {
@@ -58,8 +56,7 @@ class InvoiceService {
         } else {
             dispatch(invoiceFailure('Failed to load Customer invoices. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   
     async deleteInvoice(merchantCode, invoiceNumber, dispatch) {
@@ -76,8 +73,7 @@ class InvoiceService {
         } else {
             dispatch(invoiceFailure('Failed to delete Customer invoices. Try again.'));
         }
-      } finally {
-      }
+  }
     }
   }
   

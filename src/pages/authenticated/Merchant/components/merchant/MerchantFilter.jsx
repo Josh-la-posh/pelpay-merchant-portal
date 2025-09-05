@@ -1,6 +1,5 @@
 import { Search } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import MerchantService from '@/services/api/merchantApi';
 import { useDispatch } from 'react-redux';
@@ -12,7 +11,7 @@ function MerchantFilter() {
     const axiosPrivate = useAxiosPrivate();
     const merchantService = new MerchantService(axiosPrivate);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    
     const [canSearch, setCanSearch] = useState(false);
     const [formData, setFormData] = useState({
         merchantName : '',
@@ -27,7 +26,7 @@ function MerchantFilter() {
         }));
     }
 
-    const handleSearch = (e) => {
+    const handleSearch = () => {
         const v1 = formData.merchantName;
         const v2 = formData.merchantCode;
 
@@ -35,7 +34,7 @@ function MerchantFilter() {
             toast('Fields cannot be empty');
             return;
         }
-        loadData();
+    loadData();
     }
     
     const loadData = async () => {

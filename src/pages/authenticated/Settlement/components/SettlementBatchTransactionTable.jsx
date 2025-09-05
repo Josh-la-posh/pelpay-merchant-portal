@@ -1,4 +1,4 @@
-import React from 'react';
+// React import removed: using automatic JSX runtime
 import DataTable from '@/components/Table';
 import { dateFormatter } from '@/utils/dateFormatter';
 import SettlementCard from './SettlementCard';
@@ -46,16 +46,16 @@ const columns = [
     }
 ];
 
-const SettlementBatchTransactionTable = ({filteredData, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
-    const processedData = filteredData?.map(row => ({
+const SettlementBatchTransactionTable = ({ filteredData = [], totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage }) => {
+    const safeFiltered = Array.isArray(filteredData) ? filteredData : [];
+    const processedData = safeFiltered.map(row => ({
         ...row,
-        amountPayable: `${row?.amountCollected - (row?.merchantCharge + row?.customerCharge)}`,
+        amountPayable: (Number(row?.amountCollected || 0) - (Number(row?.merchantCharge || 0) + Number(row?.customerCharge || 0))) || 0,
     }));
 
-    const totalAmount = filteredData?.reduce((sum, amount) => (sum + amount?.amountCollected), 0)
-    const totalFees = filteredData.reduce((sum, fee) => sum + fee.merchantCharge, 0);
-    // const amountPayable = totalAmount - totalFees;
-    const stampDuty = filteredData.reduce((sum, fee) => sum + fee.stampDuty, 0);
+    const totalAmount = safeFiltered.reduce((sum, amount) => (sum + Number(amount?.amountCollected || 0)), 0);
+    const totalFees = safeFiltered.reduce((sum, fee) => sum + Number(fee?.merchantCharge || 0), 0);
+    const stampDuty = safeFiltered.reduce((sum, fee) => sum + Number(fee?.stampDuty || 0), 0);
     const amountPayable = totalAmount - (totalFees + stampDuty);
 
     return (
@@ -80,3 +80,14 @@ const SettlementBatchTransactionTable = ({filteredData, totalSize, currentPage, 
 };
 
 export default SettlementBatchTransactionTable;
+
+import PropTypes from 'prop-types';
+
+SettlementBatchTransactionTable.propTypes = {
+    filteredData: PropTypes.array,
+    totalSize: PropTypes.number,
+    currentPage: PropTypes.number,
+    setCurrentPage: PropTypes.func,
+    rowsPerPage: PropTypes.number,
+    setRowsPerPage: PropTypes.func,
+};

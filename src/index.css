@@ -2,6 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+:root {
+  --color-priColor: #00A049;
+  --color-secColor: #23BF76;
+}
+
 @layer utilities {
   .scrollbar-none::-webkit-scrollbar {
     display: none;
@@ -12,18 +17,13 @@
   }
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
-@theme {
-  --color-priColor: #00A049;
-  --color-secColor: #23BF76;
-}
-
-/* 'priColor': '#00A049',
-'secColoor': '#23BF76' */
-
 body {
   font-family: 'Inter', Arial, sans-serif;
   margin: 0;
-
   padding: 0;
 }
+
+.bg-priColor { background-color: var(--color-priColor); }
+.text-priColor { color: var(--color-priColor); }
+.border-priColor { border-color: var(--color-priColor); }
+
