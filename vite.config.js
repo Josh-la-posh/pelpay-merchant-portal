@@ -16,21 +16,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('html2canvas')) return 'html2canvas';
-            if (id.includes('apexcharts')) return 'apexcharts';
-            if (id.includes('react') || id.includes('react-dom')) return 'react-vendors';
-            if (id.includes('react-router-dom')) return 'router';
-            if (id.includes('axios')) return 'axios';
-            if (id.includes('xlsx')) return 'xlsx';
-            return 'vendor';
-          }
-        }
-      }
-    }
-  }
-})
+  optimizeDeps: {
+    include: ['react', 'react-dom']
+  },
+});

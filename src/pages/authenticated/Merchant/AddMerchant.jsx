@@ -127,8 +127,6 @@ function AddMerchantPage() {
         }
     }, [axiosPrivate]);
 
-    // duplicate getIndustryCategories removed (kept earlier declaration)
-
     const getIndustryCategories = useCallback(async (id) => {
         try {
             const response = await axiosPrivate.get(`api/industry/categories/${id}`);
