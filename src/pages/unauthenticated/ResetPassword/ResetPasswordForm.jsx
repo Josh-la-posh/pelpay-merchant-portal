@@ -89,7 +89,7 @@ const ResetPasswordForm = () => {
 
     return (
         <div className="pt-8">
-            {success !== '' ? 
+            {success === '' ? 
                 (
                     <div className="">
                         <div className="flex justify-center">
