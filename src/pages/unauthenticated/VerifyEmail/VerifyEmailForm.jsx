@@ -20,7 +20,7 @@ const VerifyEmailForm = () => {
     
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState('');
 
     useEffect(() => {
         const result = PWD_REGEX.test(password);
@@ -38,6 +38,7 @@ const VerifyEmailForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSuccess
 
         const v1 = PWD_REGEX.test(password);
         const v2 = confirmPassword === password;
@@ -73,8 +74,8 @@ const VerifyEmailForm = () => {
             );
             const data = response.data;
 
-            if (data.message === 'Successful') {
-                setSuccess(true);
+            if (data.message !== '') {
+                setSuccess(data.message);
             };
         } catch (error) {
             if (!error.response) {
@@ -87,7 +88,7 @@ const VerifyEmailForm = () => {
 
     return (
         <div className="pt-8">
-            {!success ? 
+            {success !== '' ? 
                 (
                     <div className="">
                         <div className="flex justify-center">

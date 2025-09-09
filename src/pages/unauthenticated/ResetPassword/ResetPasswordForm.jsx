@@ -20,7 +20,7 @@ const ResetPasswordForm = () => {
     
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState('');
     // navigate was unused and removed
 
     useEffect(() => {
@@ -39,6 +39,7 @@ const ResetPasswordForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSuccess('');
 
         const v1 = PWD_REGEX.test(password);
         const v2 = confirmPassword === password;
@@ -74,8 +75,8 @@ const ResetPasswordForm = () => {
             );
             const data = response.data;
 
-            if (data.message === 'Successful') {
-                setSuccess(true);
+            if (data.message !== '') {
+                setSuccess(data.message);
             };
         } catch (error) {
             if (!error.response) {
@@ -88,7 +89,7 @@ const ResetPasswordForm = () => {
 
     return (
         <div className="pt-8">
-            {!success ? 
+            {success !== '' ? 
                 (
                     <div className="">
                         <div className="flex justify-center">
