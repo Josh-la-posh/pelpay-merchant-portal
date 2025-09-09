@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
@@ -19,17 +19,26 @@ const Compliance = () => {
   const axiosPrivate = useAxiosPrivate();
   const { complianceData, step, businessRepresentatives } =
     useSelector((state) => state.compliance);
-  const complianceService = new ComplianceService(axiosPrivate);
+  const complianceService = useMemo(() => new ComplianceService(axiosPrivate), [axiosPrivate]);
   const [editOwnerIndex, setEditOwnerIndex] = useState(null);
   const dispatch = useDispatch();
   const user = auth?.data.merchants[0];
 
   useEffect(() => {
     setAppTitle("Compliance");
-    if (complianceData?.progress === 5) {
-      navigate("/success");
-    }
-  }, [complianceData, navigate]);
+    const updateAndNavigate = async () => {
+      if (complianceData?.progress === 5) {
+        const response = await complianceService.startComplianceVerification(
+          user?.merchantCode,
+          dispatch
+        );
+        if (response?.data?.message === 'success') {
+          navigate("/success");
+        }
+      }
+    };
+    updateAndNavigate();
+  }, [complianceData, complianceService, dispatch, navigate, setAppTitle, user?.merchantCode]);
 
   const handleNextStep = async (val, next) => {
     const progress = complianceData?.progress;

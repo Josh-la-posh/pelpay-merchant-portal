@@ -43,11 +43,16 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
 
   const handleSubmit = async () => {
     const newErrors = ["", ""];
-    if (formData.rcNumber.length < 10 || formData.rcNumber.length > 12)
+    // if (formData.rcNumber.length < 10 || formData.rcNumber.length > 12)
+    
+    if (formData.rcNumber.length < 1)
       newErrors[0] =
-        "Registration number should be between 10 and 12 characters";
-    if (formData.tin.length < 10 || formData.tin.length > 12)
-      newErrors[1] = "Tax Identification number should be between 10 and 12 characters";
+        // "Registration number should be between 10 and 12 characters";
+        "Registration number is required";
+    // if (formData.tin.length < 10 || formData.tin.length > 12)
+    if (formData.tin.length < 1)
+      // newErrors[1] = "Tax Identification number should be between 10 and 12 characters";
+      newErrors[1] = "Tax Identification number is required";
     setErr(newErrors);
 
     if (!newErrors.every((e) => e === "")) return;
@@ -75,8 +80,8 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
         label="Registration number"
         type="text"
         value={formData.rcNumber}
-        minLength={10}
-        maxLength={12}
+        minLength={1}
+        // maxLength={12}
         errMsg={err[0]}
         onChange={(e) => handleChange("rcNumber", e.target.value)}
       />
@@ -85,8 +90,8 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
         label="Tax identification number"
         type="text"
         value={formData.tin}
-        minLength={10}
-        maxLength={12}
+        minLength={1}
+        // maxLength={12}
         errMsg={err[1]}
         onChange={(e) => handleChange("tin", e.target.value)}
       />

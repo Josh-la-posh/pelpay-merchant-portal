@@ -12,7 +12,7 @@ const SuccessPage = () => {
       <div className="text-center bg-white p-8 rounded-lg shadow-lg w-80">
         <h2 className="text-2xl font-semibold text-green-600 mb-4">Success!</h2>
         <p className="text-lg text-gray-700 mb-6">
-          Your compliance process has been successfully completed. You are now fully onboarded.
+          Your documents are being processed, we will get back to you within 24 hours.
         </p>
         <button
           onClick={handleGoHome}

@@ -24,7 +24,7 @@ function MerchantSelector({ merchants = [], onMerchantChange = () => {} }) {
       >
       {Array.isArray(merchants) && merchants.map((merchant) => (
         <option value={merchant.id} key={merchant.id}>
-          {merchant.merchantCode}
+          {merchant?.merchantName}
         </option>
       ))}
       </select>

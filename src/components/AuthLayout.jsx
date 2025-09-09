@@ -10,9 +10,7 @@ const AuthLayout = ({children = null}) => {
       </div>
       <div className='h-full w-full lg:w-[45%] bg-[#f7f7f7]'>
         <div className="h-full w-full flex justify-center items-center overflow-y-hidden">
-          <div className="">
-            {children}
-          </div>
+          {children}
         </div>
       </div>
     </div>

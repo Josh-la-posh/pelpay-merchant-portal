@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 const FormOne = ({ handleNextStep }) => {
   const { auth } = useAuth();
-  const user = auth?.data;
+  const user = auth?.data?.user;
 
   const { complianceData, complianceLoading } = useSelector((state) => state.compliance);
 
@@ -85,8 +85,7 @@ const FormOne = ({ handleNextStep }) => {
 
     const isEqual = Object.keys(formData).every(
       (key) => formData[key] === oldData[key]
-    );
-  
+    );  
     const newFormData = new FormData();
 
     newFormData.append("legalBusinessName", formData.legalBusinessName);
@@ -128,7 +127,7 @@ const FormOne = ({ handleNextStep }) => {
         type="text"
         errMsg={err[2]}
         value={formData.businessDescription}
-        onChange={(e) => handleChange("businessDescription", e.target.value)}
+        onChange={value => handleChange("businessDescription", value)}
         minLength={100}
       />
 
@@ -147,9 +146,16 @@ const FormOne = ({ handleNextStep }) => {
 
       <ComplianceInput
         label="Projected sales volume"
-        type="number"
-        value={formData.projectedSalesVolume}
-        onChange={(e) => handleChange("projectedSalesVolume", e.target.value)}
+        type="text"
+        value={formData.projectedSalesVolume.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+        onChange={e => {
+          // Remove commas before saving to state
+          const rawValue = e.target.value.replace(/,/g, "");
+          // Only allow numbers
+          if (/^\d*$/.test(rawValue)) {
+            handleChange("projectedSalesVolume", rawValue);
+          }
+        }}
       />
 
       <ComplianceInput
