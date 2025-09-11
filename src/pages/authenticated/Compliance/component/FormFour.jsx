@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceInput from "../../../../components/ComplianceInput";
 import ComplianceInputSelect from "../../../../components/ComplianceInputSelect";
-import ComplianceUploader from "../../../../components/ComplianceUploader";
+// import ComplianceUploader from "../../../../components/ComplianceUploader";
 import { useDispatch, useSelector } from "react-redux";
 import { addBusinessRepresentative, updateBusinessRepresentative } from "../../../../redux/slices/complianceSlice";
 import PropTypes from 'prop-types';
@@ -39,9 +39,9 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleImageChange = (field, files) => {
-    setFormData({ ...formData, [field]: files[0] });    
-  };
+  // const handleImageChange = (field, files) => {
+  //   setFormData({ ...formData, [field]: files[0] });    
+  // };
 
   const handleSubmit = async () => {
     const newErrors = Array(11).fill("");
@@ -77,11 +77,22 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
     handleNextStep(newForm, false);
   };
 
-  const isInvalid = [
-    "firstName", "lastName", "dob", "nationality", "role",
+  const trackedFields = [
+    "firstName", "lastName", "dob", "role",
     "address", "occupation", "mobile", "percentOfBusiness",
     "bvn", "verificationType", "verificationNumber"
-  ].some((field) => !formData[field]);
+  ];
+
+  const isEditing = !!formData.id;
+  const isFormEmpty = !isEditing && trackedFields.every((field) => !formData[field]);
+  const isInvalid = trackedFields.some((field) => !formData[field]);
+
+  const handleSkip = () => {
+    // Allow user to advance without adding another representative
+    const newForm = new FormData();
+    newForm.append("progress", 4);
+    handleNextStep(newForm, false);
+  };
 
   return (
     <div className="max-w-[450px] ">
@@ -201,11 +212,11 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
         />
       )}
 
-      <ComplianceUploader
+      {/* <ComplianceUploader
         label="Upload image"
         value={formData?.verificationDocument?.name || ''}
         onChange={(e) => handleImageChange("verificationDocument", e.target.files)}
-      />
+      /> */}
 
       <div className="grid grid-cols-2 gap-4 mt-4">
         <button
@@ -214,19 +225,25 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
         >
           Go back
         </button>
-        <button
-          onClick={handleSubmit}
-          className={`${isInvalid || complianceLoading ||
-            // !formData.verificationDocument ||
-            complianceLoading? "bg-priColor/35"
-              : "bg-priColor"
-          } w-full p-4 text-white text-[13px] rounded-md`}
-          disabled={ isInvalid || complianceLoading
-            // !formData.verificationDocument
-          }
-        >
-          Save and continue
-        </button>
+        {isFormEmpty ? (
+          <button
+            onClick={handleSkip}
+            className={`bg-priColor w-full p-4 text-white text-[13px] rounded-md disabled:bg-priColor/35`}
+            disabled={complianceLoading}
+            type="button"
+          >
+            Continue
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className={`${isInvalid || complianceLoading ? "bg-priColor/35" : "bg-priColor"} w-full p-4 text-white text-[13px] rounded-md`}
+            disabled={isInvalid || complianceLoading}
+            type="button"
+          >
+            Save and continue
+          </button>
+        )}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import axios from '@/services/api/axios';
 import AuthInputField from '@/components/AuthInptField';
 import { CheckCircle, Eye, EyeOff, Lock, Mail } from 'lucide-react';
 
+const baseUrl2 = import.meta.env.VITE_MERCHANT_BASE_URL_NEW;
 const CONFIRM_ACCOUNT_URL = 'api/account/confirm-account';
 const RESEND_CONFIRM_ACCOUNT_URL = 'api/account/resend-confirm-account';
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{7,24}$/;
@@ -69,7 +70,7 @@ const VerifyEmailForm = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(CONFIRM_ACCOUNT_URL,
+            const response = await axios.post(`${baseUrl2}${CONFIRM_ACCOUNT_URL}`,
                 JSON.stringify({token, password, confirmPassword}),
                  {
                     headers: {
@@ -98,7 +99,7 @@ const VerifyEmailForm = () => {
         setIsSendingEmail(true);
 
         try {
-            const response = await axios.post(RESEND_CONFIRM_ACCOUNT_URL,
+            const response = await axios.post(`${baseUrl2}${RESEND_CONFIRM_ACCOUNT_URL}`,
                 JSON.stringify({email}),
                  {
                     headers: {

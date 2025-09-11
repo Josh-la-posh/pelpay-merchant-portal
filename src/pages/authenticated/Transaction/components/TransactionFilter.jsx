@@ -341,7 +341,7 @@ function TransactionFilter({filteredData = [], setFilteredData = () => {}, trans
                 </button>
             }
         </div>
-        <div className="h-20 sm:h-32 bg-[#F0F2F5] my-4 p-4">
+        {/* <div className="h-20 sm:h-32 bg-[#F0F2F5] my-4 p-4">
             <div className="bg-white h-full flex justify-center items-center gap-5">
                 <div className="flex-1">
                     <img src='/assets/Visa.svg' alt='Visa'/>
@@ -362,7 +362,7 @@ function TransactionFilter({filteredData = [], setFilteredData = () => {}, trans
                     <img src='/assets/wema.svg' alt='Wema'/>
                 </div>
             </div>
-        </div>
+        </div> */}
         <div className="w-full flex flex-col sm:flex-row items-end sm:items-center sm:justify-between">
             <div className="flex gap-1 sm:gap-2 py-2">
                 <button onClick={() => handleFilteredDataChange('All')}

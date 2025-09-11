@@ -4,12 +4,15 @@ import '../auth.css';
 import axios from '@/services/api/axios';
 import AuthInputField from '@/components/AuthInptField';
 import { CheckCircle, Eye, EyeOff, Lock, Mail } from 'lucide-react';
+// import AuthService from '../../../services/api/authApi';
 
+const baseUrl2 = import.meta.env.VITE_MERCHANT_BASE_URL_NEW;
 const RESET_PASSWORD_URL = '/api/account/reset-password';
 const FORGOT_PASSWORD_URL = 'api/account/forget-password';
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{7,24}$/;
 
 const ResetPasswordForm = () => {
+    // const authService = new AuthService();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const errRef = useRef();
@@ -27,7 +30,6 @@ const ResetPasswordForm = () => {
     const [isSendingEmail, setIsSendingEmail] = useState(false);
     const [errMsg, setErrMsg] = useState(false);
     const [success, setSuccess] = useState('');
-    // navigate was unused and removed
 
     useEffect(() => {
         const result = PWD_REGEX.test(password);
@@ -70,7 +72,7 @@ const ResetPasswordForm = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(RESET_PASSWORD_URL,
+            const response = await axios.post(`${baseUrl2}${RESET_PASSWORD_URL}`,
                 JSON.stringify({token, password, confirmPassword}),
                  {
                     headers: {
@@ -92,35 +94,40 @@ const ResetPasswordForm = () => {
             setLoading(false);
         }
     };
+
+    // const resendMail = async (e) => {
+    //     e.preventDefault();
+    //     authService.submitForgotPassword(email, setLoading, setIsSendingEmail, setErrMsg, errRef);
+    // };
     
-        const resendMail = async (e) => {
-            e.preventDefault();
-            setSuccess('');
-            setIsSendingEmail(true);
-    
-            try {
-                const response = await axios.post(FORGOT_PASSWORD_URL,
-                    JSON.stringify({email}),
-                     {
-                        headers: {
-                            'Accept': '*/*',
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
-                const data = response.data;
-    
-                if (data.message !== '') {
-                    setSuccess(data.message);
-                };
-            } catch (error) {
-                if (!error.response) {
-                    setErrMsg('No Server Response');
+    const resendMail = async (e) => {
+        e.preventDefault();
+        setSuccess('');
+        setIsSendingEmail(true);
+
+        try {
+            const response = await axios.post(`${baseUrl2}${FORGOT_PASSWORD_URL}`,
+                JSON.stringify({email}),
+                    {
+                    headers: {
+                        'Accept': '*/*',
+                        'Content-Type': 'application/json',
+                    },
                 }
-            } finally {
-                setLoading(false);
+            );
+            const data = response.data;
+
+            if (data.message !== '') {
+                setSuccess(data.message);
+            };
+        } catch (error) {
+            if (!error.response) {
+                setErrMsg('No Server Response');
             }
-        };
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="pt-8">

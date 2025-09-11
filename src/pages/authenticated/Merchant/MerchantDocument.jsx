@@ -4,7 +4,7 @@ import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
 import MerchantService from '@/services/api/merchantApi';
 import MerchantDocumentTable from './components/merchantDocument/MerchantDocumentTable';
-import MerchantDocumentFilter from './components/merchantDocument/MerchantDocumentFilter';
+// import MerchantDocumentFilter from './components/merchantDocument/MerchantDocumentFilter';
 import useAuth from '@/services/hooks/useAuth';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import Spinner from '@/components/Spinner';
@@ -66,7 +66,7 @@ function MerchantDocument() {
 
   return (
     <div className=''>
-      <MerchantDocumentFilter />
+      {/* <MerchantDocumentFilter /> */}
       <MerchantDocumentTable filteredData={filteredData} merchantCode={merchantCode} />
     </div>
   )

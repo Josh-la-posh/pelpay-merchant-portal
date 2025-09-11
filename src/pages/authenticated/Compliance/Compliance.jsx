@@ -32,7 +32,8 @@ const Compliance = () => {
           user?.merchantCode,
           dispatch
         );
-        if (response?.data?.message === 'success') {
+        const data = response?.data;
+        if (data?.message === 'success') {
           navigate("/success");
         }
       }

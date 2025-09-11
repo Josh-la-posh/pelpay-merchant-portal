@@ -178,9 +178,10 @@ class ComplianceService {
       const response = await this.axiosPrivate.put(
         `api/compliance/startVerification?merchantCode=${merchantCode}`
       );
-      const data = response.data;
-      dispatch(complianceSuccess(data));
+      // const data = response;
+      // dispatch(complianceSuccess(data));
       toast.success("Compliance verification started successfully.");
+      return response;
     } catch (err) {
       if (!err.response) {
         dispatch(complianceFailure("No response from server"));
