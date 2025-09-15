@@ -51,13 +51,13 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
             url: '/settings/profile',
             openSidebar: false
         },
-        {
-            id: 7,
-            icon: <Headset size={isSidebarTextVisible ? '18' : '22'} />,
-            title: 'Help Center',
-            url: '/help-center',
-            openSidebar: true
-        },
+        // {
+        //     id: 7,
+        //     icon: <Headset size={isSidebarTextVisible ? '18' : '22'} />,
+        //     title: 'Help Center',
+        //     url: '/help-center',
+        //     openSidebar: true
+        // },
     ])
 
     const { appTitle } = useTitle();

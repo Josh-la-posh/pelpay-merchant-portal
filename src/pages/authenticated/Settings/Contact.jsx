@@ -115,7 +115,7 @@ function ContactPage() {
 
     return (
         <div className="mb-8  bg-white px-5 py-5">
-            <p className="text-xs font-normal my-8 text-center px-5">As soon as a dispute (chargeback or fraud claim) is raised for a transaction or more support is required from your team, Paystack will notify you via email in the email addresses that you specify below.</p>
+            <p className="text-xs font-normal my-8 text-center px-5">As soon as a dispute (chargeback or fraud claim) is raised for a transaction or more support is required from your team, Glass will notify you via email in the email addresses that you specify below.</p>
             <form onSubmit={handleSubmit} className="space-y-4 mt-5">
                 <AuthInputField
                     label="Dispute emails"
