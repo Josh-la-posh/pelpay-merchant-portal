@@ -12,6 +12,7 @@ import usersReducer from './slices/userSlice';
 import rolesReducer from './slices/roleSlice';
 import permissionsReducer from './slices/permissionSlice';
 import complianceReducer from './slices/complianceSlice';
+import envReducer from './slices/envSlice';
 
 export const store = configureStore({
   reducer: {
@@ -28,5 +29,6 @@ export const store = configureStore({
     roles: rolesReducer,
     permissions: permissionsReducer,
     compliance: complianceReducer,
+    env: envReducer,
   },
 });

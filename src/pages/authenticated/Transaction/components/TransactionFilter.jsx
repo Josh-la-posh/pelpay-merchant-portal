@@ -13,7 +13,7 @@ import TransactionService from '@/services/api/transactionApi';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import useAuth from '@/services/hooks/useAuth';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 // import { dateFormatter } from '../../../../utils/dateFormatter';
 import { formatEncodedDate } from '../../../../utils/formatEncodedDate';
@@ -31,7 +31,8 @@ function TransactionFilter({filteredData = [], setFilteredData = () => {}, trans
     const [endDate, setEndDate] = useState(null);
     const transactionService = new TransactionService(axiosPrivate);
     const [canSearch, setCanSearch] = useState(false);
-    const env = 'None';
+    // const env = 'None';
+    const env = useSelector((state) => state.env.env);
     const pageNumber = 1;
     const [formData, setFormData] = useState({
         transactionReference : '',

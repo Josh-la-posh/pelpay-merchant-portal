@@ -28,7 +28,8 @@ function TransactionPage() {
   const [pageNumber, setPageNumber] = useState(transactionPageNumber);
   const [pageSize, setPageSize] = useState(transactionPageSize);
   const [totalSize, setTotalSize] = useState(transactionTotalSize);
-  const env = 'Test';
+  // const env = 'Test';
+  const env = useSelector((state) => state.env.env);
 
   useEffect(() => {
       setAppTitle('Transaction');
