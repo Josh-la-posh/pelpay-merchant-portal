@@ -10,7 +10,6 @@ const useAxiosPrivate = () => {
     const { auth, setAuth } = useAuth();
     const navigate = useNavigate();
     const location  = useLocation();
-    // const axiosPrivate = formDataAxiosPrivate;
 
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(

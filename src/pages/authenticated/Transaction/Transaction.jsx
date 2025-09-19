@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/formDataAxiosPrivate';
 import { useDispatch, useSelector } from 'react-redux';
 import TransactionService from '@/services/api/transactionApi';
 import TransactionTable from './components/TransactionTable';
