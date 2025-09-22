@@ -25,6 +25,16 @@ const persistedEnv = (() => {
   }
 })();
 
+const persistedStep = (() => {
+  try {
+    const raw = localStorage.getItem('compliance');
+    return raw ? JSON.parse(raw) : undefined;
+  } catch (e) {
+    console.warn('Failed to read persisted compliance step from localStorage', e);
+    return undefined;
+  }
+})();
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -46,6 +56,9 @@ export const store = configureStore({
     env: {
       env: persistedEnv || 'Test',
     },
+    compliance: {
+      step: persistedStep || 0,
+    },
   },
 });
 
@@ -57,5 +70,15 @@ store.subscribe(() => {
     localStorage.setItem('env', JSON.stringify(current));
   } catch (e) {
     console.warn('Failed to persist env to localStorage', e);
+  }
+});
+
+store.subscribe(() => {
+  try {
+    const state = store.getState();
+    const current = state.compliance?.step || 0;
+    localStorage.setItem('compliance', JSON.stringify(current));
+  } catch (e) {
+    console.warn('Failed to persist compliance step to localStorage', e);
   }
 });

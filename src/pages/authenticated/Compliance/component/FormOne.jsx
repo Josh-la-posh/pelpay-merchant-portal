@@ -76,8 +76,6 @@ const FormOne = ({ handleNextStep }) => {
       newErrors[1] = "Trading name must be greater than 2 characters";
     if (formData.businessDescription.length < 100)
       newErrors[2] = "Business description must be at least 100 characters";
-    if (formData.website.length < 3)
-      newErrors[3] = "Website must be a valid website";
 
     setErr(newErrors);
 

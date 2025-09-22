@@ -61,15 +61,16 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     ])
 
     const { appTitle } = useTitle();
-    const { complianceData } = useSelector((state) => state.compliance || {});
+    const { complianceData, step } = useSelector((state) => state.compliance || {});
 
-            useEffect(() => {
-                if (complianceData?.progress === 5) {
-                    setSideBarItems((prevItems) =>
-                        prevItems.filter((item) => item.title !== 'Compliance')
-                    );
-                }
-            }, [complianceData]);
+    useEffect(() => {
+        // console.log("Compliance Step Updated:", step);
+        if (step === 5) {
+            setSideBarItems((prevItems) =>
+                prevItems.filter((item) => item.title !== 'Compliance')
+            );
+        }
+    }, [complianceData]);
 
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
