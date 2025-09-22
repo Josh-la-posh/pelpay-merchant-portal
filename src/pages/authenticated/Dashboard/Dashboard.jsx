@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
-import useAxiosPrivate from "@/services/hooks/useAxiosPrivate";
+// import useAxiosPrivate from "@/services/hooks/useAxiosPrivate";
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import DashboardService from "@/services/api/dashboardApi";
 import { useDispatch, useSelector } from "react-redux";
 import DashboardCards from "./component/DashboardCards";
@@ -46,9 +47,15 @@ function Dashboard() {
   const [errMsg, setErrMsg] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
-  const [isLive, setIsLive] = useState(false);
-  // const env = 'None';
   const { env } = useSelector((state) => state.env);
+
+  const [isLive, setIsLive] = useState(false);
+
+  useEffect(() => {
+    const newData = env === "Live" ? true : false;
+    setIsLive(newData);
+  }, [env])
+
   useEffect(() => {
     setAppTitle("Dashboard");
   }, [setAppTitle]);
@@ -77,7 +84,7 @@ function Dashboard() {
         interval,
         dispatch
       );
-      await dashboardService.fetchGraph(merchantCode, interval, dispatch);
+      await dashboardService.fetchGraph(merchantCode, env, interval, dispatch);
     }
   }, [dashboardService, merchantCode, env, interval, dispatch]);
 
@@ -111,11 +118,12 @@ function Dashboard() {
     setIsModalOpen(false);
     setSelectedTransactionData(null);
   };
-  // );
 
   const handleToggleEnv = () => {
-    setIsLive((prev) => !prev);
-    const newEnv = isLive ? "Live" : "Test";
+    // compute the next env based on current isLive (avoid stale state)
+    const nextLive = !isLive;
+    setIsLive(nextLive);
+    const newEnv = nextLive ? "Live" : "Test";
     dispatch(toggleEnv(newEnv));
   }
 

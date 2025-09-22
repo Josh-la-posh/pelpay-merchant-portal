@@ -4,6 +4,7 @@ import { dateFormatter } from '@/utils/dateFormatter';
 import { Cloud } from 'lucide-react';
 import axios from 'axios';
 import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAuth from '@/services/hooks/useAuth';
 import TransactionService from '@/services/api/transactionApi';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -11,11 +12,12 @@ import PropTypes from 'prop-types';
 
 function TransactionForm({ handleCloseModal, data = {} }) {
   const axiosPrivate = useAxiosPrivate();
+  const { auth } = useAuth();
   const dispatch = useDispatch();
   const [viewResponse, setViewResponse] = useState(false);
   const [transactionJsonData, setTransactionJsonData] = useState([]);
   const [transactionData, settransactionData] = useState(data);
-  const transactionService = new TransactionService(axiosPrivate);
+  const transactionService = new TransactionService(axiosPrivate, auth);
 
   useEffect(() => {
     settransactionData(data);

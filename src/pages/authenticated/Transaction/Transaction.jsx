@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
 // import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
-import useAxiosPrivate from '@/services/hooks/formDataAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import TransactionService from '@/services/api/transactionApi';
 import TransactionTable from './components/TransactionTable';
@@ -17,31 +17,28 @@ function TransactionPage() {
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const { transactions, transactionPageNumber, transactionPageSize, transactionTotalSize, transactionLoading, transactionError } = useSelector((state) => state.transaction);
-  const [filteredData, setFilteredData] = useState(transactions);
   const [isLoading, setIsLoading] = useState(transactionLoading);
   const [errMsg, setErrMsg] = useState(transactionError);
-  const [filteredDataResult, setFilteredDataResult] = useState(filteredData);
   const merchantCode = auth?.merchant.merchantCode;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
   const transactionService = useMemo(() => new TransactionService(axiosPrivate, auth), [axiosPrivate, auth]);
   const [pageNumber, setPageNumber] = useState(transactionPageNumber);
   const [pageSize, setPageSize] = useState(transactionPageSize);
+  const [currentFilters, setCurrentFilters] = useState({});
   const [totalSize, setTotalSize] = useState(transactionTotalSize);
   // const env = 'Test';
   const env = useSelector((state) => state.env.env);
 
   useEffect(() => {
-      setAppTitle('Transaction');
-  }, []);
+    setAppTitle('Transaction');
+  }, [setAppTitle]);
             
   useEffect(() => {
     setIsLoading(transactionLoading);
   }, [transactionLoading]);
       
-  useEffect(() => {
-      setErrMsg(transactionError);
-  }, [transactionError]);
+  useEffect(() => { setErrMsg(transactionError); }, [transactionError]);
         
     useEffect(() => {
       setPageNumber(transactionPageNumber);
@@ -57,17 +54,15 @@ function TransactionPage() {
 
   const loadData = useCallback(async () => {
     if (merchantCode) {
-      await transactionService.fetchtransactions(merchantCode, env, pageNumber, pageSize, dispatch);
+      await transactionService.fetchtransactions(merchantCode, env, currentFilters, pageNumber, pageSize, dispatch);
     }
-  }, [merchantCode, env, pageNumber, pageSize, transactionService, dispatch]);
+  }, [merchantCode, env, currentFilters, pageNumber, pageSize, transactionService, dispatch]);
 
   useEffect(() => {
-    loadData();
-  }, [merchantCode, env, pageNumber, pageSize, dispatch]);
+      loadData();
+    }, [loadData]);
 
-  const handleRefresh = () => {
-    loadData();
-  }
+  const handleRefresh = () => { loadData(); }
   
   const handleOpenModal = (val) => {
     setSelectedTransactionData(val);
@@ -87,7 +82,14 @@ function TransactionPage() {
 
   return (
     <div>
-      <TransactionFilter filteredData={filteredData} setFilteredData={setFilteredData} transactions={transactions} filteredDataResult={filteredDataResult} handleRefresh={handleRefresh} setFilteredDataResult={setFilteredDataResult}/>
+      <TransactionFilter
+        handleRefresh={handleRefresh}
+        pageNumber={pageNumber}
+        pageSize={pageSize}
+        setCurrentFilters={setCurrentFilters}
+        setPageNumber={setPageNumber}
+        currentFilters={currentFilters}
+      />
 
       {isModalOpen && 
         (<TransactionForm
@@ -102,7 +104,7 @@ function TransactionPage() {
             <Spinner />
         </div>
         : <TransactionTable
-            filteredData={filteredDataResult}
+            data={transactions}
             handleOpenModal={handleOpenModal}
             totalSize={totalSize}
             currentPage={pageNumber}

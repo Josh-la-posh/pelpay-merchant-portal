@@ -4,7 +4,7 @@ import DataTable from '@/components/Table';
 import { dateFormatter, timeFormatter } from '@/utils/dateFormatter';
 import { EyeIcon } from 'lucide-react';
 
-const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage, drpp}) => {
+const TransactionTable = ({ data, handleOpenModal, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage, drpp }) => {
     // selectedIndex removed — not used
     
     const columns = [
@@ -68,10 +68,10 @@ const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage
     }
 
     return (
-        <div className="">
+        <div className="mt-4">
             <DataTable
                 columns={columns}
-                data={filteredData}
+                data={data}
                 totalSize={totalSize}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
@@ -86,7 +86,7 @@ const TransactionTable = ({filteredData, handleOpenModal, totalSize, currentPage
 export default TransactionTable;
 
 TransactionTable.propTypes = {
-    filteredData: PropTypes.array,
+    data: PropTypes.array,
     handleOpenModal: PropTypes.func,
     totalSize: PropTypes.number,
     currentPage: PropTypes.number,
