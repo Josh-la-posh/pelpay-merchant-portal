@@ -34,10 +34,15 @@ const complianceSlice = createSlice({
         setBusinessRepresentatives: (state, action) => {
             state.businessRepresentatives = action.payload; // set business representatives in state
         },
-        addBusinessRepresentative: (state, action) => {
+        addBusinessRepresentative: (state, action) => {;
+            if(!Array.isArray(state.businessRepresentatives)) {
+                state.businessRepresentatives = [];
+            }
+
             const newRep = { ...action.payload, id: uuidv4() };
             state.businessRepresentatives.push(newRep);
         },
+
         updateBusinessRepresentative: (state, action) => {
             state.businessRepresentatives = state.businessRepresentatives.map(rep =>
                 rep.id === action.payload.id ? { ...rep, ...action.payload } : rep
