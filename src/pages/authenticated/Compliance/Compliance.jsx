@@ -27,20 +27,21 @@ const Compliance = () => {
 
   useEffect(() => {
     setAppTitle("Compliance");
-    const updateAndNavigate = async () => {
-      if (complianceData?.progress === 5) {
-        const response = await complianceService.startComplianceVerification(
-          user?.merchantCode,
-          dispatch
-        );
-        const data = response?.data;
-        if (data?.message === 'success') {
-          navigate("/success");
-        }
-      }
-    };
-    updateAndNavigate();
-  }, [complianceData, complianceService, dispatch, navigate, setAppTitle, user?.merchantCode]);
+    // const updateAndNavigate = async () => {
+    //   if (complianceData?.progress === 5) {
+    //     const response = await complianceService.startComplianceVerification(
+    //       user?.merchantCode,
+    //       dispatch
+    //     );
+    //     const data = response?.data;
+    //     if (data?.message === 'success') {
+    //       navigate("/success");
+    //     }
+    //   }
+    // };
+    // updateAndNavigate();
+  }, [ setAppTitle]);
+  // }, [complianceData, complianceService, dispatch, navigate, setAppTitle, user?.merchantCode]);
 
   const handleNextStep = async (val, next) => {
     const progress = complianceData?.progress;

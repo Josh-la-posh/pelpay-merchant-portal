@@ -42,6 +42,7 @@ function Dashboard() {
     transactionLoading,
     transactionError,
   } = useSelector((state) => state.dashboard);
+
   const [isLumpsumLoading, setIsLumpsumLoading] = useState(lumpsumLoading);
   const [isGraphLoading, setIsGraphLoading] = useState(graphLoading);
   const [errMsg, setErrMsg] = useState("");
@@ -305,7 +306,7 @@ function Dashboard() {
           />
         ) : (
           <TransactionTable
-            filteredData={transactions}
+            data={transactions}
             handleOpenModal={handleOpenModal}
             drpp=""
           />

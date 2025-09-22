@@ -56,9 +56,8 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
     if (!formData.percentOfBusiness) newErrors[7] = "Enter business percentage";
     if (formData.bvn.length !== 11) newErrors[8] = "Enter a valid 11-digit BVN";
     if (!formData.verificationType) newErrors[9] = "Select ID";
-    // if (formData.verificationNumber.length < 10) newErrors[10] = "Enter a valid verification number";
     if (formData.verificationNumber.length < 1) newErrors[10] = "Enter a valid verification number";
-
+  
     setErr(newErrors)
     if (!newErrors.every((e) => e === "")) return;
 

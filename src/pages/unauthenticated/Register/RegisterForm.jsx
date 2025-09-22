@@ -13,8 +13,8 @@ const BUSINESS_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
 const NAME_REGEX = /^[a-zA-Z]{2,24}$/;
 // const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_@]{3,24}$/;
 // const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{7,24}$/;
-const PHONE_REGEX = /^[0-9\s\-()]{10,15}$/;
-const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const PHONE_REGEX = /^(?:\+[0-9]{1,3}[0-9\s\-()]{7,14}|[0-9\s\-()]{10,15})$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const REGISTER_URL = '/api/account/signup';
 
