@@ -2,7 +2,8 @@ import { useState } from "react";
 import ComplianceHeader from "../../../../components/ComplianceHeader";
 import ComplianceUploader from "../../../../components/ComplianceUploader";
 import { useSelector } from "react-redux";
-import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
+import PropTypes from "prop-types";
 
 const FormThree = ({ handleNextStep, handlePrevStep }) => {
   const { complianceData } = useSelector((state) => state.compliance);
@@ -24,9 +25,8 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
 
   const [formData, setFormData] = useState({
     director_id:
-      initialData?.find(
-        (doc) => doc?.documentType === "director_id"
-      )?.originalName || null,
+      initialData?.find((doc) => doc?.documentType === "director_id")
+        ?.originalName || null,
     certificate_of_incorporation:
       initialData?.find(
         (doc) => doc?.documentType === "certificate_of_incorporation"
@@ -34,10 +34,18 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
     status_report:
       initialData?.find((doc) => doc?.documentType === "status_report")
         ?.originalName || null,
-    progress: complianceData?.progress || 2
+    progress: complianceData?.progress || 2,
   });
 
   const handleChange = (field, files) => {
+    const maximumFileSize = 5 * 1024 * 1024;
+    const file = files[0];
+    if (file) {
+      if (file.size > maximumFileSize) {
+        toast.error(`${file.name} is too large. The maximum file size allowed is 5MB.`);
+        return;
+      }
+    }
     setFormData((prev) => ({
       ...prev,
       [field]: files[0],
@@ -51,19 +59,16 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
     const newFormData = new FormData();
 
     if (formData.director_id)
-      newFormData.append(
-        "director_id",
-        formData.director_id
-      );
+      newFormData.append("director_id", formData.director_id);
     if (formData.certificate_of_incorporation)
       newFormData.append(
         "certificate_of_incorporation",
         formData.certificate_of_incorporation
       );
     if (formData.status_report)
-      newFormData.append("status_report", formData.status_report);    
-    if (formData.progress === 2) newFormData.append("progress", 3)
-       
+      newFormData.append("status_report", formData.status_report);
+    if (formData.progress === 2) newFormData.append("progress", 3);
+
     handleNextStep(newFormData, isEqual);
   };
 
@@ -75,21 +80,31 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
       />
       <ComplianceUploader
         label="Memorandum and Articles of Association"
-        value={typeof formData?.director_id === "string" ? formData?.director_id : formData?.director_id?.name || ""}
-        onChange={(e) =>
-          handleChange("director_id", e.target.files)
+        value={
+          typeof formData?.director_id === "string"
+            ? formData?.director_id
+            : formData?.director_id?.name || ""
         }
+        onChange={(e) => handleChange("director_id", e.target.files)}
       />
       <ComplianceUploader
         label="Certificate of Incorporation"
-        value={typeof formData?.certificate_of_incorporation === "string" ? formData?.certificate_of_incorporation : formData?.certificate_of_incorporation?.name || ""}
+        value={
+          typeof formData?.certificate_of_incorporation === "string"
+            ? formData?.certificate_of_incorporation
+            : formData?.certificate_of_incorporation?.name || ""
+        }
         onChange={(e) =>
           handleChange("certificate_of_incorporation", e.target.files)
         }
       />
       <ComplianceUploader
         label="CAC Status Report"
-        value={typeof formData?.status_report === "string" ? formData?.status_report : formData?.status_report?.name || ""}
+        value={
+          typeof formData?.status_report === "string"
+            ? formData?.status_report
+            : formData?.status_report?.name || ""
+        }
         onChange={(e) => handleChange("status_report", e.target.files)}
       />
 
@@ -106,8 +121,8 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
             !formData.director_id ||
             !formData.certificate_of_incorporation ||
             !formData.status_report
-               ? "bg-gray-200 cursor-pointer"
-            : "bg-priColor cursor-pointer"
+              ? "bg-gray-200 cursor-pointer"
+              : "bg-priColor cursor-pointer"
           } w-full p-4 text-white text-[13px] rounded-md`}
           disabled={
             !formData.director_id ||
