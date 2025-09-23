@@ -220,14 +220,14 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
       <div className="grid grid-cols-2 gap-4 mt-4">
         <button
           onClick={handlePrevStep}
-          className="bg-gray-200 w-full p-4 text-black text-[13px] rounded-md"
+          className="bg-gray-200 w-full p-4 text-black text-[13px] rounded-md cursor-pointer"
         >
           Go back
         </button>
         {isFormEmpty ? (
           <button
             onClick={handleSkip}
-            className={`bg-priColor w-full p-4 text-white text-[13px] rounded-md disabled:bg-priColor/35`}
+            className={`bg-priColor w-full p-4 text-white text-[13px] rounded-md disabled:bg-gray-200`}
             disabled={complianceLoading}
             type="button"
           >
@@ -236,7 +236,7 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
         ) : (
           <button
             onClick={handleSubmit}
-            className={`${isInvalid || complianceLoading ? "bg-priColor/35" : "bg-priColor"} w-full p-4 text-white text-[13px] rounded-md`}
+            className={`${isInvalid || complianceLoading ? "bg-gray-200 cursor-pointer" : "bg-priColor cursor-pointer"} w-full p-4 text-white text-[13px] rounded-md`}
             disabled={isInvalid || complianceLoading}
             type="button"
           >

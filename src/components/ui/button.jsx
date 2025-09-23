@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 const Button = ({ children, onClick, variant = "primary", className, type, disabled }) => {
-    const baseClass = "w-full px-4 py-2 rounded-md font-semibold text-lg transition-colors duration-150";
+    const baseClass = "w-full px-4 py-2 rounded-md font-semibold text-lg transition-colors duration-150 cursor-pointer";
     const variantClass =
       variant === "primary"
         ? "bg-priColor text-white hover:opacity-95"
