@@ -76,13 +76,13 @@ const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) 
       <div className="grid grid-cols-2 gap-4 mt-4">
         <button
           onClick={handlePrevStep}
-          className="bg-gray-200 w-full p-4 text-black text-[13px] rounded-md"
+          className="bg-gray-200 w-full p-4 text-black text-[13px] rounded-md cursor-pointer"
         >
           Go back
         </button>
         <button
           onClick={handleSubmit}
-          className="bg-priColor w-full p-4 text-white text-[13px] rounded-md "
+          className="bg-priColor w-full p-4 text-white text-[13px] rounded-md cursor-pointer "
         >
           Save and continue
         </button>

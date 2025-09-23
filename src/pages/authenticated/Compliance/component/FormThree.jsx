@@ -96,7 +96,7 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
       <div className="grid grid-cols-2 gap-4 mt-4">
         <button
           onClick={handlePrevStep}
-          className="bg-gray-200 w-full p-4 text-black text-[13px] rounded-md"
+          className="bg-gray-200 w-full p-4 text-black text-[13px] rounded-md cursor-pointer"
         >
           Go back
         </button>
@@ -106,8 +106,8 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
             !formData.director_id ||
             !formData.certificate_of_incorporation ||
             !formData.status_report
-              ? "bg-priColor/35"
-              : "bg-priColor"
+               ? "bg-gray-200 cursor-pointer"
+            : "bg-priColor cursor-pointer"
           } w-full p-4 text-white text-[13px] rounded-md`}
           disabled={
             !formData.director_id ||

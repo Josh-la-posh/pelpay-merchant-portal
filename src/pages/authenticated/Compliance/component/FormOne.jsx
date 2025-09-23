@@ -173,8 +173,8 @@ const FormOne = ({ handleNextStep }) => {
           !formData.projectedSalesVolume ||
           !formData.tradingName ||
           complianceLoading
-            ? "bg-priColor/35"
-            : "bg-priColor"
+            ? "bg-gray-200 cursor-pointer"
+            : "bg-priColor cursor-pointer"
         } w-full p-2 text-white text-[13px] rounded-md mt-3`}
         disabled={
           !formData.legalBusinessName ||
