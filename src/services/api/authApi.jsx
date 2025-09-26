@@ -76,7 +76,8 @@ class AuthService {
         return;
       } else {
         const progress = data?.progress;
-        if (progress === 5) {
+        // When progress reaches 6 (all data collection steps done) redirect to dashboard
+        if (progress === 6) {
           from = location.state?.from?.pathname || "/";
         } else {
           from = location.state?.from?.pathname || "/compliance";          

@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo  } from "react";
+import { useEffect, useMemo  } from "react";
 import Spinner from "@/components/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "../../../../services/hooks/useFormAxios";
 import useAuth from "@/services/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-const FormSix = () => {
+const FormSeven = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const axiosPrivate = useAxiosPrivate();
@@ -20,7 +20,8 @@ const FormSix = () => {
   );
   useEffect(() => {
     const updateAndNavigate = async () => {
-      if (complianceData?.progress === 5) {
+      // Final verification now occurs when latest data collection (email step) completed at progress 6
+      if (complianceData?.progress === 6) {
         const response = await complianceService.startComplianceVerification(
           user?.merchantCode,
           dispatch
@@ -52,4 +53,4 @@ const FormSix = () => {
   );
 };
 
-export default FormSix;
+export default FormSeven;

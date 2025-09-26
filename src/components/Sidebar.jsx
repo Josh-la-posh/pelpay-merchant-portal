@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
-import { ArrowLeftRight, Handshake, Headset, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck  } from 'lucide-react';
+import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck  } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
 import { useSelector } from 'react-redux';
@@ -65,12 +65,12 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
 
     useEffect(() => {
         // console.log("Compliance Step Updated:", step);
-        if (step === 5) {
+        if (step === 6) {
             setSideBarItems((prevItems) =>
                 prevItems.filter((item) => item.title !== 'Compliance')
             );
         }
-    }, [complianceData]);
+    }, [complianceData, step]);
 
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
