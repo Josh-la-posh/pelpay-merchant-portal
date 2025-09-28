@@ -74,6 +74,7 @@ const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) 
       </button>
 
       <div className="grid grid-cols-2 gap-4 mt-4">
+       
         <button
           onClick={handlePrevStep}
           className="bg-gray-200 w-full p-4 text-black text-[13px] rounded-md cursor-pointer"
@@ -87,6 +88,8 @@ const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) 
           Save and continue
         </button>
       </div>
+
+      <p className="text-xs text-red-600 mt-2"> Once you click on save, you can’t go back and make changes.</p>
     </div>
   );
 };

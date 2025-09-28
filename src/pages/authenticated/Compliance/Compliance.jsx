@@ -7,16 +7,15 @@ import FormTwo from "./component/FormTwo";
 import FormThree from "./component/FormThree";
 import FormFour from "./component/FormFour";
 import FormFive from "./component/FormFive";
-import FormSix from "./component/FormSix";
+import FormSixEmail from "./component/FormSixEmail";
+import FormSeven from "./component/FormSix";
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "../../../services/hooks/useFormAxios";
 import { complianceStep } from "../../../redux/slices/complianceSlice";
-import { useNavigate } from "react-router-dom";
 
 const Compliance = () => {
   const { setAppTitle } = useTitle();
   const { auth } = useAuth();
-  const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const { complianceData, step, businessRepresentatives } =
     useSelector((state) => state.compliance);
@@ -81,7 +80,7 @@ const Compliance = () => {
     };
 
     loadData();
-  }, [dispatch]);
+  }, [dispatch, complianceService, user?.merchantCode]);
 
   return (
     <div className="">
@@ -90,7 +89,7 @@ const Compliance = () => {
       </div>
       <div className="p-2 m--0 relative ">
         <div className="absolute top-[-1px] sm:top-4 left-[70%] md:left-0   bg-amber-300 px-2 py-1 rounded-md ">
-          Step {step + 1} of 6
+          Step {step + 1} of 7
         </div>
 
         <div className="flex justify-center mt-5 md:mt-0">
@@ -127,7 +126,14 @@ const Compliance = () => {
               handleEditRepresentative={handleEditRepresentative}
             />
           )}
-          {step === 5 && (<FormSix />)}
+          {step === 5 && (
+            <FormSixEmail
+              handlePrevStep={handlePrevStep}
+              handleNextStep={handleNextStep}
+              existingData={complianceData}
+            />
+          )}
+          {step === 6 && (<FormSeven />)}
         </div>
       </div>
     </div>

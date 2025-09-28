@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
 // import useAxiosPrivate from "@/services/hooks/useAxiosPrivate";
-import useAxiosPrivate from '@/services/hooks/useFormAxios';
+import useAxiosPrivate from "@/services/hooks/useFormAxios";
 import DashboardService from "@/services/api/dashboardApi";
 import { useDispatch, useSelector } from "react-redux";
 import DashboardCards from "./component/DashboardCards";
@@ -55,7 +55,7 @@ function Dashboard() {
   useEffect(() => {
     const newData = env === "Live" ? true : false;
     setIsLive(newData);
-  }, [env])
+  }, [env]);
 
   useEffect(() => {
     setAppTitle("Dashboard");
@@ -126,7 +126,12 @@ function Dashboard() {
     setIsLive(nextLive);
     const newEnv = nextLive ? "Live" : "Test";
     dispatch(toggleEnv(newEnv));
-  }
+  };
+  useEffect(() => {
+    if (merchant?.status === 0) {
+      setIsLive(false);
+    }
+  }, [merchant?.status]);
 
   if (errMsg !== null)
     return <ErrorLayout errMsg={errMsg} handleRefresh={handleRefresh} />;
@@ -141,13 +146,19 @@ function Dashboard() {
         <Spinner />
       </div>
       <div className="space-y-8">
+        {merchant?.status === 0 && (
+          <p className="text-xs sm:text-sm font-semibold text-red-500 text-wrap">
+            You can only go live after your compliance documents has been
+            approved
+          </p>
+        )}
         <div className="">
           <div className="flex justify-between align-center">
             <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">
               Welcome back, {user.firstName}
             </h1>
             {/* <p className={`hidden sm:block text-xs sm:text-sm font-semibold ${merchant?.status === 'Sandbox' ? 'text-red-500' : 'text-green-500'}`}>{merchant?.status === 'Sandbox' ? 'Test Mode' : 'Live'}</p> */}
-        
+
             <div className="flex items-center gap-2">
               <label className="flex items-center cursor-pointer select-none">
                 <div className="relative">
@@ -156,15 +167,16 @@ function Dashboard() {
                     checked={isLive}
                     onChange={handleToggleEnv}
                     className="sr-only peer"
+                    disabled={merchant?.status === 0 ? true : false}
                   />
-                  <div
-                    className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"
-                  ></div>
-                  <div
-                    className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"
-                  ></div>
+                  <div className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"></div>
+                  <div className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
                 </div>
-                <span className={`ml-3 text-xs font-bold ${isLive ? "text-green-700" : "text-red-700"}`}>
+                <span
+                  className={`ml-3 text-xs font-bold ${
+                    isLive ? "text-green-700" : "text-red-700"
+                  }`}
+                >
                   {isLive ? "Live Mode" : "Test Mode"}
                 </span>
               </label>
@@ -181,6 +193,7 @@ function Dashboard() {
         >
           {merchant?.status === "Sandbox" ? "Test Mode" : "Live"}
         </p>
+
         {/* <div className="mt-8">
           <label htmlFor="interval" className="mr-2 text-sm">Select Interval:</label>
           <select id="interval" value={interval} onChange={handleIntervalChange} className="p-2 border focus:outline-none rounded-md bg-white selection:bg-transparent">
