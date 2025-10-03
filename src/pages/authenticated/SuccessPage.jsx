@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { CheckCircle, Clock, RefreshCw, ArrowRight } from 'lucide-react';
 import useAxiosPrivate from '@/services/hooks/useFormAxios';
-import { complianceSuccess } from '@/redux/slices/complianceSlice';
+import ComplianceService from '@/services/api/complianceApi';
 
 const statusMessages = {
   pending: {
@@ -52,15 +52,10 @@ const SuccessPage = () => {
     if (!merchant?.merchantCode) return;
     setRefreshing(true);
     try {
-      // Re-fetch compliance data directly
-      const response = await axiosPrivate.get(`api/compliance?merchantCode=${merchant.merchantCode}`);
-      const data = response?.data?.responseData;
-      if (data) {
-        dispatch(complianceSuccess(data));
-        if (data.complianceStatus) setLocalStatus(data.complianceStatus);
-      }
-  } catch {
-      // swallow error for now; could add toast
+      const service = new ComplianceService(axiosPrivate);
+      await service.fetchComplianceData(dispatch, merchant.merchantCode);
+    } catch {
+      // optional: toast error
     } finally {
       setRefreshing(false);
     }

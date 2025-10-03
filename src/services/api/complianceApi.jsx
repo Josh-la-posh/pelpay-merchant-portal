@@ -52,10 +52,22 @@ class ComplianceService {
 
       const data = response.data?.responseData;
       let progress = 0;
+      if (data?.progress && data.progress > 0) progress = data.progress;
 
-      if (data?.progress && data.progress > 0) progress = data?.progress;
+      // Map backend 'status' to internal complianceStatus if provided.
+      if (data?.status) {
+        dispatch(setComplianceStatus(data.status));
+        // If backend already moved to review/approved but progress still 6, elevate to 7 for UI consistency
+        if (["under_review", "approved"].includes(data.status) && progress === 6) {
+          progress = 7;
+        }
+      }
+
+      // Dispatch step first so UI stepper updates before data-driven renders
       dispatch(complianceStep(progress));
-      dispatch(complianceSuccess(data));
+      // Ensure stored complianceData reflects adjusted progress
+      const enrichedData = { ...data, progress };
+      dispatch(complianceSuccess(enrichedData));
     } catch (err) {
       if (!err.response) {
         dispatch(complianceFailure("No response from server"));

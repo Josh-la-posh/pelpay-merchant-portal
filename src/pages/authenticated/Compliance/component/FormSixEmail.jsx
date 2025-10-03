@@ -28,7 +28,7 @@ const FormSixEmail = ({ handlePrevStep, handleNextStep, existingData }) => {
     const formData = new FormData();
     formData.append('supportEmail', supportEmail);
     formData.append('disputeEmail', disputeEmail);
-  formData.append('contactEmail', contactEmail);
+    formData.append('contactEmail', contactEmail);
     formData.append('progress', 6); // new progress step
     handleNextStep(formData, false);
     setSubmitting(false);
