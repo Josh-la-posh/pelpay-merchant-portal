@@ -24,20 +24,46 @@ class AuthService {
       );
 
       const data = response?.data?.responseData;
-  const merchant = data?.merchants[0];
-  const complianceStatus = data?.complianceStatus || null;
+      const merchant = data?.merchants?.[0];
       const merchantCode = merchant?.merchantCode;
-
-      await setAuth({ data, merchant, complianceStatus });
-      if (complianceStatus) {
-        dispatch(setComplianceStatus(complianceStatus));
-        try { localStorage.setItem('complianceStatus', complianceStatus); } catch { /* ignore */ }
-      }
       const token = data?.accessToken;
-      
-      await this.fetchComplianceData(dispatch, merchantCode, navigate, token)
+      const rawStatus = data?.complianceStatus || null; // may be missing for brand new account
+
+      // Determine routing & whether we need an immediate compliance fetch.
+      // Treat missing status as brand new -> route to compliance and mark status 'pending' locally.
+      let effectiveStatus = rawStatus;
+      let shouldFetchCompliance = false;
+      let targetRoute = '/';
+
+      if (!effectiveStatus) {
+        effectiveStatus = 'pending';
+        targetRoute = '/compliance';
+      } else if (['pending', 'started'].includes(effectiveStatus)) {
+        // Need progress & data details -> fetch
+        shouldFetchCompliance = true;
+        targetRoute = '/compliance';
+      } else if (effectiveStatus === 'rejected') {
+        targetRoute = '/compliance';
+      } else if (effectiveStatus === 'under_review') {
+        targetRoute = '/success';
+      } else if (effectiveStatus === 'approved') {
+        targetRoute = '/';
+      }
+
+      // Set auth state early so app has base identity & status
+      await setAuth({ data, merchant, complianceStatus: effectiveStatus });
+      dispatch(setComplianceStatus(effectiveStatus));
+      try { localStorage.setItem('complianceStatus', effectiveStatus); } catch { /* ignore */ }
+
+      if (shouldFetchCompliance && merchantCode && token) {
+        // This call will navigate internally; override targetRoute after fetch logic
+        await this.fetchComplianceData(dispatch, merchantCode, navigate, token);
+      } else {
+        navigate(targetRoute, { replace: true });
+      }
+
       dispatch(loginSuccess(data));
-      toast.success("Login successful");
+      toast.success('Login successful');
 
 
     } catch (err) {
@@ -75,23 +101,31 @@ class AuthService {
 
       let from;
 
-      const status = data?.complianceStatus || null;
-      if (status) {
-        dispatch(setComplianceStatus(status));
-        try { localStorage.setItem('complianceStatus', status); } catch { /* ignore */ }
+      // Determine internal compliance status (backend may supply either 'complianceStatus' or generic 'status')
+      const inferredStatus = data?.complianceStatus || data?.status || null;
+      if (inferredStatus) {
+        dispatch(setComplianceStatus(inferredStatus));
+        try { localStorage.setItem('complianceStatus', inferredStatus); } catch { /* ignore */ }
       }
 
-      if (data === null) {
-        from = "/compliance";
+      if (!data) {
+        from = "/compliance"; // user hasn't started compliance at all
       } else {
-        const progress = data?.progress;
-        dispatch(complianceStep(progress));
-        dispatch(complianceSuccess(data));
+        let progress = data?.progress ?? 0;
         const terminalStatuses = ["under_review", "approved"];
-        if (terminalStatuses.includes(status)) {
-          from = "/"; // dashboard
+        if (terminalStatuses.includes(inferredStatus) && progress === 6) {
+          progress = 7; // elevate for final state consistency
+        }
+        dispatch(complianceStep(progress));
+        dispatch(complianceSuccess({ ...data, progress }));
+        if (inferredStatus === 'rejected') {
+          from = '/compliance';
+        } else if (inferredStatus === 'under_review') {
+          from = '/success';
+        } else if (inferredStatus === 'approved') {
+          from = '/';
         } else {
-          from = "/compliance";
+          from = '/compliance';
         }
       }
       navigate(from, { replace: true });
