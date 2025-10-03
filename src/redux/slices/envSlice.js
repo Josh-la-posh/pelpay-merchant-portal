@@ -8,6 +8,9 @@ const envSlice = createSlice({
     name: "env",
     initialState,
     reducers: {
+        setEnv: (state, action) => {
+            state.env = action.payload;
+        },
         toggleEnv: (state, action) => {
             state.env = action.payload;
         }

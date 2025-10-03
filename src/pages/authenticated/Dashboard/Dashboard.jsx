@@ -14,7 +14,8 @@ import TransactionTable from "../Transaction/components/TransactionTable";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import TransactionForm from "../Transaction/components/TransactionForm";
-import { toggleEnv } from "../../../redux/slices/envSlice";
+import { toggleEnv, setEnv } from "../../../redux/slices/envSlice";
+import SettingsService from '@/services/api/settingsApi';
 
 function Dashboard() {
   const { setAppTitle } = useTitle();
@@ -27,10 +28,8 @@ function Dashboard() {
   const user = auth?.data.user;
   const merchant = auth?.merchant;
   const merchantCode = merchant?.merchantCode;
-  const dashboardService = useMemo(
-    () => new DashboardService(axiosPrivate, auth),
-    [axiosPrivate, auth]
-  );
+  const dashboardService = useMemo(() => new DashboardService(axiosPrivate, auth), [axiosPrivate, auth]);
+  const settingsService = useMemo(() => new SettingsService(axiosPrivate), [axiosPrivate]);
   const {
     lumpsum,
     lumpsumLoading,
@@ -58,9 +57,20 @@ function Dashboard() {
     setIsLive(newData);
   }, [env]);
 
+  useEffect(() => { setAppTitle("Dashboard"); }, [setAppTitle]);
+
+  // Fetch current environment from settings endpoint on initial mount
   useEffect(() => {
-    setAppTitle("Dashboard");
-  }, [setAppTitle]);
+    let cancelled = false;
+    const initEnv = async () => {
+      const remoteEnv = await settingsService.fetchEnv(dispatch);
+      if (!cancelled && remoteEnv) {
+        // Already dispatched inside service; ensure local UI sync (isLive effect handles toggle)
+      }
+    };
+    initEnv();
+    return () => { cancelled = true; };
+  }, [settingsService, dispatch]);
 
   useEffect(() => {
     setIsLumpsumLoading(lumpsumLoading);
@@ -121,13 +131,22 @@ function Dashboard() {
     setSelectedTransactionData(null);
   };
 
-  const handleToggleEnv = () => {
-    if (complianceStatus !== 'approved') return; // guard
-    // compute the next env based on current isLive (avoid stale state)
+  const [updatingEnv, setUpdatingEnv] = useState(false);
+  const handleToggleEnv = async () => {
+    if (complianceStatus !== 'approved' || updatingEnv) return; // guard
     const nextLive = !isLive;
-    setIsLive(nextLive);
-    const newEnv = nextLive ? "Live" : "Test";
-    dispatch(toggleEnv(newEnv));
+    const newEnv = nextLive ? 'Live' : 'Test';
+    setUpdatingEnv(true);
+    try {
+      await settingsService.updateEnv(newEnv, dispatch);
+      dispatch(toggleEnv(newEnv));
+      setIsLive(nextLive);
+    } catch {
+      // revert visual toggle if failed
+      dispatch(setEnv(isLive ? 'Live' : 'Test'));
+    } finally {
+      setUpdatingEnv(false);
+    }
   };
   // useEffect(() => {
   //   if (merchant?.status === 0) {
@@ -155,37 +174,8 @@ function Dashboard() {
           </p>
         )} */}
         <div className="">
-          <div className="flex justify-between align-center">
-            <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">
-              Welcome back, {user.firstName}
-            </h1>
-            {/* <p className={`hidden sm:block text-xs sm:text-sm font-semibold ${merchant?.status === 'Sandbox' ? 'text-red-500' : 'text-green-500'}`}>{merchant?.status === 'Sandbox' ? 'Test Mode' : 'Live'}</p> */}
-
-            <div className="flex items-center gap-2">
-              <label className="flex items-center cursor-pointer select-none">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    checked={isLive}
-                    onChange={handleToggleEnv}
-                    className="sr-only peer"
-                    disabled={complianceStatus !== 'approved'}
-                  />
-                  <div className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"></div>
-                  <div className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
-                </div>
-                <span
-                  className={`ml-3 text-xs font-bold ${
-                    isLive ? "text-green-700" : "text-red-700"
-                  }`}
-                >
-                  {isLive ? "Live Mode" : "Test Mode"}
-                </span>
-              </label>
-            </div>
-          </div>
           {complianceStatus && (
-            <div className="mt-4">
+            <div className="mb-4">
               {complianceStatus === 'pending' && (
                 <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs sm:text-sm px-3 py-2 rounded-md">Your compliance registration is not completed.</div>
               )}
@@ -203,6 +193,35 @@ function Dashboard() {
               )}
             </div>
           )}
+          <div className="flex justify-between align-center">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">
+              Welcome back, {user.firstName}
+            </h1>
+            {/* <p className={`hidden sm:block text-xs sm:text-sm font-semibold ${merchant?.status === 'Sandbox' ? 'text-red-500' : 'text-green-500'}`}>{merchant?.status === 'Sandbox' ? 'Test Mode' : 'Live'}</p> */}
+
+            <div className="flex items-center gap-2">
+              <label className="flex items-center cursor-pointer select-none">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={isLive}
+                    onChange={handleToggleEnv}
+                    className="sr-only peer"
+                    disabled={complianceStatus !== 'approved' || updatingEnv}
+                  />
+                  <div className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"></div>
+                  <div className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
+                </div>
+                <span
+                  className={`ml-3 text-xs font-bold ${
+                    isLive ? "text-green-700" : "text-red-700"
+                  }`}
+                >
+                  {updatingEnv ? 'Updating…' : (isLive ? 'Live Mode' : 'Test Mode')}
+                </span>
+              </label>
+            </div>
+          </div>
           <p className="text-gray-600 text-sm sm:text-md md:text-lg">
             Overview of your payment gateway performance
           </p>
