@@ -145,13 +145,16 @@ class MerchantService {
 
     // merchant
   
-    async fetchMerchantCredentials(merchantCode, dispatch) {
+    async fetchMerchantCredentials(merchantCode, env, dispatch) {
         dispatch(merchantCredentialsStart());
       try {
         const response = await this.axiosPrivate.get(
-          `api/Merchant/credentials/${merchantCode}`
+          `api/Merchant/Credentials/${merchantCode}?env=${env}`
         );
+        console.log("Merch Creds", response)
         const data = response.data.responseData;
+       console.log("Merchant Credentials", data)
+
         dispatch(merchantCredentialsSuccess(data));
       } catch (err) {
         if (!err.response) {

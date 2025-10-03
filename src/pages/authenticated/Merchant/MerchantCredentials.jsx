@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import useTitle from '@/services/hooks/useTitle';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import MerchantService from '@/services/api/merchantApi';
 import { Eye } from 'lucide-react';
@@ -15,6 +16,7 @@ import ErrorLayout from '@/components/ErrorLayout';
 function MerchantCredential() {
   const { auth } = useAuth();
   const merchantCode = auth?.merchant?.merchantCode;
+  const {env} = useSelector((state) => state.env)
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const axiosPrivate = useAxiosPrivate();
@@ -51,9 +53,9 @@ function MerchantCredential() {
 
   const loadData = useCallback(async () => {
       if (merchantCode) {
-          await merchantService.fetchMerchantCredentials(merchantCode, dispatch);
+          await merchantService.fetchMerchantCredentials(merchantCode, env, dispatch);
       }
-  }, [merchantCode, merchantService, dispatch]);
+  }, [merchantCode, env, merchantService, dispatch]);
 
   useEffect(() => {
     loadData();

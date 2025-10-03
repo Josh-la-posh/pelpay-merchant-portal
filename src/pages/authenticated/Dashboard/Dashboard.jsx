@@ -127,11 +127,11 @@ function Dashboard() {
     const newEnv = nextLive ? "Live" : "Test";
     dispatch(toggleEnv(newEnv));
   };
-  useEffect(() => {
-    if (merchant?.status === 0) {
-      setIsLive(false);
-    }
-  }, [merchant?.status]);
+  // useEffect(() => {
+  //   if (merchant?.status === 0) {
+  //     setIsLive(false);
+  //   }
+  // }, [merchant?.status]);
 
   if (errMsg !== null)
     return <ErrorLayout errMsg={errMsg} handleRefresh={handleRefresh} />;
@@ -146,12 +146,12 @@ function Dashboard() {
         <Spinner />
       </div>
       <div className="space-y-8">
-        {merchant?.status === 0 && (
+        {/* {merchant?.status === 0 && (
           <p className="text-xs sm:text-sm font-semibold text-red-500 text-wrap">
             You can only go live after your compliance documents has been
             approved
           </p>
-        )}
+        )} */}
         <div className="">
           <div className="flex justify-between align-center">
             <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">
@@ -167,7 +167,7 @@ function Dashboard() {
                     checked={isLive}
                     onChange={handleToggleEnv}
                     className="sr-only peer"
-                    disabled={merchant?.status === 0 ? true : false}
+                    // disabled={merchant?.status === 0 ? true : false}
                   />
                   <div className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"></div>
                   <div className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
