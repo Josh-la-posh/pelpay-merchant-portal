@@ -49,6 +49,7 @@ function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
   const { env } = useSelector((state) => state.env);
+  const { complianceStatus } = useSelector((state) => state.compliance || {});
 
   const [isLive, setIsLive] = useState(false);
 
@@ -121,6 +122,7 @@ function Dashboard() {
   };
 
   const handleToggleEnv = () => {
+    if (complianceStatus !== 'approved') return; // guard
     // compute the next env based on current isLive (avoid stale state)
     const nextLive = !isLive;
     setIsLive(nextLive);
@@ -167,7 +169,7 @@ function Dashboard() {
                     checked={isLive}
                     onChange={handleToggleEnv}
                     className="sr-only peer"
-                    // disabled={merchant?.status === 0 ? true : false}
+                    disabled={complianceStatus !== 'approved'}
                   />
                   <div className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"></div>
                   <div className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
@@ -182,6 +184,25 @@ function Dashboard() {
               </label>
             </div>
           </div>
+          {complianceStatus && (
+            <div className="mt-4">
+              {complianceStatus === 'pending' && (
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs sm:text-sm px-3 py-2 rounded-md">Your compliance registration is not completed.</div>
+              )}
+              {complianceStatus === 'under_review' && (
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 text-xs sm:text-sm px-3 py-2 rounded-md">Your compliance registration is under review.</div>
+              )}
+              {complianceStatus === 'rejected' && (
+                <div className="bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm px-3 py-2 rounded-md">Your compliance registration was rejected.</div>
+              )}
+              {complianceStatus === 'approved' && (
+                <div className="bg-green-50 border border-green-200 text-green-800 text-xs sm:text-sm px-3 py-2 rounded-md">Congratulations, your compliance registration has been approved.</div>
+              )}
+              {complianceStatus === 'started' && (
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs sm:text-sm px-3 py-2 rounded-md">You have started compliance, please continue your registration.</div>
+              )}
+            </div>
+          )}
           <p className="text-gray-600 text-sm sm:text-md md:text-lg">
             Overview of your payment gateway performance
           </p>

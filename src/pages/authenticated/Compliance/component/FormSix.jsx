@@ -1,4 +1,4 @@
-import { useEffect, useMemo  } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Spinner from "@/components/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import ComplianceService from "@/services/api/complianceApi";
@@ -11,17 +11,23 @@ const FormSeven = () => {
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const user = auth?.data.merchants[0];
-  const { complianceData, complianceLoading } = useSelector(
+  const { complianceData, complianceLoading, complianceStatus } = useSelector(
     (state) => state.compliance
   );
   const complianceService = useMemo(
     () => new ComplianceService(axiosPrivate),
     [axiosPrivate]
   );
+  const startedRef = useRef(false);
+
   useEffect(() => {
-    const updateAndNavigate = async () => {
-      // Final verification now occurs when latest data collection (email step) completed at progress 6
-      if (complianceData?.progress === 6) {
+    const maybeStartVerification = async () => {
+      if (
+        complianceData?.progress === 6 &&
+        !['under_review', 'approved'].includes(complianceStatus) &&
+        !startedRef.current
+      ) {
+        startedRef.current = true; // prevent duplicate calls in same session
         const response = await complianceService.startComplianceVerification(
           user?.merchantCode,
           dispatch
@@ -30,11 +36,15 @@ const FormSeven = () => {
         if (data?.message === "success") {
           navigate("/success");
         }
+      } else if (['under_review', 'approved'].includes(complianceStatus)) {
+        // If already under review or approved, just navigate away (safety)
+        navigate('/success');
       }
     };
-    updateAndNavigate();
+    maybeStartVerification();
   }, [
-    complianceData,
+    complianceData?.progress,
+    complianceStatus,
     complianceService,
     dispatch,
     navigate,

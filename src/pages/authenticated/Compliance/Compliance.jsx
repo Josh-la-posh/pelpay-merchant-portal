@@ -2,23 +2,29 @@ import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
-import FormOne from "./component/FormOne";
-import FormTwo from "./component/FormTwo";
-import FormThree from "./component/FormThree";
-import FormFour from "./component/FormFour";
-import FormFive from "./component/FormFive";
-import FormSixEmail from "./component/FormSixEmail";
-import FormSeven from "./component/FormSix";
+// Step components and configuration
+import { COMPLIANCE_STEPS, TOTAL_STEPS } from './stepsConfig';
+import ComplianceStepper from './component/ComplianceStepper';
 import ComplianceService from "@/services/api/complianceApi";
 import useAxiosPrivate from "../../../services/hooks/useFormAxios";
 import { complianceStep } from "../../../redux/slices/complianceSlice";
+import { useNavigate } from 'react-router-dom';
 
 const Compliance = () => {
   const { setAppTitle } = useTitle();
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
-  const { complianceData, step, businessRepresentatives } =
+  const { complianceData, step, businessRepresentatives, complianceStatus } =
     useSelector((state) => state.compliance);
+  const navigate = useNavigate();
+  // Redirect guard: if approved, send to dashboard. If under_review, send to success page.
+  useEffect(() => {
+    if (complianceStatus === 'approved') {
+      navigate('/', { replace: true });
+    } else if (complianceStatus === 'under_review') {
+      navigate('/success', { replace: true });
+    }
+  }, [complianceStatus, navigate]);
   const complianceService = useMemo(() => new ComplianceService(axiosPrivate), [axiosPrivate]);
   const [editOwnerIndex, setEditOwnerIndex] = useState(null);
   const dispatch = useDispatch();
@@ -26,21 +32,7 @@ const Compliance = () => {
 
   useEffect(() => {
     setAppTitle("Compliance");
-    // const updateAndNavigate = async () => {
-    //   if (complianceData?.progress === 5) {
-    //     const response = await complianceService.startComplianceVerification(
-    //       user?.merchantCode,
-    //       dispatch
-    //     );
-    //     const data = response?.data;
-    //     if (data?.message === 'success') {
-    //       navigate("/success");
-    //     }
-    //   }
-    // };
-    // updateAndNavigate();
   }, [ setAppTitle]);
-  // }, [complianceData, complianceService, dispatch, navigate, setAppTitle, user?.merchantCode]);
 
   const handleNextStep = async (val, next) => {
     const progress = complianceData?.progress;
@@ -88,52 +80,62 @@ const Compliance = () => {
         <h3 className="text-[18px] font-bold ">Activate your account</h3>
       </div>
       <div className="p-2 m--0 relative ">
-        <div className="absolute top-[-1px] sm:top-4 left-[70%] md:left-0   bg-amber-300 px-2 py-1 rounded-md ">
-          Step {step + 1} of 7
+        <div className="absolute top-[-1px] sm:top-4 left-[70%] md:left-0 bg-amber-300 px-2 py-1 rounded-md">
+          Step {step + 1} of {TOTAL_STEPS}
+        </div>
+        <div className="mt-10 md:mt-6">
+          <ComplianceStepper current={step} total={TOTAL_STEPS} steps={COMPLIANCE_STEPS} />
         </div>
 
         <div className="flex justify-center mt-5 md:mt-0">
           {/* {steps[step]} */}
 
-          {step === 0 && <FormOne handleNextStep={handleNextStep} />}
-          {step === 1 && (
-            <FormTwo
-              handleNextStep={handleNextStep}
-              handlePrevStep={handlePrevStep}
-            />
-          )}
-          {step === 2 && (
-            <FormThree
-              handleNextStep={handleNextStep}
-              handlePrevStep={handlePrevStep}
-            />
-          )}
-          {step === 3 && (
-            <FormFour
-              handlePrevStep={handlePrevStep}
-              handleNextStep={handleNextStep}
-              editRepresentativeData={
-                editOwnerIndex !== null
-                  ? businessRepresentatives[editOwnerIndex]
-                  : null
-              }
-            />
-          )}
-          {step === 4 && (
-            <FormFive
-              handlePrevStep={handlePrevStep}
-              handleNextStep={handleNextStep}
-              handleEditRepresentative={handleEditRepresentative}
-            />
-          )}
-          {step === 5 && (
-            <FormSixEmail
-              handlePrevStep={handlePrevStep}
-              handleNextStep={handleNextStep}
-              existingData={complianceData}
-            />
-          )}
-          {step === 6 && (<FormSeven />)}
+          {COMPLIANCE_STEPS.map((cfg, idx) => {
+            if (idx !== step) return null;
+            const StepComp = cfg.component;
+            // Additional props routing for specific steps
+            if (cfg.key === 'representative') {
+              return (
+                <StepComp
+                  key={cfg.key}
+                  handlePrevStep={handlePrevStep}
+                  handleNextStep={handleNextStep}
+                  editRepresentativeData={
+                    editOwnerIndex !== null
+                      ? businessRepresentatives[editOwnerIndex]
+                      : null
+                  }
+                />
+              );
+            }
+            if (cfg.key === 'owners') {
+              return (
+                <StepComp
+                  key={cfg.key}
+                  handlePrevStep={handlePrevStep}
+                  handleNextStep={handleNextStep}
+                  handleEditRepresentative={handleEditRepresentative}
+                />
+              );
+            }
+            if (cfg.key === 'contact_emails') {
+              return (
+                <StepComp
+                  key={cfg.key}
+                  handlePrevStep={handlePrevStep}
+                  handleNextStep={handleNextStep}
+                  existingData={complianceData}
+                />
+              );
+            }
+            return (
+              <StepComp
+                key={cfg.key}
+                handlePrevStep={idx > 0 ? handlePrevStep : undefined}
+                handleNextStep={handleNextStep}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

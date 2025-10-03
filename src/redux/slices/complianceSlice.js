@@ -8,6 +8,7 @@ const initialState = {
     complianceSuccess: null,
     step: 0,
     businessRepresentatives: [],
+    complianceStatus: null,
 };
 
 const complianceSlice = createSlice({
@@ -23,6 +24,11 @@ const complianceSlice = createSlice({
             state.complianceLoading = false;
             state.complianceData = action.payload?.data ?? action.payload;
             state.complianceSuccess = true;
+            if(action.payload?.complianceStatus) {
+                state.complianceStatus = action.payload.complianceStatus;
+            } else if(action.payload?.data?.complianceStatus) {
+                state.complianceStatus = action.payload.data.complianceStatus;
+            }
         },
         complianceFailure: (state, action) => {
             state.complianceLoading = false;
@@ -48,6 +54,9 @@ const complianceSlice = createSlice({
                 rep.id === action.payload.id ? { ...rep, ...action.payload } : rep
             );
         },
+        setComplianceStatus: (state, action) => {
+            state.complianceStatus = action.payload;
+        }
     },
 
 });
@@ -60,6 +69,7 @@ export const {
   setBusinessRepresentatives,
   addBusinessRepresentative,
   updateBusinessRepresentative,
+    setComplianceStatus,
 } = complianceSlice.actions;
 
 export default complianceSlice.reducer;

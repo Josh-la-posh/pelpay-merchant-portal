@@ -3,6 +3,7 @@ import {
   complianceStart,
   complianceFailure,
   complianceSuccess,
+  setComplianceStatus,
 } from "@/redux/slices/complianceSlice";
 import { complianceStep } from "../../redux/slices/complianceSlice";
 
@@ -178,8 +179,8 @@ class ComplianceService {
       const response = await this.axiosPrivate.put(
         `api/compliance/startVerification?merchantCode=${merchantCode}`
       );
-      // const data = response;
-      // dispatch(complianceSuccess(data));
+      // Optimistically set status to under_review to prevent repeated triggers
+      dispatch(setComplianceStatus('under_review'));
       toast.success("Compliance verification started successfully.");
       return response;
     } catch (err) {

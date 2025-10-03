@@ -5,7 +5,7 @@ import {
   loginSuccess,
 } from "@/redux/slices/authSlice";
 import axios from "./axios";
-import { complianceStep, complianceSuccess } from "../../redux/slices/complianceSlice";
+import { complianceStep, complianceSuccess, setComplianceStatus } from "../../redux/slices/complianceSlice";
 
 class AuthService {
   constructor(axiosPrivate) {
@@ -24,10 +24,15 @@ class AuthService {
       );
 
       const data = response?.data?.responseData;
-      const merchant = data?.merchants[0];
+  const merchant = data?.merchants[0];
+  const complianceStatus = data?.complianceStatus || null;
       const merchantCode = merchant?.merchantCode;
 
-      await setAuth({ data, merchant });
+      await setAuth({ data, merchant, complianceStatus });
+      if (complianceStatus) {
+        dispatch(setComplianceStatus(complianceStatus));
+        try { localStorage.setItem('complianceStatus', complianceStatus); } catch { /* ignore */ }
+      }
       const token = data?.accessToken;
       
       await this.fetchComplianceData(dispatch, merchantCode, navigate, token)
@@ -70,22 +75,25 @@ class AuthService {
 
       let from;
 
-      if (data === null) {
-        from = location.state?.from?.pathname || "/compliance";
-        navigate(from, { replace: true });
-        return;
-      } else {
-        const progress = data?.progress;
-        // When progress reaches 6 (all data collection steps done) redirect to dashboard
-        if (progress === 6) {
-          from = location.state?.from?.pathname || "/";
-        } else {
-          from = location.state?.from?.pathname || "/compliance";          
-        }
-        dispatch(complianceStep(progress));
-        dispatch(complianceSuccess(data));
+      const status = data?.complianceStatus || null;
+      if (status) {
+        dispatch(setComplianceStatus(status));
+        try { localStorage.setItem('complianceStatus', status); } catch { /* ignore */ }
       }
 
+      if (data === null) {
+        from = "/compliance";
+      } else {
+        const progress = data?.progress;
+        dispatch(complianceStep(progress));
+        dispatch(complianceSuccess(data));
+        const terminalStatuses = ["under_review", "approved"];
+        if (terminalStatuses.includes(status)) {
+          from = "/"; // dashboard
+        } else {
+          from = "/compliance";
+        }
+      }
       navigate(from, { replace: true });
     } catch (err) {
       let from;

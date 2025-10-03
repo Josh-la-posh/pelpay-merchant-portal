@@ -61,16 +61,28 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     ])
 
     const { appTitle } = useTitle();
-    const { complianceData, step } = useSelector((state) => state.compliance || {});
+    const { complianceStatus } = useSelector((state) => state.compliance || {});
+    const storedStatus = (() => { try { return localStorage.getItem('complianceStatus'); } catch { return null; } })();
+    const effectiveStatus = complianceStatus || storedStatus;
 
     useEffect(() => {
-        // console.log("Compliance Step Updated:", step);
-        if (step === 6) {
-            setSideBarItems((prevItems) =>
-                prevItems.filter((item) => item.title !== 'Compliance')
-            );
-        }
-    }, [complianceData, step]);
+        const hideStatuses = ['approved'];
+        setSideBarItems(prevItems => {
+            const hasCompliance = prevItems.some(i => i.title === 'Compliance');
+            if (hideStatuses.includes(effectiveStatus)) {
+                return prevItems.filter(i => i.title !== 'Compliance');
+            } else {
+                if (!hasCompliance) {
+                    // Reinsert Compliance at the top (id 1 semantics maintained)
+                    return [
+                        { id: 1, icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />, title: 'Compliance', url: '/compliance', openSidebar: true },
+                        ...prevItems.map((p, idx) => ({ ...p, id: idx + 2 }))
+                    ];
+                }
+            }
+            return prevItems;
+        });
+    }, [effectiveStatus, isSidebarTextVisible]);
 
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
