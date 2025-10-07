@@ -68,8 +68,8 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
         const trimmed = search.trim();
         if (trimmed) {
             if (searchFilterType === 'paymentReference') base.paymentReference = trimmed;
-            else if (searchFilterType === 'Email') base.customerEmail = trimmed;
-            else if (searchFilterType === 'Name') base.customerName = trimmed;
+            // else if (searchFilterType === 'Email') base.customeremail = trimmed;
+            // else if (searchFilterType === 'Name') base.customerName = trimmed;
             else if (searchFilterType === 'TransactionId') base.transactionId = trimmed;
         }
         setFilters(base);
@@ -175,8 +175,8 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
                         <select aria-label='Search filter type' id="searchFilterType" value={searchFilterType} onChange={handleSearchFilterType} className="p-2 border border-gray-300 focus:outline-none rounded-sm bg-white text-gray-600 text-xs w-32">
                             <option value="TransactionId">Txn ID</option>
                             <option value="paymentReference">Pay Ref</option>
-                            <option value="Email">Email</option>
-                            <option value="Name">Name</option>
+                            {/* <option value="Email">Email</option>
+                            <option value="Name">Name</option> */}
                         </select>
                         <div className="relative flex-1 min-w-[140px]">
                             <Search size='14' className='absolute left-2 top-1/2 -translate-y-1/2 text-gray-400' />

@@ -28,7 +28,7 @@ const TransactionTable = ({ data, handleOpenModal, totalSize, currentPage, setCu
         },
         {
             header: 'Transaction ID',
-            accessor: 'paymentReference',
+            accessor: 'id',
         },
         {
             header: 'Virtual Acct No',
