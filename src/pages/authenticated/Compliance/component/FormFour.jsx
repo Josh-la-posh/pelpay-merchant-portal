@@ -48,7 +48,25 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
 
     if (formData.firstName.length < 1) newErrors[0] = "First name should at least 1 characters";
     if (formData.lastName.length < 1) newErrors[1] = "Last name should at least 1 characters";
-    if (!formData.dob) newErrors[2] = "Date of birth should not be empty";
+    // if (!formData.dob) newErrors[2] = "Date of birth should not be empty";
+    if (!formData.dob) {
+      newErrors[2] = "Date of birth should not be empty";
+    } else {
+      const dob = new Date(formData.dob);
+      const today = new Date();
+      const ageDifference = today.getFullYear() - dob.getFullYear();
+      const monthDifference = today.getMonth() - dob.getMonth();
+      const dayDifference = today.getDate() - dob.getDate();
+
+      let age = ageDifference;
+      if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        age -= 1; 
+      }
+
+      if (age < 18) {
+        newErrors[2] = "Representative must be at least 18 years old.";
+      }
+    }
     if (!formData.role) newErrors[3] = "Select role";
     if (!formData.occupation) newErrors[4] = "Enter occupation";
     if (formData.mobile.length !== 11) newErrors[5] = "Enter mobile number";
