@@ -6,8 +6,9 @@ import PropTypes from 'prop-types';
 function DashboardCards({ lumpsum }) {
     const totalRevenue = useMemo(() => {
       if (!lumpsum || !Array.isArray(lumpsum)) return 0;
-      return lumpsum.filter(data => data.transactionStatus === 'Successful')
-        .reduce((sum, data) => sum + data.transactionVolume, 0);
+      return lumpsum
+        .filter(data => data.transactionStatus === 'Successful')
+        .reduce((sum, data) => sum + Number(data.transactionVolume || 0), 0);
     }, [lumpsum]);
 
     const totalCounts = useMemo(() => {
