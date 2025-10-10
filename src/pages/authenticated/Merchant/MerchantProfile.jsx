@@ -25,6 +25,7 @@ function MerchantProfile() {
     const dispatch = useDispatch();
     const { aggregatorUser } = useSelector((state) => state.users || {});
     const [users, setUsers] = useState(() => aggregatorUser || []);
+    const user = users?.[0]
     const [canAddUser, setCanAddUser] = useState(false);
     const { merchantProfile, merchantProfileLoading, merchantProfileError } = useSelector((state) => state.merchant);
     const [isLoading, setIsLoading] = useState(merchantProfileLoading);
@@ -192,6 +193,14 @@ function MerchantProfile() {
                     value={merchantProfile.merchantCode}
                 />
                 <MerchantProfileContent
+                    title='Firstname'
+                    value={user?.firstName ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='Lastname'
+                    value={user?.lastName ?? 'N/A'}
+                />
+                <MerchantProfileContent
                     title='Address'
                     value={merchantProfile.address ?? 'N/A'}
                 />
@@ -205,7 +214,11 @@ function MerchantProfile() {
                 />
                 <MerchantProfileContent
                     title='Phone Number'
-                    value={merchantProfile.phoneNumber ?? 'N/A'}
+                    value={user?.phoneNumber ?? 'N/A'}
+                />
+                <MerchantProfileContent
+                    title='email'
+                    value={user?.email?? 'N/A'}
                 />
                 <MerchantProfileContent
                     title='Postal Code'

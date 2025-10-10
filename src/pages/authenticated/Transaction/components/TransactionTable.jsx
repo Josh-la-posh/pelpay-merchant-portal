@@ -10,25 +10,25 @@ const TransactionTable = ({ data, handleOpenModal, totalSize, currentPage, setCu
     const columns = [
         {
             header: 'Date',
-            accessor: '',
-            render: (value, row) => (
+            accessor: 'createdDate',
+             render: (value) => (
                 <span>
-                    {dateFormatter(row.modifiedDate ?? row.createdDate)}
+                    {dateFormatter(value)}
                 </span>
             ),
         },
         {
             header: 'Time',
-            accessor: '',
-            render: (value, row) => (
+            accessor: 'createdDate',
+             render: (value) => (
                 <span>
-                    {timeFormatter(row.modifiedDate ?? row.createdDate)}
+                    {timeFormatter(value)}
                 </span>
             ),
         },
         {
             header: 'Transaction ID',
-            accessor: 'paymentReference',
+            accessor: 'id',
         },
         {
             header: 'Virtual Acct No',

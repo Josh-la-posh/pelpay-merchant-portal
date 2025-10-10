@@ -26,13 +26,13 @@ const MerchantSidebar = () => {
             url: '/merchants/aggregator',
             title: 'Aggregator'
         },
-        {
-            id: 4,
-            icon: <Paperclip size={'15px'} />,
-            name: 'Document',
-            url: '/merchants/document',
-            title: 'Document'
-        },
+        // {
+        //     id: 4,
+        //     icon: <Paperclip size={'15px'} />,
+        //     name: 'Document',
+        //     url: '/merchants/document',
+        //     title: 'Document'
+        // },
         {
             id: 5,
             icon: <File size={'15px'} />,
