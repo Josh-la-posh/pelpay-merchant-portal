@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import useTitle from '@/services/hooks/useTitle';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import MerchantService from '@/services/api/merchantApi';
 import UserService from '@/services/api/userApi';
@@ -130,7 +131,7 @@ function MerchantProfile() {
     );
 
     return (
-        <div className="bg-white p-5">
+        <div className="bg-white p-5 h-100%">
             <div className="space-y-5 sm:space-y-0 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
                 <div className="flex items-center justify-between space-x-5">
                     <p className='text-md'>Merchant ({merchantProfile.merchantName})</p>
@@ -210,7 +211,7 @@ function MerchantProfile() {
                 />
                 <MerchantProfileContent
                     title='State'
-                    value={merchantProfile.state ?? 'N/A'}
+                    value={merchantProfile.stateCode ?? 'N/A'}
                 />
                 <MerchantProfileContent
                     title='Phone Number'

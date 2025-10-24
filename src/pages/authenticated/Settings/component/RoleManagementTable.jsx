@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import RoleService from '@/services/api/rolesApi';
 import { useDispatch, useSelector } from 'react-redux';
-import { CheckCircle, Edit3, Plus, ToggleLeft, ToggleRight, X } from 'lucide-react';
+import { CheckCircle, Edit3, Plus, ToggleLeft, ToggleRight, X, Trash} from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
@@ -72,18 +73,30 @@ const RoleManagementTable = ({filteredData}) => {
                 </div>
             ),
         },
-        {
+        { 
             header: 'Action',
             accessor: 'isActive',
-            render: (isActive, row) => (
+            render: (isActive, row) => (      
                 <button
                     onClick={() => handleAction(row)}
                     className={`${isActive === true ? 'text-green-700' : 'text-red-700'}`}
                 >
                     {isActive === true ? <ToggleRight size='32' /> : <ToggleLeft size='32px' />}
-                </button>
+                </button>      
             ),
         },
+        // {
+        //     header: "Delete",
+        //     accessor: 'id',
+        //     render: (id) => (
+        //         <button
+        //             onClick={() => deleteRole(id)}
+        //             className='text-red-700 px-2 py-1 rounded-[4px] border border-transparent hover:border-red-700'
+        //             >
+        //                  <Trash size='14px' />
+        //         </button>
+        //     ),
+        // }
     ];
 
     const handleChange = (e) => {
@@ -128,7 +141,6 @@ const RoleManagementTable = ({filteredData}) => {
         await roleService.activateRole(
             id,
             aggregatorCode,
-            merchantCode,
             dispatch);
     }
 
@@ -136,7 +148,6 @@ const RoleManagementTable = ({filteredData}) => {
         await roleService.deactivateRole(
             id,
             aggregatorCode,
-            merchantCode,
             dispatch
         );
     }
@@ -144,7 +155,6 @@ const RoleManagementTable = ({filteredData}) => {
     const updateRole = async (id) => {
         await roleService.updateRolesById(
             id,
-            merchantCode,
             aggregatorCode,
             formData,
             dispatch
@@ -160,13 +170,23 @@ const RoleManagementTable = ({filteredData}) => {
         });
     }
 
-    const createRole = async () => {
-        await roleService.updateRolesById(
+    const createRole = async (id) => {
+        await roleService.createRole(
+            id,
             aggregatorCode,
             formData,
-            merchantCode,
             dispatch
         );
+    }
+
+    const deleteRole = async (roleId) => {
+        try{
+            await roleService.removeRole(roleId);
+            handleRefresh();
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 
     const handleRole = () => {

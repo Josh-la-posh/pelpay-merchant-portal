@@ -50,45 +50,69 @@ class TransactionService {
     }
   }
 
-  async downloadTransactionReceipt(
-    merchantCode,
-    pageNumber,
-    pageSize,
-    env,
-    sDate,
-    eDate,
-    status,
-    sessionId,
-    accountNumber,
-    transactionReference,
-  ) {
-    try {
-      const response = await this.axiosPrivate.post(
-        `api/Transaction/deep-search/${merchantCode}/download?pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
-        {
-          transactionReference,
-          accountNumber,
-          sessionId,
-          sDate: sDate ?? '',
-          eDate: eDate ?? '',
-          status: (status || '').toLowerCase() === 'all' ? '' : (status || '')
-        },
-        { responseType: 'arraybuffer' }
-      );
-      if (!response.data) throw new Error('No data received from the server.');
-      const fileBlob = new Blob([response.data], { type: 'application/xlsx' });
-      const fileName = `Pelpay_transactions_${Date.now()}.xlsx`;
-      saveAs(fileBlob, fileName);
-      toast('Transations downloaded successfully');
-    } catch (err) {
-      if (!err.response) {
-        toast('No response from server');
-      } else {
-        toast('Failed to download transactions data. Try again.');
-      }
-      console.error('downloadTransactionReceipt error:', err);
+  // async downloadTransactionReceipt(
+  //   merchantCode,
+  //   pageNumber,
+  //   pageSize,
+  //   env,
+  //   sDate,
+  //   eDate,
+  //   status,
+  //   sessionId,
+  //   accountNumber,
+  //   transactionReference,
+  // ) {
+  //   try {
+  //     const response = await this.axiosPrivate.post(
+  //       `api/Transaction/deep-search/${merchantCode}/download?pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
+  //       {
+  //         transactionReference,
+  //         accountNumber,
+  //         sessionId,
+  //         sDate: sDate ?? '',
+  //         eDate: eDate ?? '',
+  //         status: (status || '').toLowerCase() === 'all' ? '' : (status || '')
+  //       },
+  //       { responseType: 'arraybuffer' }
+  //     );
+  //     if (!response.data) throw new Error('No data received from the server.');
+  //     const fileBlob = new Blob([response.data], { type: 'application/xlsx' });
+  //     const fileName = `Pelpay_transactions_${Date.now()}.xlsx`;
+  //     saveAs(fileBlob, fileName);
+  //     toast('Transations downloaded successfully');
+  //   } catch (err) {
+  //     if (!err.response) {
+  //       toast('No response from server');
+  //     } else {
+  //       toast('Failed to download transactions data. Try again.');
+  //     }
+  //     console.error('downloadTransactionReceipt error:', err);
+  //   }
+  // }
+  async downloadTransactionReceipt(merchantCode, env) {
+  try {
+    const response = await this.axiosPrivate.get(
+      `/api/Transaction/search/download?env=${env}&merchantCode=${merchantCode}`,
+      {  contentType: 'text/csv', responseType: 'blob' }
+    );
+    if (!response.data) throw new Error('No data received from the server.');
+
+    const fileBlob = new Blob([response.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const fileName = `Pelpay_transactions_${Date.now()}.csv`;
+    saveAs(fileBlob, fileName);
+    toast('Transactions downloaded successfully');
+  } catch (err) {
+    if (!err.response) {
+      toast('No response from server');
+    } else {
+      toast('Failed to download transactions data. Try again.');
     }
+    // console.error('downloadTransactionReceipt error:', err);
   }
+}
+
 
   async fetchTransactionReceipt(transactionId) {
     const getFileExtention = (data) => {

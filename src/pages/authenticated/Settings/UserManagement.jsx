@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import UserService from '@/services/api/userApi';
 import { useDispatch, useSelector } from 'react-redux';
 import UserManagementTable from './component/UserManagementTable';

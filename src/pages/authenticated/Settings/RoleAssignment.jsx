@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import RoleService from '@/services/api/rolesApi';
 import { useDispatch, useSelector } from 'react-redux';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
@@ -69,7 +70,7 @@ function RoleAssignment() {
     
     const loadUserRoles = async () => {
         if (id) {
-            await roleService.fetchRolesByUserId(id, merchantCode, aggregatorCode, dispatch);
+            await roleService.fetchRolesByUserId(id,  aggregatorCode, dispatch);
         }
     };
 

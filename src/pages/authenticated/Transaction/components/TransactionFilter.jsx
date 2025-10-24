@@ -111,21 +111,28 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
 
     // date and payment-reference flows now use doDeepSearch directly via handleFilter
 
-    const downloadTransaction = async () => {
-        const merchantCode = auth?.merchant?.merchantCode;
-        await transactionService.downloadTransactionReceipt(
-            merchantCode,
-            pageNumber || 1,
-            pageSize || 40,
-            env,
-            filters.startDate,
-            filters.endDate,
-            filterStatus,
-            filters.sessionId,
-            filters.accountNumber,
-            filters.paymentReference,
-        );
-    };
+    // const downloadTransaction = async () => {
+    //     const merchantCode = auth?.merchant?.merchantCode;
+    //     await transactionService.downloadTransactionReceipt(
+    //         merchantCode,
+    //         pageNumber || 1,
+    //         pageSize || 40,
+    //         env,
+    //         filters.startDate,
+    //         filters.endDate,
+    //         filterStatus,
+    //         filters.sessionId,
+    //         filters.accountNumber,
+    //         filters.paymentReference,
+    //     );
+    // };
+const downloadTransaction = async () => {
+  const merchantCode = auth?.merchant?.merchantCode;
+  await transactionService.downloadTransactionReceipt(
+    merchantCode,
+    env,
+  );
+};
 
     const handleChange = (e) => {
         const { name, value } = e.target;

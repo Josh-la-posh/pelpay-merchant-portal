@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import RoleService from '@/services/api/rolesApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { Trash} from 'lucide-react';
@@ -23,6 +24,7 @@ const RoleAssignmentTable = ({
     const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
     const dispatch = useDispatch();
     const { roles } = useSelector((state) => state.roles || {});
+    console.log('Roles in RoleAssignmentTable:', roles);
     const [availableUserRoles, setAvailableUserRoles] = useState(() => roles || []);
 
     const [formData, setFormData] = useState({
@@ -49,8 +51,8 @@ const RoleAssignmentTable = ({
     }, [roles])
 
     const availableRoles = useCallback(async () => {
-        await roleService.fetchRoles(aggregatorCode, merchantCode, dispatch);
-    }, [roleService, aggregatorCode, merchantCode, dispatch]);
+        await roleService.fetchRoles(aggregatorCode,  dispatch);
+    }, [roleService, aggregatorCode, dispatch]);
 
     useEffect(() => {
         availableRoles();
@@ -121,7 +123,7 @@ const RoleAssignmentTable = ({
                         <select
                             className='w-full text-sm border border-none focus:outline-none p-1 rounded-md'
                             value={formData.roleId}
-                            onChange={(e) => updateFormData('roleId', Number(e.target.value))}
+                            onChange={(e) => updateFormData('roleId', (e.target.value))}
                         >
                             <option value="0" disabled>
                                 Select Role

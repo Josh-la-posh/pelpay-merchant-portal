@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 function AggregatorProfile({ aggregatorData = {} }) {
     const data = Array.isArray(aggregatorData) ? aggregatorData[0] || {} : aggregatorData || {};
     return (
-        <div className='bg-white p-5 grid grid-cols-1 md:grid-cols-2 text-xs md:text-sm gap-4'>
+     <div className='bg-white p-5 grid grid-cols-1 md:grid-cols-2 text-xs md:text-sm gap-4'>
             <MerchantProfileContent
                 title='Aggregator Name'
                 value={data.aggregatorName ?? 'N/A'}
@@ -19,12 +19,8 @@ function AggregatorProfile({ aggregatorData = {} }) {
             value={data.status ?? 'N/A'}
         />
         <MerchantProfileContent
-            title='Registration Type'
-            value={data.registrationType ?? 'N/A'}
-        />
-        <MerchantProfileContent
             title='Address'
-            value={data.registrationType ?? 'N/A'}
+            value={`${data.address ?? 'N/A'}, ${data.city ?? 'N/A'}`}
         />
         <MerchantProfileContent
             title='Country'
@@ -40,11 +36,19 @@ function AggregatorProfile({ aggregatorData = {} }) {
         />
         <MerchantProfileContent
             title='Business Description'
+            value={data.businessDescription?? 'N/A'}
+        />
+        <MerchantProfileContent
+            title='Registration Type'
             value={data.registrationType ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Charge Type'
             value={data.chargeType ?? 'N/A'}
+        />
+        <MerchantProfileContent
+            title='Website'
+            value={data.website ?? 'N/A'}
         />
         <MerchantProfileContent
             title='Approved'
@@ -58,24 +62,14 @@ function AggregatorProfile({ aggregatorData = {} }) {
             title='Support Email'
             value={data.supportEmail ?? 'N/A'}
         />
-        {/* <div className="font-[500]">
-            Dispute Email: 
-            <span className='ml-3 font-[400]'>
-                {aggregatorData.disputeEmail ?? 'N/A'}
-            </span>
-        </div>
-        <div className="font-[500]">
-            Business Email: 
-            <span className='ml-3 font-[400]'>
-                {aggregatorData.businessEmail ?? 'N/A'}
-            </span>
-        </div> */}
-        {/* <div className="font-[500]">
-            Website: 
-            <span className='ml-3 font-[400]'>
-                {aggregatorData.website ?? 'N/A'}
-            </span>
-        </div> */}
+        <MerchantProfileContent
+            title='Dispute Email'
+            value={data.disputeEmail ?? 'N/A'}
+        />
+        <MerchantProfileContent
+            title='Business Email'
+            value={data.businessEmail ?? 'N/A'}
+        />
     </div>
   )
 }

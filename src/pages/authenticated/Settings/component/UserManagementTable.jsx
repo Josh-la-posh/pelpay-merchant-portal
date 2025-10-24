@@ -1,7 +1,8 @@
 // no hooks required
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import UserService from '@/services/api/userApi';
 import { useDispatch } from 'react-redux';
 import { CheckCircle, ToggleLeft, ToggleRight, X } from 'lucide-react';
@@ -18,12 +19,12 @@ const UserManagementTable = ({filteredData, totalSize, currentPage, setCurrentPa
     
     const columns = [
         {
-            header: 'LASTNAME',
-            accessor: 'lastName',
-        },
-        {
             header: 'FIRSTNAME',
             accessor: 'firstName',
+        },
+         {
+            header: 'LASTNAME',
+            accessor: 'lastName',
         },
         {
             header: 'EMAIL',
@@ -88,9 +89,9 @@ const UserManagementTable = ({filteredData, totalSize, currentPage, setCurrentPa
           );
     }
 
-    const deactivateAccount = async (id) => {
+    const deactivateAccount = async (userId) => {
         await userService.deactivateUser(
-            id,
+            userId,
             merchantCode,
             aggregatorCode,
             dispatch

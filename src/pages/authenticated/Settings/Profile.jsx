@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import UpdateInputField from '@/components/UpdateInputField';
 import { Mail, Phone, User } from 'lucide-react';
@@ -18,6 +19,7 @@ function ProfilePage() {
     const {newUserLoading, newUser} = useSelector((state) => state.users);
     const [editing, setEditing] = useState(false);
     const userDetails = auth?.data?.user;
+    console.log('User Details in ProfilePage:', userDetails);
     const [isLoading, setIsLoading] = useState(newUserLoading);
     const [errMsg, setErrMsg] = useState('');
   
@@ -25,7 +27,7 @@ function ProfilePage() {
         firstName: userDetails?.firstName ?? '',
         lastName: userDetails?.lastName ?? '',
         email: userDetails?.email ?? '',
-        phone: userDetails?.phoneNumber ?? ''
+        phoneNumber: userDetails?.phoneNumber ?? ''
     });
               
     useEffect(() => {
@@ -51,7 +53,7 @@ function ProfilePage() {
                 firstName: userDetails.firstName ?? '',
                 lastName: userDetails.lastName ?? '',
                 email: userDetails.email ?? '',
-                phone: userDetails.phoneNumber ?? ''
+                phoneNumber: userDetails.phoneNumber ?? ''
             });
         }
     }, [setAuth])
@@ -62,7 +64,7 @@ function ProfilePage() {
     };
 
     const fetchUser = async () => {
-        const merchantCode = auth?.merchants?.merchantCode;
+        const merchantCode = auth?.merchant?.merchantCode;
         await userService.fetchUserProfile(merchantCode, dispatch);
     };
 
@@ -147,8 +149,8 @@ function ProfilePage() {
                     label="Mobile Number"
                     type='phone'
                     icon={<Phone size={18}/>}
-                    valueName={formData.phone}
-                    id="phone"
+                    valueName={formData.phoneNumber}
+                    id="phoneNumber"
                     onChange={handleChange}
                     disabled={!editing}
                 />

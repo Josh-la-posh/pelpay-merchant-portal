@@ -168,12 +168,14 @@ class MerchantService {
   
     async createMerchant(data, dispatch) {
         dispatch(merchantStart());
+        console.log("Create Merchant Data", data);
       try {
         const response = await this.axiosPrivate.post(
-          'api/Merchant',
-          JSON.stringify({data})
+          'api/Merchant/AddMerchant',
+          JSON.stringify(data)
         );
-        
+        console.log("Create Merchant Response", response.data);
+         toast.success('Merchant added successfully');
         return response.data;
       } catch (err) {
         if (!err.response) {
@@ -188,7 +190,7 @@ class MerchantService {
     async addUserMerchant(formData) {
       try {
         await this.axiosPrivate.post('api/Merchant/adduser', JSON.stringify(formData));
-        toast('User added successfully');
+        toast.success('User added successfully');
       } catch (err) {
         if (!err.response) {
           toast('No response from server');
@@ -575,7 +577,7 @@ class MerchantService {
         dispatch(merchantProfileStart());
       try {
         const response = await this.axiosPrivate.get(
-          `api/MerchantProfile/${merchantCode}`
+          `api/Merchant/Profile/${merchantCode}`
         );
   dispatch(merchantProfileSuccess(response.data.responseData));
       } catch (err) {

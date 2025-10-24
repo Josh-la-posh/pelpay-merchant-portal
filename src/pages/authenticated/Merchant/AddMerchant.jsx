@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import AuthInputField from '@/components/AuthInptField';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import Button from '../../../components/ui/button';
+import MerchantService from '@/services/api/merchantApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { use } from 'react';
 
 const BUSINESS_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
 const NAME_REGEX = /^[a-zA-Z]{2,24}$/;
-const ACCOUNT_REGEX = /^[a-zA-Z]{10}$/;
+// const ACCOUNT_REGEX = /^[a-zA-Z]{10}$/;
+const ACCOUNT_REGEX = /^[0-9\s\-()]{3,15}$/;
 const PHONE_REGEX = /^[0-9\s\-()]{10,15}$/;
 const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -17,12 +22,19 @@ function AddMerchantPage() {
     const { setSettingsTitle } = useSettingsTitle();
     const { setAppTitle } = useTitle();
     const axiosPrivate = useAxiosPrivate();
+    const merchantService = new MerchantService(axiosPrivate);
+    const {merchantLoading} = useSelector((state) => state.merchant)
+    const [isLoading, setIsLoading] = useState(merchantLoading);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setAppTitle('Merchant');
         setSettingsTitle('New')
     }, [setAppTitle, setSettingsTitle]);
 
+    useEffect(() => {
+        setIsLoading(merchantLoading);
+    }, [merchantLoading]);
     const [countryList, setCountryList] = useState([]);
     const [showCountryListReload, setShowCountryListReload] = useState(false);
     const [stateList, setStateList] = useState([]);
@@ -58,11 +70,11 @@ function AddMerchantPage() {
     const [validBvn, setValidBvn] = useState(false);
     const [bvnFocus, setBvnFocus] = useState(false);
 
-    const [validPostalCode] = useState(false);
+    const [validPostalCode, setValidPostalCode] = useState(false);
     const [postalCodeFocus, setPostalCodeFocus] = useState(false);
 
 
-    const [validAccountBalance] = useState(false);
+    const [validAccountBalance, setValidAccountBalance] = useState(false);
     const [accountBalanceFocus, setAccountAmountFocus] = useState(false);
 
     const [validAddress, setValidAddress] = useState(false);
@@ -110,6 +122,7 @@ function AddMerchantPage() {
     const getCountry = useCallback(async () => { 
         try {
             const response = await axiosPrivate.get('api/country');
+            console.log('Countries response', response);
             if (response.data.message === 'Successful') {
                 const responseData = response.data.responseData || [];
                 setCountryList(responseData);
@@ -211,11 +224,21 @@ function AddMerchantPage() {
     }, [formData.website])
 
     useEffect(() => {
-        const result = ACCOUNT_REGEX.test(formData.bvn);
+        // const result = ACCOUNT_REGEX.test(formData.bvn);
+        const result = formData.bvn.length >= 11 && formData.bvn.length <= 15 && !(/\s/.test(formData.bvn));
         setValidBvn(result);
     }, [formData.bvn])
 
     // account number validation not currently used in UI; removed to silence lint
+    useEffect(()=>{
+        const result = ACCOUNT_REGEX.test(formData.accountBalance);
+        setValidAccountBalance(result); 
+    }, [formData.accountBalance])
+
+    useEffect(()=>{
+        const result = formData.postalCode.length > 2;
+        setValidPostalCode(result);
+    }, [formData.postalCode])
 
     useEffect(() => {
         const result = formData.address.length > 4;
@@ -295,40 +318,51 @@ function AddMerchantPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Merchant Ye Submitted', formData);
         const v1 = BUSINESS_REGEX.test(formData.businessName);
         const v2 = EMAIL_REGEX.test(formData.contactEmail);
-        const v3 = PHONE_REGEX.test(formData.contactPhoneNumber);
-        const v4 = NAME_REGEX.test(formData.contactFirstName);
-        const v5 = NAME_REGEX.test(formData.contactLastName);
+        const v3 = PHONE_REGEX.test(formData.phoneNumber);
+        // const v4 = NAME_REGEX.test(formData.contactFirstName);
+        // const v5 = NAME_REGEX.test(formData.contactLastName);
 
 
-        if (!v1 || !v2 || !v3 || !v4 || !v5) {
+        if (!v1 || !v2 || !v3) {
+            console.log('Merchant error is here', v1, v2, v3);
             setErrMsg('Invalid Entry');
             return;
         }
         setLoading(true);
 
         try {
-            await axiosPrivate.post('',
-                JSON.stringify(formData),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    // withCredentials: true
-                })
+            await merchantService.createMerchant(formData, dispatch);
+            console.log('Merchant Ye Registered Successfully');
             setSuccess(true);
             toast.success("Registration successful! Please check your email to confirm your account.");
 
             setFormData({
-                country: 'NG',
                 businessName: '',
-                contactEmail: '',
-                contactPhoneNumber: '',
-                contactFirstName: '',
-                contactLastName: '',
                 industryCategoryId: 1,
+                contactEmail: '',
+                supportEmail: '',
+                disputeEmail: '',
+                businessEmail: '',
+                phoneNumber: '',
+                website: '',
+                bvn: '',
+                accountBalance: 0,
+                address: '',
+                stateCode: '',
+                postalCode: '',
+                countryCode: '',
+                businessDescription: '',
+                returnUrl: '',
+                notificationURL: '',
+                country: 'NG',
+                // industryCategoryId: 1,
             });
 
         } catch (err) {
+            console.error('Merchant Registration Error:', err);
             if (err.response.status === 400) {
                 toast(err.response.data.message);
             } else if (!err.response) {
@@ -346,7 +380,7 @@ function AddMerchantPage() {
     return (
         <div className=''>
             <div className="bg-white p-5">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='space-y-4'>
                     <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4'>
                         <AuthInputField
                             label="Business Name"
@@ -419,10 +453,10 @@ function AddMerchantPage() {
                                 Country
                             </label>
                             <select
-                                id="country"
-                                name="country"
+                                id="countryCode"
+                                name="countryCode"
                                 value={formData.countryCode}
-                                onChange={handleCountryChange}
+                                onChange={(e) => handleCountryChange(e)}
                                 className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
                             >
@@ -616,23 +650,6 @@ function AddMerchantPage() {
                                 </>
                             )}
                         />
-                        <AuthInputField
-                            label="Business Description"
-                            type='text'
-                            validName={validBusinessDescription}
-                            valueName={formData.businessDescription}
-                            id="businessDescription"
-                            onChange={handleChange}
-                            setOnFocus={setBusinessDescriptionFocus}
-                            nameFocus={businessDescriptionFocus}
-                            errNote={(
-                                <>
-                                    Business description is required.
-                                    <br />
-                                    Business description cannot contain spaces.
-                                </>
-                            )}
-                        />
                         <div className="w-full">
                             <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industry">
                                 Industry
@@ -675,8 +692,12 @@ function AddMerchantPage() {
                             </div>
                         }
                     </div>
+                    {/* <button onClick={handleSubmit}>
+                        {isLoading ? <span className="spinner-border spinner-border-sm mr-2">Registering</span> : 'Register'}
+                    </button> */}
                     <Button
                         type='submit'
+                        // onClick={handleSubmit}
                     >
                         {loading ? 'Registering...' : 'Register'}
                     </Button>

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import PermissionService from '@/services/api/permissionApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckCircle, Edit3, ToggleLeft, ToggleRight, X } from 'lucide-react';
@@ -23,6 +24,8 @@ const ManagePermissionTable = ({
     setRowsPerPage
 }) => {
     const { id } = useParams();
+    console.log('Role ID in ManagePermissionTable:', id);
+    // const newId = Number(id);
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const permissionService = new PermissionService(axiosPrivate, auth);
@@ -125,7 +128,8 @@ const ManagePermissionTable = ({
 
     const createPermission = async () => {
         try {
-            await permissionService.createRolePermission(
+            console.log('formData', formData);  
+            await permissionService.createRolePermission(               
                 merchantCode,
                 formData,
                 dispatch
@@ -140,7 +144,7 @@ const ManagePermissionTable = ({
     const handlePermission = () => {
         roleMode === 'create'
             ? createPermission()
-            : updatePermission(selectedID);
+            : updatePermission(Number(selectedID));
     }
  
     const columns = [
@@ -149,7 +153,7 @@ const ManagePermissionTable = ({
             accessor: 'permission',
             render: (permission) => (
                 <span>
-                    {permission.permissionName}
+                    {permission?.permissionName}
                 </span>
             )
         },
@@ -244,7 +248,7 @@ const ManagePermissionTable = ({
                                         className='text-xs'
                                         
                                     >
-                                        {list.permissionName}
+                                        {list?.permissionName}
                                     </option>
                                 ))
                             }
