@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
-// import useAxiosPrivate from '@/services/hooks/useFormAxios';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import MerchantService from '@/services/api/merchantApi';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -144,8 +144,8 @@ function MerchantProfileUpdate() {
 
     const getCountry = useCallback(async () => {
         try {
-            const response = await axiosPrivate.get('api/country');
-            if (response.data.message === 'Successful') {
+            const response = await axiosPrivate.get('api/Countries');
+            if (response.data.message === 'success') {
                 const selectedStateList = response.data.responseData
                     .find(country => country.id === 'NG')?.states || [];
 

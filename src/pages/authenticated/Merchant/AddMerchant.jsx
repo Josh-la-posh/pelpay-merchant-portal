@@ -29,7 +29,7 @@ function AddMerchantPage() {
 
     useEffect(() => {
         setAppTitle('Merchant');
-        setSettingsTitle('New')
+        setSettingsTitle('New Merchant')
     }, [setAppTitle, setSettingsTitle]);
 
     useEffect(() => {
@@ -39,9 +39,9 @@ function AddMerchantPage() {
     const [showCountryListReload, setShowCountryListReload] = useState(false);
     const [stateList, setStateList] = useState([]);
     const [industryList, setIndustryList] = useState([]);
-        const [, setShowIndustryListReload] = useState(false);
-        const [industryCategoryList, setIndustryCategoryList] = useState([]);
-        const [, setShowIndustryCategoryListReload] = useState(false);
+    const [, setShowIndustryListReload] = useState(false);
+    const [industryCategoryList, setIndustryCategoryList] = useState([]);
+    const [, setShowIndustryCategoryListReload] = useState(false);
         // showIndustryCategories not needed here; industryId controls whether categories are shown
     const [industryId, setIndustryId] = useState(null);
     const errRef = useRef();
@@ -121,13 +121,11 @@ function AddMerchantPage() {
 
     const getCountry = useCallback(async () => { 
         try {
-            const response = await axiosPrivate.get('api/country');
-            console.log('Countries response', response);
-            if (response.data.message === 'Successful') {
-                const responseData = response.data.responseData || [];
+            const response = await axiosPrivate.get('api/Countries');
+            if (response.data.message === 'success') {
+                const responseData = response?.data?.responseData || [];
                 setCountryList(responseData);
 
-                // pick first available states safely
                 const selectedStateList = (responseData[0] && responseData[0].states) ? responseData[0].states : [];
                 setStateList(selectedStateList);
                 setShowCountryListReload(false);
@@ -139,6 +137,10 @@ function AddMerchantPage() {
             setShowCountryListReload(true);
         }
     }, [axiosPrivate]);
+
+    useEffect(() =>  {
+        getCountry();
+    }, [getCountry])
 
     const getIndustryCategories = useCallback(async (id) => {
         try {
@@ -179,10 +181,6 @@ function AddMerchantPage() {
             setShowIndustryListReload(true);
         }
     }, [axiosPrivate, getIndustryCategories]);
-
-    useEffect(() =>  {
-        getCountry();
-    }, [getCountry])
 
     useEffect(() =>  {
         getIndustry();
@@ -291,17 +289,18 @@ function AddMerchantPage() {
             [name]: value,
         }));
     };
-  
     const handleCountryChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
             [name]: value,
         }));
-
-        const found = Array.isArray(countryList) ? countryList.find(country => country.id === e.target.value) : null;
+        const found = Array.isArray(countryList) ? countryList.find((country) => country.countryName === e.target.value) : null;
         setStateList(found?.states || []);
-    }
+        if (found) {
+            setShowCountryListReload(false);
+        }
+    };
 
     const handleStateChange = (e) => {
         const { name, value } = e.target;
@@ -461,7 +460,7 @@ function AddMerchantPage() {
                                 required
                             >
                                 {countryList.map((country) => (
-                                    <option key={country.id} value={country.id}>
+                                    <option key={country.countryName} value={country.countryName}>
                                         {country.countryName}
                                     </option>
                                 ))}

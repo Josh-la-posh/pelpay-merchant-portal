@@ -2,6 +2,7 @@
 import DataTable from "@/components/Table";
 import { dateFormatter } from "@/utils/dateFormatter";
 import SettlementCard from "./SettlementCard";
+import { Cloud } from 'lucide-react';
 
 const columns = [
   {
@@ -57,6 +58,7 @@ const SettlementBatchTransactionTable = ({
   setCurrentPage,
   rowsPerPage,
   setRowsPerPage,
+  onDownload,
 }) => {
   const safeFiltered = Array.isArray(filteredData) ? filteredData : [];
 
@@ -71,8 +73,24 @@ const SettlementBatchTransactionTable = ({
   const totalAmount = safeFiltered.reduce((sum, amount) => sum + Number(amount?.amount || 0),0);
   const totalFees = safeFiltered.reduce((sum, fee) => sum + Number(fee?.merchantCharge || 0), 0);
   const stampDuty = safeFiltered.reduce((sum, fee) => sum + Number(fee?.stampDuty || 0), 0);
-  const amountPayable = totalAmount - (totalFees + stampDuty);
+  const amountPayable = Math.round(totalAmount - (totalFees + stampDuty));
 
+  const total = Number(totalSize);
+  const rows = Number(rowsPerPage);
+  const totalPages =  total > 0 && rows > 0 ? Math.ceil(total / rows) : 1;
+
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
   return (
     <div className="">
       <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-5">
@@ -98,6 +116,16 @@ const SettlementBatchTransactionTable = ({
           newColor="bg-green-800"
         />
       </div>
+      
+      <div className="flex justify-end mb-2 mx-5">
+          <button
+              onClick={onDownload}
+              className="text-priColor flex items-center gap-2 text-xs px-2 py-1 rounded-[4px]"
+          >
+              <Cloud size={'18px'} />
+              Download
+          </button>
+      </div>
       <DataTable
         columns={columns}
         data={processedData}
@@ -107,6 +135,28 @@ const SettlementBatchTransactionTable = ({
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
       />
+
+      <div className="flex justify-between mt-4 items-center">
+        <button
+          onClick={handlePrev}
+          disabled={currentPage === 1}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+
+        <span>
+          Page {isNaN(currentPage) ? 1 : currentPage} of {isNaN(totalPages) ? 1 : totalPages}
+        </span>
+
+        <button
+          onClick={handleNext}
+          disabled={currentPage < 1 || currentPage === totalPages}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

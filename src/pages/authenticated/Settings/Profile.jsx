@@ -19,7 +19,7 @@ function ProfilePage() {
     const {newUserLoading, newUser} = useSelector((state) => state.users);
     const [editing, setEditing] = useState(false);
     const userDetails = auth?.data?.user;
-    console.log('User Details in ProfilePage:', userDetails);
+    // console.log('User Details in ProfilePage:', userDetails);
     const [isLoading, setIsLoading] = useState(newUserLoading);
     const [errMsg, setErrMsg] = useState('');
   

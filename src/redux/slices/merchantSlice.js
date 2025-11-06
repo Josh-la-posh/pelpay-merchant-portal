@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   merchantLoading: false,
@@ -30,10 +30,13 @@ const initialState = {
   merchantDocumentTypeLoading: false,
   merchantDocumentTypeError: null,
   merchantDocumentType: [],
+  merchantAdduserLoading: false,
+  merchantAdduserError: null,
+  merchantAdduser: [],
 };
 
 const merchantSlice = createSlice({
-  name: 'merchant',
+  name: "merchant",
   initialState,
   reducers: {
     merchantStart: (state) => {
@@ -150,9 +153,54 @@ const merchantSlice = createSlice({
       state.merchantCredentialsLoading = false;
       state.merchantCredentialsError = action.payload;
     },
+    merchantAdduserStart: (state) => {
+      state.merchantAdduserLoading = true;
+      state.merchantAdduserError = null;
+    },
+    merchantAdduserSuccess: (state, action) => {
+      state.merchantAdduserLoading = false;
+      state.merchantAdduser = action.payload;
+    },
+    merchantAdduserFailure: (state, action) => {
+      state.merchantAdduserLoading = false;
+      state.merchantAdduserError = action.payload;
+    },
   },
 });
 
-export const { merchantStart, merchantSuccess, merchantFailure, merchantDocumentStart, merchantDocumentSuccess, merchantDocumentFailure, merchantDocumentTypeStart, merchantDocumentTypeSuccess, merchantDocumentTypeFailure, merchantAccountStart, merchantAccountSuccess, merchantAccountFailure, merchantAddressStart, merchantAddressSuccess, merchantAddressFailure, merchantContactStart, merchantContactSuccess, merchantContactFailure, merchantDomainStart, merchantDomainSuccess, merchantDomainFailure, merchantProfileStart, merchantProfileSuccess, merchantProfileFailure, merchantBusinessTypesSucess, merchantRegistrationTypesSucess, merchantCredentialsStart, merchantCredentialsSuccess, merchantCredentialsFailure } = merchantSlice.actions;
+export const {
+  merchantStart,
+  merchantSuccess,
+  merchantFailure,
+  merchantDocumentStart,
+  merchantDocumentSuccess,
+  merchantDocumentFailure,
+  merchantDocumentTypeStart,
+  merchantDocumentTypeSuccess,
+  merchantDocumentTypeFailure,
+  merchantAccountStart,
+  merchantAccountSuccess,
+  merchantAccountFailure,
+  merchantAddressStart,
+  merchantAddressSuccess,
+  merchantAddressFailure,
+  merchantContactStart,
+  merchantContactSuccess,
+  merchantContactFailure,
+  merchantDomainStart,
+  merchantDomainSuccess,
+  merchantDomainFailure,
+  merchantProfileStart,
+  merchantProfileSuccess,
+  merchantProfileFailure,
+  merchantBusinessTypesSucess,
+  merchantRegistrationTypesSucess,
+  merchantCredentialsStart,
+  merchantCredentialsSuccess,
+  merchantCredentialsFailure,
+  merchantAdduserStart,
+  merchantAdduserSuccess,
+  merchantAdduserFailure,
+} = merchantSlice.actions;
 
 export default merchantSlice.reducer;

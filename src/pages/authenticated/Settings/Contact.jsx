@@ -181,14 +181,14 @@ function ContactPage() {
                         </>
                     )}
                 />
-                <div className="w-full flex justify-end">
+                {/* <div className="w-full flex justify-end">
                     <button 
                         type="submit"
                         className="py-3 px-6 bg-priColor text-xs text-white rounded-md"
                     >
                         {isLoading ? 'Updating ...' : 'Save Changes'}
                     </button>
-                </div>
+                </div> */}
             </form>
         </div>
     );

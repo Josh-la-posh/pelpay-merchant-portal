@@ -9,10 +9,13 @@ import { Trash} from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import Spinner from '@/components/Spinner';
 import ErrorLayout from '@/components/ErrorLayout';
+import { CheckCircle,  X } from 'lucide-react';
+import PermissionService from "@/services/api/permissionApi";
 
 const RoleAssignmentTable = ({
     filteredData,
     errMsg,
+    // permissionLists,
     handleRefresh,
     isUserRoleLoading
 }) => {
@@ -24,8 +27,14 @@ const RoleAssignmentTable = ({
     const aggregatorCode = auth?.data?.aggregator?.aggregatorCode;
     const dispatch = useDispatch();
     const { roles } = useSelector((state) => state.roles || {});
-    console.log('Roles in RoleAssignmentTable:', roles);
     const [availableUserRoles, setAvailableUserRoles] = useState(() => roles || []);
+
+
+    const roleId = filteredData?.[0]?.roleId;
+    const permissionService = new PermissionService(axiosPrivate, auth);
+    const [permissionLists, setPermissionLists] = useState([]);
+    const pageNumber = 1;
+    const pageSize = 40;
 
     const [formData, setFormData] = useState({
         roleId: 0,
@@ -68,15 +77,36 @@ const RoleAssignmentTable = ({
         handleRefresh();
     }
 
-    const removeRole = async (roleId) => {
+    const removeRole = async () => {
         try {
-            await roleService.removeUserRole(roleId, merchantCode);
+            await roleService.removeUserRole(id, merchantCode);
             resetState();
             handleRefresh();
         } catch (error) {
             console.error(error);
         }
     }
+    const handleOptionRefresh = () => {
+        loadPermissions();
+    }
+
+     useEffect(() => { 
+    const loadPermissions = async () => {
+        if (roleId) {
+            try {
+                const response = await permissionService.fetchAggregatorRolePermission(roleId, aggregatorCode, pageSize, pageNumber, dispatch);
+                setPermissionLists(response.data || []);
+            } catch (err) {
+                console.error("Error fetching permissions:", err);
+            }
+        }else {
+            setPermissionLists([]);
+        }
+    };
+
+    loadPermissions();
+    }, [roleId, aggregatorCode, dispatch]);
+
 
     // duplicate availableRoles removed; use memoized version above
  
@@ -162,13 +192,66 @@ const RoleAssignmentTable = ({
                         Submit
                     </button>
                 </div>
-                
             </div>
             <DataTable
                 columns={columns}
                 data={filteredData}
-                drpp=''
+                drop=''
             />
+            {filteredData?.length > 0 && roleId && (
+ <div className="p-5">
+                <div className="font-semibold text-gray-800 mb-3 mt-10 text-base">
+                    User Role Permissions
+                </div>
+
+                <ul className="">
+                    {permissionLists?.length > 0 ? (
+                        permissionLists.map((perm) => (
+                            <li
+                                key={perm.id || perm.permission?.permissionName}
+                                className="flex items-center justify-between px-4 py-3 border-b border-gray-500"
+                            >
+                                <span className="font-medium text-gray-700 capitalize">
+                                {perm.permission?.permissionName || "—"}
+                                </span>
+
+                                <div className="flex items-center gap-1">
+                                    <span className={`flex items-center gap-1 ${perm.canRead ? 'text-green-600' : 'text-red-600'}`}>
+                                    {perm.canRead ? <CheckCircle size='14px' /> : <X size='14px' />}
+                                    Read
+                                    </span>
+
+                                    <span className={`flex items-center gap-1 ${perm.canAdd ? 'text-green-600' : 'text-red-600'}`}>
+                                    {perm.canAdd ? <CheckCircle size='14px' /> : <X size='14px' />}
+                                    Add
+                                    </span>
+
+                                    <span className={`flex items-center gap-1 ${perm.canEdit ? 'text-green-600' : 'text-red-600'}`}>
+                                    {perm.canEdit ? <CheckCircle size='14px' /> : <X size='14px' />}
+                                    Edit
+                                    </span>
+                              
+                                    <span className={`flex items-center gap-1 ${perm.canDelete ? 'text-green-600' : 'text-red-600'}`}>
+                                    {perm.canDelete ? <CheckCircle size='14px' /> : <X size='14px' />}
+                                    Delete
+                                    </span>
+                                
+                                {!perm.canRead &&
+                                    !perm.canAdd &&
+                                    !perm.canEdit &&
+                                    !perm.canDelete && (
+                                    <span className="text-gray-400 ">No permission assigned</span>
+                                    )}
+                                </div>
+                            </li>
+                        ))
+                    ) : (
+                    <li className="px-4 py-3 text-gray-500">No permissions assigned.</li>
+                    )} 
+                </ul>
+            </div>
+            )}
+          
         </div>
     );
 };

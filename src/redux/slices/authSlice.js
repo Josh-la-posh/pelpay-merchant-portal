@@ -25,6 +25,8 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.isLoggedIn = false;
+      localStorage.removeItem('RolePermission');
+      localStorage.removeItem('roles');
     }
   },
 });

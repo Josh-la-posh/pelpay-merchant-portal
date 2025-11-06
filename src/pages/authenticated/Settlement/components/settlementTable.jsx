@@ -62,6 +62,18 @@ const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, 
             )
         },
     ];
+
+const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+  const handleNext = () => {
+  const lastPage = Math.ceil(totalSize / rowsPerPage);
+  if (currentPage < lastPage) {
+    setCurrentPage(currentPage + 1);
+  }
+};
     return (
         <div className="">
             <DataTable
@@ -73,6 +85,27 @@ const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, 
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
             />
+             <div className="flex justify-between mt-4 items-center">
+                <button
+                onClick={handlePrev}
+                disabled={currentPage === 1}
+                className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                Prev
+                </button>
+
+                <span>
+                Page {currentPage} of {Math.ceil(totalSize / rowsPerPage)}
+                </span>
+
+                <button
+                onClick={handleNext}
+                disabled={currentPage === Math.ceil(totalSize / rowsPerPage)}
+                className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                Next
+                </button>
+            </div>
         </div>
     );
 };

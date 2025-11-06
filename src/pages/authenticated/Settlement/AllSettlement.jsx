@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import SettlementService from '@/services/api/settlementApi';
 import SettlementTable from './components/settlementTable';
@@ -24,7 +25,12 @@ function AllSettlementPage() {
   const [errMsg, setErrMsg] = useState(settlementError);
   const [pageNumber, setPageNumber] = useState(settlementPageNumber);
   const [pageSize, setPageSize] = useState(settlementPageSize);
+  // console.log("Page Size:", pageSize);
+  // console.log("Page Number:", pageNumber);
+  // const pageNumber = 1;
+  //   const pageSize = 20;
   const [totalSize, setTotalSize] = useState(settlementTotalSize);
+  const { env } = useSelector((state) => state.env);
 
   useEffect(() => {
     setAppTitle('Settlements');
@@ -42,13 +48,13 @@ function AllSettlementPage() {
     setErrMsg(settlementError);
   }, [settlementError]);
       
-  useEffect(() => {
-    setPageNumber(settlementPageNumber);
-  }, [settlementPageNumber]);
+  // useEffect(() => {
+  //   setPageNumber(settlementPageNumber);
+  // }, [settlementPageNumber]);
       
-  useEffect(() => {
-    setPageSize(settlementPageSize);
-  }, [settlementPageSize]);
+  // useEffect(() => {
+  //   setPageSize(settlementPageSize);
+  // }, [settlementPageSize]);
       
   useEffect(() => {
     setTotalSize(settlementTotalSize);
@@ -56,9 +62,9 @@ function AllSettlementPage() {
 
   const loadData = useCallback(async () => {
     if (merchantCode) {
-      await settlementservice.fetchSettlement(merchantCode, pageNumber, pageSize, dispatch);
+      await settlementservice.fetchSettlement(merchantCode, pageNumber, pageSize, env, dispatch);
     }
-  }, [merchantCode, pageNumber, pageSize, settlementservice, dispatch]);
+  }, [merchantCode, pageNumber, pageSize, env, settlementservice, dispatch]);
 
   useEffect(() => {
     loadData();
@@ -83,7 +89,6 @@ function AllSettlementPage() {
   return (
     <div className='space-y-4'>
       {/* <SettlementFilter /> */}
-      
       <button onClick={() => navigate(-1)} className='text-priColor mb-5 flex items-center gap-2 text-xs'><ArrowLeft size={'14px'}/> Go Back</button>
       <SettlementTable
         filteredData={filteredData}

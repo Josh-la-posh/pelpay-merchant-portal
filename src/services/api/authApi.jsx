@@ -6,6 +6,8 @@ import {
 } from "@/redux/slices/authSlice";
 import axios from "./axios";
 import { complianceStep, complianceSuccess, setComplianceStatus } from "../../redux/slices/complianceSlice";
+import RoleService from "@/services/api/rolesApi";
+import PermissionService from "@/services/api/permissionApi";
 
 class AuthService {
   constructor(axiosPrivate) {
@@ -24,19 +26,36 @@ class AuthService {
       );
 
       const data = response?.data?.responseData;
-  const merchant = data?.merchants[0];
-  const complianceStatus = data?.complianceStatus || null;
+      const merchant = data?.merchants[0];
+      const complianceStatus = data?.complianceStatus || null;
       const merchantCode = merchant?.merchantCode;
+      const aggregatorCode = data?.aggregator?.aggregatorCode;
 
       await setAuth({ data, merchant, complianceStatus });
       if (complianceStatus) {
-        dispatch(setComplianceStatus(complianceStatus));
+        dispatch(setComplianceStatus(complianceStatus));  
         try { localStorage.setItem('complianceStatus', complianceStatus); } catch { /* ignore */ }
       }
       const token = data?.accessToken;
-      
       await this.fetchComplianceData(dispatch, merchantCode, navigate, token)
-      dispatch(loginSuccess(data));
+
+      const roleService = new RoleService(this.axiosPrivate);
+      await roleService.fetchRolesByAggregatorCode(aggregatorCode, dispatch);
+
+      const permissionService = new PermissionService(this.axiosPrivate);
+      await permissionService.fetchUserRolePermission(aggregatorCode, dispatch);
+      // console.log("Saved Role Permission", localStorage.getItem('RolePermission'))
+      // const permission = localStorage.getItem('RolePermission');
+      // if (permission === undefined) {
+      //   console.log('The permission: ', permission)
+      //   console.log('I cannot login at this point');
+      // } else {
+      // }
+      dispatch(loginSuccess());
+      // setTimeout(() => {
+
+      // }, [3000])
+      
       toast.success("Login successful");
 
 

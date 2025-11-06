@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import { BookUser, GroupIcon, LockOpen, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const SettingsSidebar = () => {
     const { settingsTitle } = useSettingsTitle();
 
-    const sidebarItems = [
+    const [sidebarItems, setSidebarItems] = useState([
         {
             id: 1,
             icon: <User size={'15px'} />,
@@ -55,8 +56,25 @@ const SettingsSidebar = () => {
             url: '/settings/role',
             title: 'Roles'
         },
-    ]
+    ])
 
+    useEffect(() => {
+    try {
+        const stored = JSON.parse(localStorage.getItem('roles'));
+        const userRoles = stored?.responseData || [];
+        const roleName = userRoles.some(
+        (role) => role.roleName === 'SuperAdmin'
+        );
+
+      if (!roleName) {
+        setSidebarItems((prev) =>
+          prev.filter((item) => item.name !== 'Teams' && item.name !== 'Roles')
+        );
+      }
+    } catch (error) {
+      console.log('Failed to parse roles from localStorage', error);
+    }
+  }, []);
 
     return (
         <div className="">

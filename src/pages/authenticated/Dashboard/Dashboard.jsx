@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import TransactionForm from "../Transaction/components/TransactionForm";
 import { toggleEnv, setEnv } from "../../../redux/slices/envSlice";
 import SettingsService from '@/services/api/settingsApi';
+import { use } from "react";
 
 function Dashboard() {
   const { setAppTitle } = useTitle();
@@ -47,6 +48,12 @@ function Dashboard() {
   const [errMsg, setErrMsg] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
+    const {transactionPageNumber, transactionPageSize, transactionTotalSize, } = useSelector((state) => state.transaction);
+  const [pageNumber, setPageNumber] = useState(transactionPageNumber);
+  const [pageSize, setPageSize] = useState(transactionPageSize);
+  const [currentFilters, setCurrentFilters] = useState({});
+  const [totalSize, setTotalSize] = useState(transactionTotalSize);
+
   const { env } = useSelector((state) => state.env);
   const { complianceStatus } = useSelector((state) => state.compliance || {});
 
@@ -57,7 +64,27 @@ function Dashboard() {
     setIsLive(newData);
   }, [env]);
 
-  useEffect(() => { setAppTitle("Dashboard"); }, [setAppTitle]);
+  const [complianceIsApproved, setComplianceIsApproved] = useState(false)
+  useEffect(() =>{
+    const approved = localStorage.getItem('complianceStatus');
+    if(approved === 'approved'){
+      setComplianceIsApproved(true);
+    }
+  }, [])
+
+  const storedAuth = JSON.parse(localStorage.getItem("auth"));
+  const getRolePermission = storedAuth?.data?.rolePermissions || [];
+  const[roleGotten, setRoleGotten] = useState(false);
+  
+  useEffect(()=>{
+    if(Array.isArray(getRolePermission) && getRolePermission.length > 0){
+        setRoleGotten(true);
+    }
+  }, []) 
+
+  useEffect(() => {
+      setAppTitle("Dashboard");
+  }, [setAppTitle]);
 
   // Fetch current environment from settings endpoint on initial mount
   useEffect(() => {
@@ -148,17 +175,13 @@ function Dashboard() {
       setUpdatingEnv(false);
     }
   };
-  // useEffect(() => {
-  //   if (merchant?.status === 0) {
-  //     setIsLive(false);
-  //   }
-  // }, [merchant?.status]);
 
   if (errMsg !== null)
     return <ErrorLayout errMsg={errMsg} handleRefresh={handleRefresh} />;
 
   return (
-    <div className="relative">
+    <div>
+      <div className="relative">
       <div
         className={`absolute h-full w-full ${
           isLumpsumLoading || isGraphLoading ? "block" : "hidden"
@@ -167,14 +190,8 @@ function Dashboard() {
         <Spinner />
       </div>
       <div className="space-y-8">
-        {/* {merchant?.status === 0 && (
-          <p className="text-xs sm:text-sm font-semibold text-red-500 text-wrap">
-            You can only go live after your compliance documents has been
-            approved
-          </p>
-        )} */}
         <div className="">
-          {complianceStatus && (
+          {complianceStatus && !complianceIsApproved && (
             <div className="mb-4">
               {complianceStatus === 'pending' && (
                 <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs sm:text-sm px-3 py-2 rounded-md">Your compliance registration is not completed.</div>
@@ -193,13 +210,18 @@ function Dashboard() {
               )}
             </div>
           )}
+          {!roleGotten && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-800 text-xs sm:text-sm px-3 py-2 rounded-md">
+              Please reach out to the admin for assistance!
+            </div>
+            ) }
           <div className="flex justify-between align-center">
             <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">
               Welcome back, {user.firstName}
             </h1>
             {/* <p className={`hidden sm:block text-xs sm:text-sm font-semibold ${merchant?.status === 'Sandbox' ? 'text-red-500' : 'text-green-500'}`}>{merchant?.status === 'Sandbox' ? 'Test Mode' : 'Live'}</p> */}
-
-            <div className="flex items-center gap-2">
+            {roleGotten ? (
+              <div className="flex items-center gap-2">
               <label className="flex items-center cursor-pointer select-none">
                 <div className="relative">
                   <input
@@ -221,6 +243,10 @@ function Dashboard() {
                 </span>
               </label>
             </div>
+          ) :(
+            ""
+          )}
+            
           </div>
           <p className="text-gray-600 text-sm sm:text-md md:text-lg">
             Overview of your payment gateway performance
@@ -362,8 +388,13 @@ function Dashboard() {
             data={transactions}
             handleOpenModal={handleOpenModal}
             drpp=""
+            totalSize={totalSize}
+            currentPage={pageNumber}
+            setCurrentPage={setPageNumber}
+            rowsPerPage={pageSize}
           />
         )}
+        {roleGotten ? (
         <div className="flex justify-end">
           <Link
             className="flex items-center text-xs text-priColor gap-2"
@@ -373,8 +404,14 @@ function Dashboard() {
             <ArrowRight size="16px" />
           </Link>
         </div>
+        ) :(
+          ""
+        )}
+        
       </div>
     </div>
+    </div>
+   
   );
 }
 

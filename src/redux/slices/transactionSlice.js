@@ -4,7 +4,7 @@ const initialState = {
   transactionLoading: false,
   transactionError: null,
   transactions: [],
-  transactionPageSize: 10,
+  transactionPageSize: 20,
   transactionPageNumber: 1,
   transactionTotalSize: 0,
 };

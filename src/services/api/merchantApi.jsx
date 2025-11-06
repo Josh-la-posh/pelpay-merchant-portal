@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { aggregatorMerchantFailure, aggregatorMerchantStart, aggregatorMerchantSuccess } from "@/redux/slices/aggregatorSlice";
-import { merchantAccountFailure, merchantAccountStart, merchantAccountSuccess, merchantAddressFailure, merchantAddressStart, merchantBusinessTypesSucess, merchantContactFailure, merchantContactStart, merchantContactSuccess, merchantCredentialsFailure, merchantCredentialsStart, merchantCredentialsSuccess, merchantDocumentFailure, merchantDocumentStart, merchantDocumentSuccess, merchantDocumentTypeFailure, merchantDocumentTypeStart, merchantDocumentTypeSuccess, merchantDomainFailure, merchantDomainStart, merchantDomainSuccess, merchantFailure, merchantProfileFailure, merchantProfileStart, merchantProfileSuccess, merchantRegistrationTypesSucess, merchantStart } from "@/redux/slices/merchantSlice";
+import { merchantAccountFailure, merchantAccountStart, merchantAccountSuccess, merchantAddressFailure, merchantAddressStart, merchantBusinessTypesSucess, merchantContactFailure, merchantContactStart, merchantContactSuccess, merchantCredentialsFailure, merchantCredentialsStart, merchantCredentialsSuccess, merchantDocumentFailure, merchantDocumentStart, merchantDocumentSuccess, merchantDocumentTypeFailure, merchantDocumentTypeStart, merchantDocumentTypeSuccess, merchantDomainFailure, merchantDomainStart, merchantDomainSuccess, merchantFailure, merchantProfileFailure, merchantProfileStart, merchantProfileSuccess, merchantRegistrationTypesSucess, merchantStart, merchantAdduserStart, merchantAdduserSuccess, merchantAdduserFailure, } from "@/redux/slices/merchantSlice";
 import { saveAs } from "file-saver";
 
 class MerchantService {
@@ -187,16 +187,23 @@ class MerchantService {
       }
     }
   
-    async addUserMerchant(formData) {
+    async addUserMerchant(formData, dispatch) {
+        dispatch(merchantAdduserStart());
       try {
-        await this.axiosPrivate.post('api/Merchant/adduser', JSON.stringify(formData));
+        await this.axiosPrivate.post('api/Merchant/adduser', 
+          JSON.stringify(formData),
+        {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
         toast.success('User added successfully');
       } catch (err) {
         if (!err.response) {
-          toast('No response from server');
+          dispatch(merchantAdduserFailure('No response from server'));
         } else {
           const errMsg = err.response.data.message;
-          toast.error(errMsg);
+          dispatch(merchantAdduserFailure(errMsg));
         }
         console.error('addUserMerchant error:', err);
       }

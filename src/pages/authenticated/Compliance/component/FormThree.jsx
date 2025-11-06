@@ -39,10 +39,15 @@ const FormThree = ({ handleNextStep, handlePrevStep }) => {
 
   const handleChange = (field, files) => {
     const maximumFileSize = 5 * 1024 * 1024;
+    const allowedFiles = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
     const file = files[0];
     if (file) {
       if (file.size > maximumFileSize) {
         toast.error(`${file.name} is too large. The maximum file size allowed is 5MB.`);
+        return;
+      }
+      if (!allowedFiles.includes(file.type)) {
+        toast.error(`${file.name} is not a valid file type. Please upload a JPG, JPEG, PNG, or PDF file.`);
         return;
       }
     }

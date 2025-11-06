@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 
 function ManagePermission() {
     const { id } = useParams();
+    console.log("manage permission role id:", id);
     const { setSettingsTitle } = useSettingsTitle();
     const axiosPrivate = useAxiosPrivate();
     const { auth } = useAuth();
@@ -17,8 +18,8 @@ function ManagePermission() {
     const { permissions,  aggregatorPermissionsTotalSize, aggregatorPermissions, permissionsLoading, aggregatorPermissionsLoading, permissionsError, aggregatorPermissionsError } = useSelector((state) => state.permissions);
     // const [permissionLists, setPermissionLists] = useState(permissions);
     const [permissionLists, setPermissionLists] = useState(aggregatorPermissions);
-    console.log('Permissions in ManagePermission:', permissionLists);
-    console.log('Permissions in Aggregator ManagePermission:', aggregatorPermissions);
+    // console.log('Permissions in ManagePermission:', permissionLists);
+    // console.log('Permissions in Aggregator ManagePermission:', aggregatorPermissions);
     // const [filteredData, setFilteredData] = useState(aggregatorPermissions);
     const [filteredData, setFilteredData] = useState(permissions);
     const [isAggregatorPermissionsLoading, setIsAggregatorPermissionsLoading] = useState(aggregatorPermissionsLoading);

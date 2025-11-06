@@ -5,7 +5,8 @@ import SettlementBatchTransactionTable from './components/SettlementBatchTransac
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import SettlementService from '@/services/api/settlementApi';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import Spinner from '@/components/Spinner';
 import ErrorLayout from '@/components/ErrorLayout';
 
@@ -21,9 +22,27 @@ function SettlementBatchTransaction() {
   const [errMsg, setErrMsg] = useState(settlementError);
   const navigate = useNavigate();
   const merchantCode = auth?.merchant.merchantCode;
-    const [pageNumber, setPageNumber] = useState(batchSettlementPageNumber);
-    const [pageSize, setPageSize] = useState(batchSettlementPageSize);
-    const [totalSize, setTotalSize] = useState(batchSettlementTotalSize);
+  const merchantName = auth?.merchant.merchantName;
+  const [pageNumber, setPageNumber] = useState(batchSettlementPageNumber);
+  const [pageSize, setPageSize] = useState(batchSettlementPageSize);
+  const [totalSize, setTotalSize] = useState(batchSettlementTotalSize);
+  const {env} = useSelector((state) => state.env);
+
+  const [formData, setFormData] = useState({
+      merchantName: merchantName || "",
+      disputeStatus: "",
+      processorName: "",
+      sessionId: "",
+      settlementStatus: "",
+      transactionReference: "",
+      accountNumber: "",
+      startDate: "",
+      endDate: "",
+      merchantCode: merchantCode || "",
+      status: "",
+      customerEmail: ""
+    
+  });
 
   useEffect(() => {
     loadSettlementTransaction();
@@ -58,7 +77,11 @@ function SettlementBatchTransaction() {
   }
 
   const loadSettlementTransaction = async () => {
-    await settlementService.getSettlementBatchTransaction(merchantCode, pageNumber, pageSize, transactionId, dispatch);
+    await settlementService.getSettlementBatchTransaction(pageNumber, pageSize, transactionId, env, formData, dispatch);
+  }
+
+  const downBatchSettlementTransaction = async () => {
+    await settlementService.downloadSettlementBatchTransaction(pageNumber, pageSize, transactionId, env, formData)
   }
 
   if (isLoading) return (
@@ -85,6 +108,7 @@ function SettlementBatchTransaction() {
         setCurrentPage={setPageNumber}
         rowsPerPage={pageSize}
         setRowsPerPage={setPageSize}
+        onDownload={downBatchSettlementTransaction} 
       />
     </div>
   )

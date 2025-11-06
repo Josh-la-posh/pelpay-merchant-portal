@@ -137,24 +137,24 @@ const RoleManagementTable = ({filteredData}) => {
         });
     }
 
-    const activateRole = async (id) => {
+    const activateRole = async (Id) => {
         await roleService.activateRole(
-            id,
+            Id,
             aggregatorCode,
             dispatch);
     }
 
-    const deactivateRole = async (id) => {
+    const deactivateRole = async (Id) => {
         await roleService.deactivateRole(
-            id,
+            Id,
             aggregatorCode,
             dispatch
         );
     }
 
-    const updateRole = async (id) => {
+    const updateRole = async (Id) => {
         await roleService.updateRolesById(
-            id,
+            Id,
             aggregatorCode,
             formData,
             dispatch
@@ -170,24 +170,23 @@ const RoleManagementTable = ({filteredData}) => {
         });
     }
 
-    const createRole = async (id) => {
+    const createRole = async () => {
         await roleService.createRole(
-            id,
             aggregatorCode,
             formData,
             dispatch
         );
     }
 
-    const deleteRole = async (roleId) => {
-        try{
-            await roleService.removeRole(roleId);
-            handleRefresh();
-        }
-        catch (error) {
-            console.error(error);
-        }
-    }
+    // const deleteRole = async (roleId) => {
+    //     try{
+    //         await roleService.removeRole(roleId);
+    //         handleRefresh();
+    //     }
+    //     catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
     const handleRole = () => {
         const v1 = formData.roleName;

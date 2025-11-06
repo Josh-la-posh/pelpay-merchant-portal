@@ -54,11 +54,12 @@ const ManagePermissionTable = ({
     }
 
     const handleEdit = (row) => {
+        console.log("row gotten", row)
         setSelectedID(row.id);
         setRoleMode('edit');
         setFormData({
-            roleId: row.roleId,
-            permissionId: row.permissionId,
+            roleId: id,
+            permissionId: Number(row.permission.id),
             canAdd: row.canAdd,
             canEdit: row.canEdit,
             canDelete: row.canDelete,
@@ -85,10 +86,10 @@ const ManagePermissionTable = ({
             : deactivatePermission(roleId);
     }
 
-    const activatePermission = async (roleId) => {
+    const activatePermission = async (Id) => {
         try {
             await permissionService.activateAggregatorRolePermission(
-                roleId,
+                Id,
                 aggregatorCode
             );                
             cancelEditing();
@@ -98,10 +99,10 @@ const ManagePermissionTable = ({
         }
     }
 
-    const deactivatePermission = async (roleId) => {
+    const deactivatePermission = async (Id) => {
         try {
             await permissionService.deactivateAggregatorRolePermission(
-                roleId,
+                Id,
                 aggregatorCode
             );            
             cancelEditing();
@@ -111,10 +112,10 @@ const ManagePermissionTable = ({
         }
     }
 
-    const updatePermission = async (roleId) => {
+    const updatePermission = async (Id) => {
         try {
             await permissionService.updateAggregatorRolePermission(
-                roleId,
+                Id,
                 aggregatorCode,
                 formData,
                 dispatch
