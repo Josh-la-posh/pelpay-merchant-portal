@@ -101,7 +101,8 @@ function AddMerchantPage() {
 
     const [formData, setFormData] = useState({
         businessName: '',
-        industryCategoryId: 1,
+        industryId: 1,
+        industryCategoryId: '',
         contactEmail: '',
         supportEmail: '',
         disputeEmail: '',
@@ -144,34 +145,51 @@ function AddMerchantPage() {
 
     const getIndustryCategories = useCallback(async (id) => {
         try {
-            const response = await axiosPrivate.get(`api/industry/categories/${id}`);
-            if (response.data.message === 'Successful') {
-                const result = response.data.responseData;
-                setIndustryCategoryList(result);        
-                setFormData((prevState) => ({
-                    ...prevState,
-                    industryCategoryId: result[0]?.id || prevState.industryCategoryId || 1,
-                }));
-                // no-op: industryId controls visibility in this component
-                setShowIndustryCategoryListReload(false);
+            const response = await axiosPrivate.get(`api/IndustryCategory/${id}`);
+            if (response.data.message === "success") {
+            const result = response.data.responseData;
+            // console.log("industryCategoryList", result);
+
+            setIndustryCategoryList([result]);
+
+            setFormData((prev) => ({
+                ...prev,
+                industryCategoryId: result[0]?.industryId || prev.industryCategoryId || 1,
+            }));
+            setShowIndustryCategoryListReload(false);
             } else {
                 setShowIndustryCategoryListReload(true);
-                // no-op: industryId controls visibility in this component
             }
         } catch (err) {
             console.error(err);
             setShowIndustryCategoryListReload(true);
-            // no-op: industryId controls visibility in this component
         }
     }, [axiosPrivate]);
 
     const getIndustry = useCallback(async () => {
         try {
-            const response = await axiosPrivate.get('api/industry');
-            if (response.data.message === 'Successful') {
-                const result = response.data.responseData || [];
-                setIndustryList(result);
-                if (result.length) getIndustryCategories(result[0].id);
+            const response = await axiosPrivate.get("api/Industries");
+            if (response.data.message === "success") {
+            const result = response.data.responseData || [];
+
+            const getIndustry = result.map((item, index) => ({
+                id: item.categories?.[0]?.industryId ||  1, 
+                industryName: item.industryName,
+                categories: item.categories,
+            }));
+
+            // console.log("industryList", getIndustry);
+            setIndustryList(getIndustry);
+
+            if (getIndustry.length > 0) {
+                const firstIndustry = getIndustry[0];
+                // console.log("firstIndustry", firstIndustry);
+                setFormData((prev) => ({
+                ...prev,
+                industryId: firstIndustry.id,
+                }));
+                getIndustryCategories(firstIndustry.id);
+            }
                 setShowIndustryListReload(false);
             } else {
                 setShowIndustryListReload(true);
@@ -262,6 +280,7 @@ function AddMerchantPage() {
         setErrMsg('');
     }, [
         formData.businessName,
+        formData.industryId,
         formData.industryCategoryId,
         formData.contactEmail,
         formData.supportEmail,
@@ -311,8 +330,15 @@ function AddMerchantPage() {
     }
 
     const handleCategoryChange = (e) => {
-        setIndustryId(e.target.value);
-        getIndustryCategories(e.target.value);
+        // setIndustryId(e.target.value);
+        // getIndustryCategories(e.target.value);
+        const newIndustryId = e.target.value;
+
+        setFormData(prev => ({
+            ...prev,
+            industryId: newIndustryId
+        }));
+        getIndustryCategories(newIndustryId);
     }
 
     const handleSubmit = async (e) => {
@@ -340,7 +366,7 @@ function AddMerchantPage() {
 
             setFormData({
                 businessName: '',
-                industryCategoryId: 1,
+                industryId: 1,
                 contactEmail: '',
                 supportEmail: '',
                 disputeEmail: '',
@@ -653,10 +679,10 @@ function AddMerchantPage() {
                             <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industry">
                                 Industry
                             </label>
-                            <select
+                            {/* <select
                                 id="industry"
-                                name="industry"
-                                value={formData.industry}
+                                name="industryId"
+                                value={formData.industryId}
                                 onChange={(e) => handleCategoryChange(e)}
                                 className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
@@ -666,9 +692,27 @@ function AddMerchantPage() {
                                         {industry.industryName}
                                     </option>
                                 ))}
+                            </select> */}
+                            <select
+                                id="industry"
+                                name="industryId"
+                                value={formData.industryId}
+                                onChange={(e) => {
+                                    const newId = e.target.value;
+                                    setFormData((prev) => ({ ...prev, industryId: newId }));
+                                    getIndustryCategories(newId);
+                                }}
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
+                                required
+                                >
+                                {industryList.map((industry) => (
+                                    <option key={industry.id} value={industry.id}>
+                                    {industry.industryName}
+                                    </option>
+                                ))}
                             </select>
                         </div>
-                        {
+                        {/* {
                             industryId !== null &&
                             <div className="w-full">
                                 <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
@@ -689,7 +733,50 @@ function AddMerchantPage() {
                                     ))}
                                 </select>
                             </div>
-                        }
+                        } */}
+                        {/* {formData.industryId && (
+                            <div className="w-full">
+                                <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
+                                    Industry Category
+                                </label>
+                                <select
+                                    id="industryCategoryId"
+                                    name="industryCategoryId"
+                                    value={formData.industryCategoryId}
+                                    onChange={handleChange}
+                                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
+                                    required
+                                >
+                                    {industryCategoryList.map((industry) => (
+                                        <option key={industry.id} value={industry.id}>
+                                            {industry.categoryName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )} */}
+                        {formData.industryId && industryCategoryList.length > 0 && (
+  <div className="w-full">
+    <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
+      Industry Category
+    </label>
+    <select
+      id="industryCategoryId"
+      name="industryCategoryId"
+      value={formData.industryCategoryId}
+      onChange={handleChange}
+      className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
+      required
+    >
+      {industryCategoryList.map((cat) => (
+        <option key={cat.industryId} value={cat.industryId}>
+          {cat.categoryName}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
+
                     </div>
                     {/* <button onClick={handleSubmit}>
                         {isLoading ? <span className="spinner-border spinner-border-sm mr-2">Registering</span> : 'Register'}

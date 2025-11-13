@@ -5,9 +5,9 @@ import { useState } from 'react';
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
 const FormSixEmail = ({ handlePrevStep, handleNextStep, existingData }) => {
-  const [supportEmail, setSupportEmail] = useState(existingData?.supportEmail || '');
-  const [disputeEmail, setDisputeEmail] = useState(existingData?.disputeEmail || '');
-  const [contactEmail, setContactEmail] = useState(existingData?.contactEmail || existingData?.otherEmail || '');
+  const [supportEmail, setSupportEmail] = useState(existingData?.businessInfo?.supportEmail || '');
+  const [disputeEmail, setDisputeEmail] = useState(existingData?.businessInfo?.disputeEmail || '');
+  const [contactEmail, setContactEmail] = useState(existingData?.businessInfo?.contactEmail || existingData?.businessInfo?.otherEmail || '');
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 

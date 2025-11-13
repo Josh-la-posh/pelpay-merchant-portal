@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
         totalSize,
         currentPage = 1,
         setCurrentPage = () => {},
-        rowsPerPage = 10,
+        rowsPerPage = 5,
         setRowsPerPage = () => {},
     }) => {
 

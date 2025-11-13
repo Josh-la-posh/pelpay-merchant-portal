@@ -91,9 +91,10 @@ class PermissionService {
           JSON.stringify(formData),
           // formData
            {
-    headers: {
-      "Content-Type": "application/json"
-    }}
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
         );
         toast('Permission updated successfully');
         dispatch(updatePermissionsSuccess());

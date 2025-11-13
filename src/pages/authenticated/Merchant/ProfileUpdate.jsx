@@ -91,7 +91,7 @@ function MerchantProfileUpdate() {
 
     const getIndustryCategories = useCallback(async (id) => {
         try {
-            const response = await axiosPrivate.get(`api/industry/categories/${id}`);
+            const response = await axiosPrivate.get(`api/IndustryCategory/${id}`);
             if (response.data.message === 'Successful') {
                 const result = response.data.responseData;
                 setIndustryCategoryList(result);      
@@ -160,7 +160,7 @@ function MerchantProfileUpdate() {
 
     const getIndustry = useCallback(async () => {
         try {
-            const response = await axiosPrivate.get('api/industry');
+            const response = await axiosPrivate.get('api/Industries');
             if (response.data.message === 'Successful') {
                 const result = response.data.responseData;
                 setIndustryList(result);

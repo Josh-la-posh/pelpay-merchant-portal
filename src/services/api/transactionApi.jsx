@@ -38,8 +38,14 @@ class TransactionService {
       const url = this.buildQuery(merchantCode, env, pageNumber, pageSize, filters);
       const response = await this.axiosPrivate.get(url);
       const data = response.data;
-      dispatch(transactionSuccess(data.data || data.responseData || data));
+      console.log("Transaction Api data", data)
+      dispatch(transactionSuccess(data));
       dispatch(transactionSecondSuccess(data));
+    //   dispatch(transactionSecondSuccess({
+    //   pageNumber: data.pageNumber > 0 ? data.pageNumber : pageNumber,
+    //   pageSize: data.pageSize > 0 ? data.pageSize : pageSize,  
+    //   totalSize: data.totalSize ?? 0,
+    // }));
     } catch (err) {
       if (!err.response) {
         dispatch(transactionFailure('No response from server'));

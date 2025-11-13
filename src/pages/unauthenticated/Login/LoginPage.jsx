@@ -12,6 +12,7 @@ const LoginPage = () => {
   useEffect(() => {
     dispatch(logout());
     setAuth({});
+    window.localStorage.clear();
   }, [dispatch, setAuth]);
 
   return (

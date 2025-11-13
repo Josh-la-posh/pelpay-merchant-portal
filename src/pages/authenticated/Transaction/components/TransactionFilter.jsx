@@ -48,7 +48,7 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
         setPageNumber && setPageNumber(1);
         const merchantCode = auth?.merchant?.merchantCode;
         if (merchantCode) {
-            await transactionService.fetchtransactions(merchantCode, env, {}, 1, pageSize || 40, dispatch);
+            await transactionService.fetchtransactions(merchantCode, env, {}, 1, pageSize || 20, dispatch);
         }
         handleRefresh();
     };
@@ -241,7 +241,7 @@ const downloadTransaction = async () => {
                                 { (showAdvanced || showDrawer) ? <ChevronUp size={12} /> : <ChevronDown size={12} /> } Adv
                             </button> */}
                             <button onClick={downloadTransaction} className='flex items-center gap-1 text-[11px] px-3 py-2 rounded-sm border border-gray-300 text-priColor hover:bg-priColor/10'>
-                                <Cloud size={12} /> CSV
+                                <Cloud size={12} /> Download
                             </button>
                         </div>
                     </div>

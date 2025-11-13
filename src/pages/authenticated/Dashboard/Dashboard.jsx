@@ -48,11 +48,11 @@ function Dashboard() {
   const [errMsg, setErrMsg] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
-    const {transactionPageNumber, transactionPageSize, transactionTotalSize, } = useSelector((state) => state.transaction);
-  const [pageNumber, setPageNumber] = useState(transactionPageNumber);
-  const [pageSize, setPageSize] = useState(transactionPageSize);
+    // const {transactionPageNumber, transactionPageSize, transactionTotalSize, } = useSelector((state) => state.transaction);
+  // const [pageNumber, setPageNumber] = useState(transactionPageNumber);
+  // const [pageSize, setPageSize] = useState(transactionPageSize);
+  // const [totalSize, setTotalSize] = useState(transactionTotalSize);
   const [currentFilters, setCurrentFilters] = useState({});
-  const [totalSize, setTotalSize] = useState(transactionTotalSize);
 
   const { env } = useSelector((state) => state.env);
   const { complianceStatus } = useSelector((state) => state.compliance || {});
@@ -67,9 +67,15 @@ function Dashboard() {
   const [complianceIsApproved, setComplianceIsApproved] = useState(false)
   useEffect(() =>{
     const approved = localStorage.getItem('complianceStatus');
-    if(approved === 'approved'){
+    if(approved === 'approved' ){
       setComplianceIsApproved(true);
     }
+    const timer = setTimeout(() => {
+      setComplianceIsApproved(true);
+      localStorage.setItem('complianceApprovedSeen', 'true'); 
+    }, 60000);
+
+    return () => clearTimeout(timer);
   }, [])
 
   const storedAuth = JSON.parse(localStorage.getItem("auth"));
@@ -191,7 +197,8 @@ function Dashboard() {
       </div>
       <div className="space-y-8">
         <div className="">
-          {complianceStatus && !complianceIsApproved && (
+          {complianceStatus &&  !complianceIsApproved && (
+          // {/* {complianceStatus && ( */}
             <div className="mb-4">
               {complianceStatus === 'pending' && (
                 <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs sm:text-sm px-3 py-2 rounded-md">Your compliance registration is not completed.</div>
@@ -388,10 +395,10 @@ function Dashboard() {
             data={transactions}
             handleOpenModal={handleOpenModal}
             drpp=""
-            totalSize={totalSize}
-            currentPage={pageNumber}
-            setCurrentPage={setPageNumber}
-            rowsPerPage={pageSize}
+            // totalSize={totalSize}
+            // currentPage={pageNumber}
+            // setCurrentPage={setPageNumber}
+            // rowsPerPage={pageSize}
           />
         )}
         {roleGotten ? (

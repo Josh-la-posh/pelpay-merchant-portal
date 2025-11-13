@@ -14,13 +14,13 @@ const MerchantSidebar = () => {
             url: '/merchants/profile',
             title: 'Profile'
         },
-        {
-            id: 2,
-            icon: <UserPlus size={'15px'} />,
-            name: 'Add Merchant',
-            url: '/merchants/addNew',
-            title: 'New'
-        },
+        // {
+        //     id: 2,
+        //     icon: <UserPlus size={'15px'} />,
+        //     name: 'Add Merchant',
+        //     url: '/merchants/addNew',
+        //     title: 'New'
+        // },
         {
             id: 3,
             icon: <Boxes size={'15px'} />,

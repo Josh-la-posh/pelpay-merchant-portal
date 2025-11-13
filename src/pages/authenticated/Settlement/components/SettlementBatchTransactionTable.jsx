@@ -73,7 +73,7 @@ const SettlementBatchTransactionTable = ({
   const totalAmount = safeFiltered.reduce((sum, amount) => sum + Number(amount?.amount || 0),0);
   const totalFees = safeFiltered.reduce((sum, fee) => sum + Number(fee?.merchantCharge || 0), 0);
   const stampDuty = safeFiltered.reduce((sum, fee) => sum + Number(fee?.stampDuty || 0), 0);
-  const amountPayable = Math.round(totalAmount - (totalFees + stampDuty));
+  const amountPayable = totalAmount - (totalFees + stampDuty);
 
   const total = Number(totalSize);
   const rows = Number(rowsPerPage);
@@ -134,29 +134,8 @@ const SettlementBatchTransactionTable = ({
         setCurrentPage={setCurrentPage}
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
+        drpp="true"
       />
-
-      <div className="flex justify-between mt-4 items-center">
-        <button
-          onClick={handlePrev}
-          disabled={currentPage === 1}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Prev
-        </button>
-
-        <span>
-          Page {isNaN(currentPage) ? 1 : currentPage} of {isNaN(totalPages) ? 1 : totalPages}
-        </span>
-
-        <button
-          onClick={handleNext}
-          disabled={currentPage < 1 || currentPage === totalPages}
-          className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 };

@@ -66,37 +66,7 @@ const TransactionTable = ({ data, handleOpenModal, totalSize, currentPage, setCu
     
     const getDataToParent = (row) => {
         handleOpenModal(row);
-    }
-
-    const totalPages = useMemo(() => {
-  const total = Number(totalSize);
-  const rows = Number(rowsPerPage);
-  return total > 0 && rows > 0 ? Math.ceil(total / rows) : 1;
-}, [totalSize, rowsPerPage]);
-
-const handlePrev = () => {
-  if (currentPage > 1) {
-    setCurrentPage(currentPage - 1);
-  }
-};
-
-const handleNext = () => {
-  if (currentPage < totalPages) {
-    setCurrentPage(currentPage + 1);
-  }
-};
-
-    // const handlePrev = () => {
-    // if (currentPage > 1) {
-    //   setCurrentPage(currentPage - 1);
-    // }
-    // }
-    // const handleNext = () => {
-    // const lastPage = Math.ceil(totalSize / rowsPerPage);
-    // if (currentPage < lastPage) {
-    //     setCurrentPage(currentPage + 1);
-    // }
-// };
+    };
 
     return (
         <div className="mt-4">
@@ -108,29 +78,8 @@ const handleNext = () => {
                 setCurrentPage={setCurrentPage}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
-                drpp={drpp}
+                drpp="true"
             />
-            <div className="flex justify-between mt-4 items-center">
-                <button
-                onClick={handlePrev}
-                disabled={currentPage === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50"
-                >
-                Prev
-                </button>
-
-                <span>
-                Page {isNaN(currentPage) ? 1 : currentPage} of {isNaN(totalPages) ? 1 : totalPages}
-                </span>
-
-                <button
-                onClick={handleNext}
-                disabled={currentPage < 1 || currentPage === totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50"
-                >
-                Next
-                </button>
-            </div>
         </div>
     );
 };

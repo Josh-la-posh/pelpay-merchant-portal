@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import SettlementService from '@/services/api/settlementApi';
 import SettlementTable from './components/settlementTable';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '@/components/Spinner';
 import ErrorLayout from '@/components/ErrorLayout';
 
@@ -19,6 +19,7 @@ function AllSettlementPage() {
   const dispatch = useDispatch();
   const { settlement, settlementPageSize, settlementPageNumber, settlementTotalSize, settlementLoading, settlementError } = useSelector(state => state.settlement);
   const merchantCode = auth?.merchant.merchantCode;
+  const merchantName = auth?.merchant.merchantName;
   const settlementservice = useMemo(() => new SettlementService(axiosPrivate), [axiosPrivate]);
   const [filteredData, setFilteredData] = useState(settlement);
   const [isLoading, setIsLoading] = useState(settlementLoading);
@@ -31,6 +32,22 @@ function AllSettlementPage() {
   //   const pageSize = 20;
   const [totalSize, setTotalSize] = useState(settlementTotalSize);
   const { env } = useSelector((state) => state.env);
+
+   const [formData, setFormData] = useState({
+      merchantName: merchantName || "",
+      disputeStatus: "",
+      processorName: "",
+      sessionId: "",
+      settlementStatus: "",
+      transactionReference: "",
+      accountNumber: "",
+      startDate: "",
+      endDate: "",
+      merchantCode: merchantCode || "",
+      status: "",
+      customerEmail: ""
+    
+  });
 
   useEffect(() => {
     setAppTitle('Settlements');
@@ -66,6 +83,10 @@ function AllSettlementPage() {
     }
   }, [merchantCode, pageNumber, pageSize, env, settlementservice, dispatch]);
 
+   const downBatchSettlementTransaction = async (transactionId) => {
+    await settlementservice.downloadSettlementBatchTransaction(pageNumber, pageSize, transactionId, env, formData)
+  }
+
   useEffect(() => {
     loadData();
   }, [loadData]);
@@ -98,6 +119,7 @@ function AllSettlementPage() {
         setCurrentPage={setPageNumber}
         rowsPerPage={pageSize}
         setRowsPerPage={setPageSize}
+        onDownload={downBatchSettlementTransaction} 
       />
     </div>
   )

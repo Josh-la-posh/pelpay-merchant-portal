@@ -181,7 +181,7 @@ function MerchantProfile() {
     <div className="bg-white p-5 h-100%">
       <div className="space-y-5 sm:space-y-0 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div className="flex items-center justify-between space-x-5">
-          <p className="text-md">Merchant ({merchantProfile.merchantName})</p>
+          <p className="text-md">Merchant {merchantProfile.merchantName}</p>
           {!isExpanded && permissions.canAdd  &&(
             <button
               onClick={() => setIsExpanded(true)}
@@ -254,7 +254,7 @@ function MerchantProfile() {
           </div>
         )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm font-[700] text-gray-600">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <MerchantProfileContent
           title="Merchant Code"
           value={merchantProfile.merchantCode}
@@ -269,28 +269,40 @@ function MerchantProfile() {
         />
         <MerchantProfileContent
           title="Address"
-          value={merchantProfile.address ?? "N/A"}
+          value={merchantProfile.merchantAddress ?? "N/A"}
         />
-        <MerchantProfileContent
+        {/* <MerchantProfileContent
           title="City"
           value={merchantProfile.city ?? "N/A"}
         />
         <MerchantProfileContent
           title="State"
           value={merchantProfile.stateCode ?? "N/A"}
-        />
+        /> */}
         <MerchantProfileContent
           title="Phone Number"
-          value={user?.phoneNumber ?? "N/A"}
+          value={merchantProfile?.phoneNumber ?? "N/A"}
         />
-        <MerchantProfileContent title="email" value={user?.email ?? "N/A"} />
+         <MerchantProfileContent
+          title="Legal Business Name"
+          value={merchantProfile.legalBusinessName ?? "N/A"}
+        />
         <MerchantProfileContent
+          title="Trading Name"
+          value={merchantProfile.tradingName ?? "N/A"}
+        />
+        <MerchantProfileContent title="Contact Email" value={merchantProfile?.contactEmail ?? "N/A"} />
+        {/* <MerchantProfileContent
           title="Postal Code"
           value={merchantProfile.postalCode ?? "N/A"}
-        />
+        /> */}
         <MerchantProfileContent
           title="Country"
           value={merchantProfile.countryCode ?? "N/A"}
+        />
+         <MerchantProfileContent
+          title="Ownership Type"
+          value={merchantProfile.ownershipType ?? "N/A"}
         />
         <MerchantProfileContent
           title="Status"

@@ -166,16 +166,21 @@ class MerchantService {
       }
     }
   
-    async createMerchant(data, dispatch) {
+    async createMerchant(formData, dispatch) {
         dispatch(merchantStart());
-        console.log("Create Merchant Data", data);
+        console.log("Create Merchant Data", formData);
       try {
         const response = await this.axiosPrivate.post(
           'api/Merchant/AddMerchant',
-          JSON.stringify(data)
+          JSON.stringify(formData),
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
         );
         console.log("Create Merchant Response", response.data);
-         toast.success('Merchant added successfully');
+        toast.success('Merchant created successfully');
         return response.data;
       } catch (err) {
         if (!err.response) {

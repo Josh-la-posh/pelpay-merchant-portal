@@ -89,27 +89,43 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
         return sidebarItems.filter
     })
 
-    useEffect(()=>{
-        const handleRolePermissionChange = () => {
-            try{
-            const storedAuth = JSON.parse(localStorage.getItem("auth"));
-            const getRolePermission = storedAuth?.data?.rolePermissions || [];
-             // console.log("get the yewande auth role permission", getRolePermission)
+    const storedAuth = JSON.parse(localStorage.getItem("auth"));
+    const getRolePermission = storedAuth?.data?.rolePermissions || [];
 
-            if(Array.isArray(getRolePermission) && getRolePermission.length > 0){
-                setSideBarItems;
+    const permissionMap = getRolePermission.reduce((acc, item) => {
+    const name = item?.permission?.permissionName?.trim()?.toLowerCase();
+    if (name) {
+        acc[name] = {
+            canRead: item.canRead,
+            canAdd: item.canAdd,
+            canEdit: item.canEdit,
+            canDelete: item.canDelete
+        };
+    }
+    return acc;
+}, {});
+
+    useEffect(() => {
+        setSideBarItems(prev => {
+
+            if (!Array.isArray(getRolePermission) || getRolePermission.length === 0) {
+                return prev.filter(item => item.title === "Dashboard");
             }
-            else{
-                setSideBarItems((prev)=> prev.filter((item) => item.title === "Dashboard",))
-                // toast.info("Please reach out to the admin for assistance!")
-            }
-            }
-            catch(error){
-                console.log("Error parsing stored Role Permission from localStorage", error)
-            }
-        }
-        
-        handleRolePermissionChange();
+
+            return prev.filter(item => {
+                const title = item.title.toLowerCase();
+
+                if (title === "transaction") {
+                    return permissionMap["transaction"]?.canRead === true;
+                }
+
+                if (title === "settlements") {
+                    return permissionMap["allsettlement"]?.canRead === true;
+                }
+
+                return true;
+            });
+        });
     }, []);
   
 

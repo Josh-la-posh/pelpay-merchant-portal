@@ -105,6 +105,31 @@ class ComplianceService {
     }
   }
 
+  async updateComplianceOwnerData(id, merchantCode, formData, dispatch) {
+    dispatch(complianceStart());
+    try {
+      const response = await this.axiosPrivate.put(
+        `api/compliance/owner/${id}?merchantCode=${merchantCode}`,
+        formData, 
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );  
+      const data = response.data;
+      // dispatch(complianceSuccess(data));
+      await this.fetchComplianceData(dispatch, merchantCode);
+      toast.success("Compliance owner data updated successfully.");
+    } catch (err) {
+      if (!err.response) {
+        dispatch(complianceFailure("No response from server"));
+      } else {
+        dispatch(
+          complianceFailure("Failed to update compliance owner data. Try again.")
+        );
+      }
+    }
+  }
+
   async fetchComplianceAgreementsDocs(dispatch) {
     try {
       const response = await this.axiosPrivate.get("api/complianceju");
