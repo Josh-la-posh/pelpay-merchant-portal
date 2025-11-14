@@ -49,7 +49,7 @@ class PermissionService {
           `api/RolePermission/${roleId}/aggregator/${aggregatorCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
         );
         const data = response.data?.responseData;
-        console.log('Fetched aggregator role permission data:', data);
+        // console.log('Fetched aggregator role permission data:', data);
         dispatch(aggregatorPermissionsSuccess(data));
         return data;
       } catch (err) {

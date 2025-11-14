@@ -24,7 +24,7 @@ const ManagePermissionTable = ({
     setRowsPerPage
 }) => {
     const { id } = useParams();
-    console.log('Role ID in ManagePermissionTable:', id);
+    // console.log('Role ID in ManagePermissionTable:', id);
     // const newId = Number(id);
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
@@ -54,7 +54,7 @@ const ManagePermissionTable = ({
     }
 
     const handleEdit = (row) => {
-        console.log("row gotten", row)
+        // console.log("row gotten", row)
         setSelectedID(row.id);
         setRoleMode('edit');
         setFormData({
