@@ -5,7 +5,8 @@ import useAuth from '@/services/hooks/useAuth';
 import UserService from '@/services/api/userApi';
 import { useDispatch } from 'react-redux';
 import { Mail, Phone, User } from 'lucide-react';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import UpdateInputField from '@/components/UpdateInputField';
 
 function AddUserForm({ handleModalClose }) {
@@ -19,7 +20,7 @@ function AddUserForm({ handleModalClose }) {
         firstName: '',
         lastName: '',
         email: '',
-        phone: ''
+        phoneNumber: ''
     });
     
     const handleChange = (e) => {
@@ -33,13 +34,14 @@ function AddUserForm({ handleModalClose }) {
     const addNewUser = async () => {
         const merchantCode = auth?.merchant?.merchantCode;
         await userService.createUser(merchantCode, formData, dispatch);
+        console.log('New user added:', formData);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const { firstName, lastName, email, phone } = formData;
+        const { firstName, lastName, email, phoneNumber } = formData;
 
-        if (firstName && lastName && email && phone) {
+        if (firstName && lastName && email && phoneNumber) {
             addNewUser();
             handleModalClose && handleModalClose();
         } else {
@@ -93,8 +95,8 @@ function AddUserForm({ handleModalClose }) {
                         label="Mobile Number"
                         type='phone'
                         icon={<Phone size={18}/>}
-                        valueName={formData.phone}
-                        id="phone"
+                        valueName={formData.phoneNumber}
+                        id="phoneNumber"
                         onChange={handleChange}
                     />
                 </div>

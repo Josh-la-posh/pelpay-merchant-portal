@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import '../pages/unauthenticated/auth.css';
 import { Check, Info, X } from 'lucide-react';
 
-function AuthInputField({ label, type, validName, valueName, id, onChange, setOnFocus, nameFocus, errNote, icon }) {
+function AuthInputField({ label, type, validName, valueName, id, onChange, setOnFocus, nameFocus, errNote, icon, disabled }) {
     return (
         <div className="">
             <label className="text-xs font-medium text-gray-700 flex" htmlFor={id}>
@@ -29,6 +29,7 @@ function AuthInputField({ label, type, validName, valueName, id, onChange, setOn
                     aria-describedby='uidnote'
                     onFocus={() => setOnFocus(true)}
                     onBlur={() => setOnFocus(false)}
+                    disabled={disabled}
                 />
             </div>
             <p id='uidnote' className={nameFocus && valueName &&
@@ -51,6 +52,7 @@ AuthInputField.propTypes = {
     setOnFocus: PropTypes.func,
     nameFocus: PropTypes.bool,
     icon: PropTypes.node,
+    disabled: PropTypes.bool
 };
 
 export default AuthInputField

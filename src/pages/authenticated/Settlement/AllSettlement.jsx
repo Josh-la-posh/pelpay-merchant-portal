@@ -1,12 +1,13 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import SettlementService from '@/services/api/settlementApi';
 import SettlementTable from './components/settlementTable';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '@/components/Spinner';
 import ErrorLayout from '@/components/ErrorLayout';
 
@@ -18,13 +19,35 @@ function AllSettlementPage() {
   const dispatch = useDispatch();
   const { settlement, settlementPageSize, settlementPageNumber, settlementTotalSize, settlementLoading, settlementError } = useSelector(state => state.settlement);
   const merchantCode = auth?.merchant.merchantCode;
+  const merchantName = auth?.merchant.merchantName;
   const settlementservice = useMemo(() => new SettlementService(axiosPrivate), [axiosPrivate]);
   const [filteredData, setFilteredData] = useState(settlement);
   const [isLoading, setIsLoading] = useState(settlementLoading);
   const [errMsg, setErrMsg] = useState(settlementError);
   const [pageNumber, setPageNumber] = useState(settlementPageNumber);
   const [pageSize, setPageSize] = useState(settlementPageSize);
+  // console.log("Page Size:", pageSize);
+  // console.log("Page Number:", pageNumber);
+  // const pageNumber = 1;
+  //   const pageSize = 20;
   const [totalSize, setTotalSize] = useState(settlementTotalSize);
+  const { env } = useSelector((state) => state.env);
+
+   const [formData, setFormData] = useState({
+      merchantName: merchantName || "",
+      disputeStatus: "",
+      processorName: "",
+      sessionId: "",
+      settlementStatus: "",
+      transactionReference: "",
+      accountNumber: "",
+      startDate: "",
+      endDate: "",
+      merchantCode: merchantCode || "",
+      status: "",
+      customerEmail: ""
+    
+  });
 
   useEffect(() => {
     setAppTitle('Settlements');
@@ -42,13 +65,13 @@ function AllSettlementPage() {
     setErrMsg(settlementError);
   }, [settlementError]);
       
-  useEffect(() => {
-    setPageNumber(settlementPageNumber);
-  }, [settlementPageNumber]);
+  // useEffect(() => {
+  //   setPageNumber(settlementPageNumber);
+  // }, [settlementPageNumber]);
       
-  useEffect(() => {
-    setPageSize(settlementPageSize);
-  }, [settlementPageSize]);
+  // useEffect(() => {
+  //   setPageSize(settlementPageSize);
+  // }, [settlementPageSize]);
       
   useEffect(() => {
     setTotalSize(settlementTotalSize);
@@ -56,9 +79,13 @@ function AllSettlementPage() {
 
   const loadData = useCallback(async () => {
     if (merchantCode) {
-      await settlementservice.fetchSettlement(merchantCode, pageNumber, pageSize, dispatch);
+      await settlementservice.fetchSettlement(merchantCode, pageNumber, pageSize, env, dispatch);
     }
-  }, [merchantCode, pageNumber, pageSize, settlementservice, dispatch]);
+  }, [merchantCode, pageNumber, pageSize, env, settlementservice, dispatch]);
+
+   const downBatchSettlementTransaction = async (transactionId) => {
+    await settlementservice.downloadSettlementBatchTransaction(pageNumber, pageSize, transactionId, env, formData)
+  }
 
   useEffect(() => {
     loadData();
@@ -83,7 +110,6 @@ function AllSettlementPage() {
   return (
     <div className='space-y-4'>
       {/* <SettlementFilter /> */}
-      
       <button onClick={() => navigate(-1)} className='text-priColor mb-5 flex items-center gap-2 text-xs'><ArrowLeft size={'14px'}/> Go Back</button>
       <SettlementTable
         filteredData={filteredData}
@@ -93,6 +119,7 @@ function AllSettlementPage() {
         setCurrentPage={setPageNumber}
         rowsPerPage={pageSize}
         setRowsPerPage={setPageSize}
+        onDownload={downBatchSettlementTransaction} 
       />
     </div>
   )

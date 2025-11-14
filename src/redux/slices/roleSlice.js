@@ -50,7 +50,7 @@ const rolesSlice = createSlice({
     },
     updateRolesFailure: (state, action) => {
       state.updateRolesLoading = false;
-      state.updateRolesError = action.payload;
+      state.updateRolesError = action?.payload;
     },
   },
 });

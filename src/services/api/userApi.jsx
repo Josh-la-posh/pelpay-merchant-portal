@@ -8,14 +8,21 @@ class userService {
       this.setAuth = setAuth;
     }
   
-    async createUser(merchantCode, data, dispatch) {
+    async createUser(merchantCode, formData, dispatch) {
         dispatch(usersStart());
       try {
         await this.axiosPrivate.post(
-          `api/Users/createuser/${merchantCode}`,
-          JSON.stringify({data})
+          `api/User/create/${merchantCode}`,
+          JSON.stringify(formData),
+           {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
         );
-        
+        console.log('User created successfully', formData);
+        dispatch(usersSuccess("User created successfully"));
+        toast('User created successfully');
       } catch (err) {
         if (!err.response) {
             dispatch(usersFailure('No response from server'));
@@ -81,16 +88,17 @@ class userService {
     }
   
     async fetchUserByAggregatorCode(aggregatorCode, pageNumber, pageSize, dispatch) {
-        dispatch(aggregatorUserStart());
+      dispatch(aggregatorUserStart());
       try {
         const response = await this.axiosPrivate.get(
-          `api/Users/byaggregator/${aggregatorCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
+          `api/User/byaggregator/${aggregatorCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
         );
         const data = response.data.responseData;
         dispatch(aggregatorUserSuccess(data));
+        return data;
       } catch (err) {
         if (!err.response) {
-            dispatch(aggregatorUserFailure('No response from server'));
+            dispatch(aggregatorUserFailure('No response from servesr'));
         } else {
             dispatch(aggregatorUserFailure('Failed to load users. Try again.'));
         }
@@ -102,7 +110,7 @@ class userService {
         dispatch(newUserStart());
       try {
         const response = await this.axiosPrivate.get(
-          `api/Users/profile?merchantCode=${merchantCode}`
+          `api/User/profile?merchantCode=${merchantCode}`
         );
         const data = response.data.responseData;
         dispatch(newUserSuccess(data));
@@ -120,7 +128,7 @@ class userService {
         dispatch(newUserStart());
       try {
         const response = await this.axiosPrivate.put(
-          `api/Users/${userId}`,
+          `api/User/${userId}`,
           JSON.stringify(formData)
         );
         const data = response.data.responseData;
@@ -140,8 +148,13 @@ class userService {
         dispatch(usersStart());
       try {
         await this.axiosPrivate.put(
-          `api/Users/activate`,
-          JSON.stringify({userId, merchantCode})
+          `api/User/activate`,
+          JSON.stringify({userId, merchantCode}),
+           {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
         );
         toast('User data has been activated');
         await this.fetchUserByAggregatorCode(aggregatorCode, 1, 40, dispatch);
@@ -159,8 +172,13 @@ class userService {
         dispatch(usersStart());
       try {
         await this.axiosPrivate.put(
-          `api/Users/deactivate`,
-          JSON.stringify({userId, merchantCode})
+          `api/User/deactivate`,
+          JSON.stringify({userId, merchantCode}),
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
         );
         toast('User data has been deactivated');
         await this.fetchUserByAggregatorCode(aggregatorCode, 1, 40, dispatch);

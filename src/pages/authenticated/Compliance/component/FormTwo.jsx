@@ -29,13 +29,13 @@ const FormTwo = ({ handleNextStep, handlePrevStep }) => {
   useEffect(() => {
     if (initialData !== null) {
       setFormData({
-        rcNumber: initialData.businessInfo?.rcNumber || "",
-        tin: initialData.financialInfo?.tin || "",
+        rcNumber: initialData?.businessInfo?.rcNumber || "",
+        tin: initialData?.financialInfo?.tin || "",
         progress: initialData?.progress || 1
       });
       setOldData({
-        rcNumber: initialData.businessInfo?.rcNumber || "",
-        tin: initialData.financialInfo?.tin || "",
+        rcNumber: initialData?.businessInfo?.rcNumber || "",
+        tin: initialData?.financialInfo?.tin || "",
         progress: initialData?.progress || 1
       });
     }

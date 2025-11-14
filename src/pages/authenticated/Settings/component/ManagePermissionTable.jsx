@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import DataTable from '@/components/Table';
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import PermissionService from '@/services/api/permissionApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckCircle, Edit3, ToggleLeft, ToggleRight, X } from 'lucide-react';
@@ -23,6 +24,8 @@ const ManagePermissionTable = ({
     setRowsPerPage
 }) => {
     const { id } = useParams();
+    console.log('Role ID in ManagePermissionTable:', id);
+    // const newId = Number(id);
     const { auth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
     const permissionService = new PermissionService(axiosPrivate, auth);
@@ -51,11 +54,12 @@ const ManagePermissionTable = ({
     }
 
     const handleEdit = (row) => {
+        console.log("row gotten", row)
         setSelectedID(row.id);
         setRoleMode('edit');
         setFormData({
-            roleId: row.roleId,
-            permissionId: row.permissionId,
+            roleId: id,
+            permissionId: Number(row.permission.id),
             canAdd: row.canAdd,
             canEdit: row.canEdit,
             canDelete: row.canDelete,
@@ -82,10 +86,10 @@ const ManagePermissionTable = ({
             : deactivatePermission(roleId);
     }
 
-    const activatePermission = async (roleId) => {
+    const activatePermission = async (Id) => {
         try {
             await permissionService.activateAggregatorRolePermission(
-                roleId,
+                Id,
                 aggregatorCode
             );                
             cancelEditing();
@@ -95,10 +99,10 @@ const ManagePermissionTable = ({
         }
     }
 
-    const deactivatePermission = async (roleId) => {
+    const deactivatePermission = async (Id) => {
         try {
             await permissionService.deactivateAggregatorRolePermission(
-                roleId,
+                Id,
                 aggregatorCode
             );            
             cancelEditing();
@@ -108,10 +112,10 @@ const ManagePermissionTable = ({
         }
     }
 
-    const updatePermission = async (roleId) => {
+    const updatePermission = async (Id) => {
         try {
             await permissionService.updateAggregatorRolePermission(
-                roleId,
+                Id,
                 aggregatorCode,
                 formData,
                 dispatch
@@ -125,7 +129,8 @@ const ManagePermissionTable = ({
 
     const createPermission = async () => {
         try {
-            await permissionService.createRolePermission(
+            console.log('formData', formData);  
+            await permissionService.createRolePermission(               
                 merchantCode,
                 formData,
                 dispatch
@@ -140,7 +145,7 @@ const ManagePermissionTable = ({
     const handlePermission = () => {
         roleMode === 'create'
             ? createPermission()
-            : updatePermission(selectedID);
+            : updatePermission(Number(selectedID));
     }
  
     const columns = [
@@ -149,7 +154,7 @@ const ManagePermissionTable = ({
             accessor: 'permission',
             render: (permission) => (
                 <span>
-                    {permission.permissionName}
+                    {permission?.permissionName}
                 </span>
             )
         },
@@ -244,7 +249,7 @@ const ManagePermissionTable = ({
                                         className='text-xs'
                                         
                                     >
-                                        {list.permissionName}
+                                        {list?.permissionName}
                                     </option>
                                 ))
                             }

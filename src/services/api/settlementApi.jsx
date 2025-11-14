@@ -1,45 +1,90 @@
 import { settlementConfigurationDetailFailure, settlementConfigurationDetailStart, settlementConfigurationFailure, settlementConfigurationStart, settlementFailure, settlementStart, settlementSuccess, settlementTransactionFailure, settlementTransactionStart, settlementTransactionSuccess } from "@/redux/slices/settlementSlice";
-
+import { toast } from "react-toastify";
+import { saveAs } from "file-saver";
 class SettlementService {
     constructor(axiosPrivate) {
       this.axiosPrivate = axiosPrivate;
     }
+    buildQuery(merchantCode, pageNumber, pageSize, env) {
+      const params = new URLSearchParams();
+
+      if (pageNumber) params.set('pageNumber', pageNumber);
+      if (pageSize) params.set('pageSize', pageSize);
+      if (env) params.set('env', env);
+
+      return `api/Settlement/batch/bymerchantCode/${merchantCode}?${params.toString()}`;
+    }
 
     // settlement
   
-    async fetchSettlement(merchantCode, pageNumber, pageSize, dispatch) {
+    async fetchSettlement(merchantCode, pageNumber, pageSize, env, dispatch) {
         dispatch(settlementStart());
       try {
-        const response = await this.axiosPrivate.get(
-          `api/Settlement/batches/${merchantCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`,
-        );
-        const data = response.data;
+        
+        // const response = await this.axiosPrivate.get(
+        //   `api/Settlement/batch/bymerchantCode/${merchantCode}?pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
+        //   // `api/Settlement/batches/${merchantCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`,
+        // );
+        const url = this.buildQuery(merchantCode, pageNumber, pageSize, env);
+        const response = await this.axiosPrivate.get(url);
+        const data = response.data.responseData;
         dispatch(settlementSuccess(data));
       } catch (err) {
         if (!err.response) {
-            dispatch(settlementFailure('No response from server'));
+            dispatch(settlementFailure('No response from serverss'));
         } else {
             dispatch(settlementFailure('Failed to load settlement data. Try again.'));
         }
   }
     }
   
-    async getSettlementBatchTransaction(merchantCode, pageNumber, pageSize, id, dispatch) {
+    async getSettlementBatchTransaction(pageNumber, pageSize,  id, env, formData, dispatch) {
         dispatch(settlementTransactionStart());
-      try {
+      try {  
         const response = await this.axiosPrivate.post(
-          `api/Settlement/batch/${id}/transactions?merchantCode=${merchantCode}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
-          JSON.stringify({merchantCode})
+          `api/Settlement/batch/${id}?pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
+          JSON.stringify(formData),
+          {
+            headers: { "Content-Type": "application/json" } 
+          }
         );
-        const data = response.data;
+        const data = response.data.responseData;
         dispatch(settlementTransactionSuccess(data));
       } catch (err) {
-        if (!err.response) {
-            dispatch(settlementTransactionFailure('No response from server'));
-        } else {
-            dispatch(settlementTransactionFailure('Failed to load settlement data. Try again.'));
+          if (!err.response) {
+              dispatch(settlementTransactionFailure('No response from server'));
+          } else {
+              dispatch(settlementTransactionFailure('Failed to load settlement data. Try again.'));
+          }
         }
-  }
+    }
+
+    async downloadSettlementBatchTransaction(pageNumber, pageSize, id, env, formData){
+      try{
+        const response = await this.axiosPrivate.post(
+          `/api/Settlement/download_batch/${id}?pageNumber=${pageNumber}&pageSize=${pageSize}&env=${env}`,
+          JSON.stringify(formData),
+          {
+            headers: { "Content-Type": "application/json", "Accept": "application/pdf" },
+            responseType: "blob"
+          }
+        );
+        if (!response.data) throw new Error('No data received from the server.');
+        const fileBlob = new Blob([response.data], {
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            });
+            const fileName = `BatchSettlementTransaction_${Date.now()}.csv`;
+            saveAs(fileBlob, fileName);
+            toast('BatchSettlement downloaded successfully');
+      }
+      catch (err){
+        if (!err.response) {
+              toast('No response from server');
+            } else {
+              toast('Failed to download transactions data. Try again.');
+            }
+        console.log("Download Batch Settlement error", err)
+      }
     }
 
     // settlement configuration

@@ -1,6 +1,6 @@
 import { graphFailure, graphStart, graphSuccess, lumpsumFailure, lumpsumStart, lumpsumSuccess } from "@/redux/slices/dashboardSlice";
-import { transactionFailure, transactionStart, transactionSuccess } from "../../redux/slices/dashboardSlice";
-
+import { transactionFailure, transactionStart, transactionSuccess} from "../../redux/slices/dashboardSlice";
+import { transactionSecondSuccess } from "../../redux/slices/transactionSlice";
 class DashboardService {
     constructor(axiosPrivate, auth) {
       this.axiosPrivate = axiosPrivate;
@@ -50,6 +50,7 @@ class DashboardService {
       const params = new URLSearchParams({
         pageNumber: '1',
         pageSize: '5',
+        totalSize: '1',
         env: env,
         status: 'Successful'
       }).toString();
@@ -59,8 +60,9 @@ class DashboardService {
       );
 
       const data = response.data;
+      // console.log("Dashboard transaction", data)
       // API returns data in different shapes; normalize to data.data when available
-      dispatch(transactionSuccess(data.data || data.responseData || data));
+      dispatch(transactionSuccess( data));
       // dispatch(transactionSecondSuccess(data));
     } catch (err) {
       if (!err.response) {

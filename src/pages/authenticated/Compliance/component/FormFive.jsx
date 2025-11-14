@@ -1,9 +1,39 @@
 import ComplianceHeader from "../../../../components/ComplianceHeader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from 'prop-types';
+import { useEffect, useRef } from "react";
+import { setBusinessRepresentatives } from "../../../../redux/slices/complianceSlice"; 
 
 const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) => {
-  const { businessRepresentatives } = useSelector((state) => state.compliance);
+const { businessRepresentatives, complianceData} = useSelector((state) => state.compliance);
+const dispatch = useDispatch();
+console.log("getComplianceData", complianceData?.owners);
+
+const hasLoadedOwners = useRef(false);
+
+  useEffect(() => {
+
+    if (complianceData && complianceData.owners && !hasLoadedOwners.current) {
+      try {
+        const existingOwners = complianceData.owners;
+        console.log("existingOwners", existingOwners);
+        
+        if (Array.isArray(existingOwners) && existingOwners.length > 0) {
+       
+          const normalizedOwners = existingOwners.map(owner => ({
+            ...owner,
+            percent_of_business: owner.percentOfBusiness || owner.percent_of_business,
+            percentOfBusiness: undefined
+          }));
+          
+          dispatch(setBusinessRepresentatives(normalizedOwners));
+          hasLoadedOwners.current = true;
+        }
+      } catch (error) {
+        console.error("Error parsing existing owners data:", error);
+      }
+    }
+  }, [complianceData, dispatch]);
 
   const handleSubmit = async () => {
     try {
@@ -11,7 +41,7 @@ const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) 
       finalFormData.append("owners", JSON.stringify(businessRepresentatives));
       finalFormData.append("progress", 5)
       
-      handleNextStep(finalFormData, false);     
+      handleNextStep(finalFormData, false, { isEditMode: false });     
     } catch (error) {
       console.error("Error saving compliance reps:", error);
     }
@@ -45,10 +75,10 @@ const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) 
             </div>
           )}
 
-          {rep.percentOfBusiness ? (
+          {rep.percent_of_business ? (
             <div className="col-span-2  ">
               <p className=" text-[9px] md:text-[11px] text-gray-600">
-                {rep.percentOfBusiness}% of ownership
+                {rep.percent_of_business}% of ownership
               </p>
             </div>
           ) : (
@@ -65,7 +95,6 @@ const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) 
           </div>
         </div>
       ))}
-
       <button
         onClick={() => handleEditRepresentative(null)}
         className="text-blue-600 mt-3 text-[11px]"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
 import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck  } from 'lucide-react';
@@ -6,6 +6,7 @@ import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse
 import { Tooltip } from 'react-tooltip';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     const [sidebarItems, setSideBarItems] = useState([
@@ -83,6 +84,50 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
             return prevItems;
         });
     }, [effectiveStatus, isSidebarTextVisible]);
+
+    const filteredSideBar = useMemo(()=>{
+        return sidebarItems.filter
+    })
+
+    const storedAuth = JSON.parse(localStorage.getItem("auth"));
+    const getRolePermission = storedAuth?.data?.rolePermissions || [];
+
+    const permissionMap = getRolePermission.reduce((acc, item) => {
+    const name = item?.permission?.permissionName?.trim()?.toLowerCase();
+    if (name) {
+        acc[name] = {
+            canRead: item.canRead,
+            canAdd: item.canAdd,
+            canEdit: item.canEdit,
+            canDelete: item.canDelete
+        };
+    }
+    return acc;
+}, {});
+
+    useEffect(() => {
+        setSideBarItems(prev => {
+
+            if (!Array.isArray(getRolePermission) || getRolePermission.length === 0) {
+                return prev.filter(item => item.title === "Dashboard");
+            }
+
+            return prev.filter(item => {
+                const title = item.title.toLowerCase();
+
+                if (title === "transaction") {
+                    return permissionMap["transaction"]?.canRead === true;
+                }
+
+                if (title === "settlements") {
+                    return permissionMap["allsettlement"]?.canRead === true;
+                }
+
+                return true;
+            });
+        });
+    }, []);
+  
 
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">

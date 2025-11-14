@@ -22,7 +22,7 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
     address: editRepresentativeData?.address || "",
     occupation: editRepresentativeData?.occupation || "",
     mobile: editRepresentativeData?.mobile || "",
-    percentOfBusiness: editRepresentativeData?.percentOfBusiness || "",
+    percent_of_business: editRepresentativeData?.percent_of_business || "",
     bvn: editRepresentativeData?.bvn || "",
     verificationType: editRepresentativeData?.verificationType || "",
     verificationNumber: editRepresentativeData?.verificationNumber || "",
@@ -31,7 +31,15 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
 
   useEffect(() => {    
     if (editRepresentativeData) {
-      setFormData(editRepresentativeData);
+      const cleanDOB = editRepresentativeData.dob
+      ? new Date(editRepresentativeData.dob).toISOString().slice(0, 10)
+      : "";
+
+    setFormData({
+      ...editRepresentativeData,
+      dob: cleanDOB
+    });
+      // setFormData(editRepresentativeData);
     }
   }, [editRepresentativeData]);
 
@@ -53,6 +61,7 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
       newErrors[2] = "Date of birth should not be empty";
     } else {
       const dob = new Date(formData.dob);
+      // const dob = new Date(`${formData.dob}T00:00:00`);
       const today = new Date();
       const ageDifference = today.getFullYear() - dob.getFullYear();
       const monthDifference = today.getMonth() - dob.getMonth();
@@ -71,7 +80,7 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
     if (!formData.occupation) newErrors[4] = "Enter occupation";
     if (formData.mobile.length !== 11) newErrors[5] = "Enter mobile number";
     if (!formData.address) newErrors[6] = "Enter address";
-    if (!formData.percentOfBusiness) newErrors[7] = "Enter business percentage";
+    if (!formData.percent_of_business) newErrors[7] = "Enter business percentage";
     if (formData.bvn.length !== 11) newErrors[8] = "Enter a valid 11-digit BVN";
     if (!formData.verificationType) newErrors[9] = "Select ID";
     if (formData.verificationNumber.length < 1) newErrors[10] = "Enter a valid verification number";
@@ -88,15 +97,34 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
     }
 
     const newForm = new FormData()
-
     newForm.append("progress", 4)
+    // newForm.append("owners", JSON.stringify([formData]));
+    // handleNextStep(newForm, false);
 
-    handleNextStep(newForm, false);
+    Object.keys(formData).forEach(key => {
+      if (formData[key] !== null && formData[key] !== undefined) {
+        newForm.append(key, formData[key]);
+      }
+    });
+    
+    if (isEditing && formData.id) {
+      handleNextStep(newForm, false, {
+        isEditMode: true,
+        ownerId: formData.id
+      });
+    } else {
+      newForm.append("owners", JSON.stringify([formData]));
+      handleNextStep(newForm, false);
+    }
+
+    // newForm.forEach((value, key) => {
+    //   console.log("The new form data", key + ": " + value);
+    // });
   };
 
   const trackedFields = [
     "firstName", "lastName", "dob", "role",
-    "address", "occupation", "mobile", "percentOfBusiness",
+    "address", "occupation", "mobile", "percent_of_business",
     "bvn", "verificationType", "verificationNumber"
   ];
 
@@ -190,8 +218,8 @@ const FormFour = ({ handlePrevStep, handleNextStep, editRepresentativeData }) =>
         label="What percentage of the business does this representative own?"
         type="text"
         errMsg={err[7]}
-        value={formData.percentOfBusiness}
-        onChange={(e) => handleChange("percentOfBusiness", e.target.value)}
+        value={formData.percent_of_business}
+        onChange={(e) => handleChange("percent_of_business", e.target.value)}
       />
 
       <ComplianceInput

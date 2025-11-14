@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import useTitle from '@/services/hooks/useTitle';
 import AuthInputField from '@/components/AuthInptField';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import Button from '../../../components/ui/button';
+import MerchantService from '@/services/api/merchantApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { use } from 'react';
 
 const BUSINESS_REGEX = /^[a-zA-Z0-9\s\-']{3,50}$/;
 const NAME_REGEX = /^[a-zA-Z]{2,24}$/;
-const ACCOUNT_REGEX = /^[a-zA-Z]{10}$/;
+// const ACCOUNT_REGEX = /^[a-zA-Z]{10}$/;
+const ACCOUNT_REGEX = /^[0-9\s\-()]{3,15}$/;
 const PHONE_REGEX = /^[0-9\s\-()]{10,15}$/;
 const EMAIL_REGEX = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -17,19 +22,26 @@ function AddMerchantPage() {
     const { setSettingsTitle } = useSettingsTitle();
     const { setAppTitle } = useTitle();
     const axiosPrivate = useAxiosPrivate();
+    const merchantService = new MerchantService(axiosPrivate);
+    const {merchantLoading} = useSelector((state) => state.merchant)
+    const [isLoading, setIsLoading] = useState(merchantLoading);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setAppTitle('Merchant');
-        setSettingsTitle('New')
+        setSettingsTitle('New Merchant')
     }, [setAppTitle, setSettingsTitle]);
 
+    useEffect(() => {
+        setIsLoading(merchantLoading);
+    }, [merchantLoading]);
     const [countryList, setCountryList] = useState([]);
     const [showCountryListReload, setShowCountryListReload] = useState(false);
     const [stateList, setStateList] = useState([]);
     const [industryList, setIndustryList] = useState([]);
-        const [, setShowIndustryListReload] = useState(false);
-        const [industryCategoryList, setIndustryCategoryList] = useState([]);
-        const [, setShowIndustryCategoryListReload] = useState(false);
+    const [, setShowIndustryListReload] = useState(false);
+    const [industryCategoryList, setIndustryCategoryList] = useState([]);
+    const [, setShowIndustryCategoryListReload] = useState(false);
         // showIndustryCategories not needed here; industryId controls whether categories are shown
     const [industryId, setIndustryId] = useState(null);
     const errRef = useRef();
@@ -58,11 +70,11 @@ function AddMerchantPage() {
     const [validBvn, setValidBvn] = useState(false);
     const [bvnFocus, setBvnFocus] = useState(false);
 
-    const [validPostalCode] = useState(false);
+    const [validPostalCode, setValidPostalCode] = useState(false);
     const [postalCodeFocus, setPostalCodeFocus] = useState(false);
 
 
-    const [validAccountBalance] = useState(false);
+    const [validAccountBalance, setValidAccountBalance] = useState(false);
     const [accountBalanceFocus, setAccountAmountFocus] = useState(false);
 
     const [validAddress, setValidAddress] = useState(false);
@@ -89,7 +101,8 @@ function AddMerchantPage() {
 
     const [formData, setFormData] = useState({
         businessName: '',
-        industryCategoryId: 1,
+        industryId: 1,
+        industryCategoryId: '',
         contactEmail: '',
         supportEmail: '',
         disputeEmail: '',
@@ -109,12 +122,11 @@ function AddMerchantPage() {
 
     const getCountry = useCallback(async () => { 
         try {
-            const response = await axiosPrivate.get('api/country');
-            if (response.data.message === 'Successful') {
-                const responseData = response.data.responseData || [];
+            const response = await axiosPrivate.get('api/Countries');
+            if (response.data.message === 'success') {
+                const responseData = response?.data?.responseData || [];
                 setCountryList(responseData);
 
-                // pick first available states safely
                 const selectedStateList = (responseData[0] && responseData[0].states) ? responseData[0].states : [];
                 setStateList(selectedStateList);
                 setShowCountryListReload(false);
@@ -127,36 +139,57 @@ function AddMerchantPage() {
         }
     }, [axiosPrivate]);
 
+    useEffect(() =>  {
+        getCountry();
+    }, [getCountry])
+
     const getIndustryCategories = useCallback(async (id) => {
         try {
-            const response = await axiosPrivate.get(`api/industry/categories/${id}`);
-            if (response.data.message === 'Successful') {
-                const result = response.data.responseData;
-                setIndustryCategoryList(result);        
-                setFormData((prevState) => ({
-                    ...prevState,
-                    industryCategoryId: result[0]?.id || prevState.industryCategoryId || 1,
-                }));
-                // no-op: industryId controls visibility in this component
-                setShowIndustryCategoryListReload(false);
+            const response = await axiosPrivate.get(`api/IndustryCategory/${id}`);
+            if (response.data.message === "success") {
+            const result = response.data.responseData;
+            // console.log("industryCategoryList", result);
+
+            setIndustryCategoryList([result]);
+
+            setFormData((prev) => ({
+                ...prev,
+                industryCategoryId: result[0]?.industryId || prev.industryCategoryId || 1,
+            }));
+            setShowIndustryCategoryListReload(false);
             } else {
                 setShowIndustryCategoryListReload(true);
-                // no-op: industryId controls visibility in this component
             }
         } catch (err) {
             console.error(err);
             setShowIndustryCategoryListReload(true);
-            // no-op: industryId controls visibility in this component
         }
     }, [axiosPrivate]);
 
     const getIndustry = useCallback(async () => {
         try {
-            const response = await axiosPrivate.get('api/industry');
-            if (response.data.message === 'Successful') {
-                const result = response.data.responseData || [];
-                setIndustryList(result);
-                if (result.length) getIndustryCategories(result[0].id);
+            const response = await axiosPrivate.get("api/Industries");
+            if (response.data.message === "success") {
+            const result = response.data.responseData || [];
+
+            const getIndustry = result.map((item, index) => ({
+                id: item.categories?.[0]?.industryId ||  1, 
+                industryName: item.industryName,
+                categories: item.categories,
+            }));
+
+            // console.log("industryList", getIndustry);
+            setIndustryList(getIndustry);
+
+            if (getIndustry.length > 0) {
+                const firstIndustry = getIndustry[0];
+                // console.log("firstIndustry", firstIndustry);
+                setFormData((prev) => ({
+                ...prev,
+                industryId: firstIndustry.id,
+                }));
+                getIndustryCategories(firstIndustry.id);
+            }
                 setShowIndustryListReload(false);
             } else {
                 setShowIndustryListReload(true);
@@ -166,10 +199,6 @@ function AddMerchantPage() {
             setShowIndustryListReload(true);
         }
     }, [axiosPrivate, getIndustryCategories]);
-
-    useEffect(() =>  {
-        getCountry();
-    }, [getCountry])
 
     useEffect(() =>  {
         getIndustry();
@@ -211,11 +240,21 @@ function AddMerchantPage() {
     }, [formData.website])
 
     useEffect(() => {
-        const result = ACCOUNT_REGEX.test(formData.bvn);
+        // const result = ACCOUNT_REGEX.test(formData.bvn);
+        const result = formData.bvn.length >= 11 && formData.bvn.length <= 15 && !(/\s/.test(formData.bvn));
         setValidBvn(result);
     }, [formData.bvn])
 
     // account number validation not currently used in UI; removed to silence lint
+    useEffect(()=>{
+        const result = ACCOUNT_REGEX.test(formData.accountBalance);
+        setValidAccountBalance(result); 
+    }, [formData.accountBalance])
+
+    useEffect(()=>{
+        const result = formData.postalCode.length > 2;
+        setValidPostalCode(result);
+    }, [formData.postalCode])
 
     useEffect(() => {
         const result = formData.address.length > 4;
@@ -241,6 +280,7 @@ function AddMerchantPage() {
         setErrMsg('');
     }, [
         formData.businessName,
+        formData.industryId,
         formData.industryCategoryId,
         formData.contactEmail,
         formData.supportEmail,
@@ -268,17 +308,18 @@ function AddMerchantPage() {
             [name]: value,
         }));
     };
-  
     const handleCountryChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
             [name]: value,
         }));
-
-        const found = Array.isArray(countryList) ? countryList.find(country => country.id === e.target.value) : null;
+        const found = Array.isArray(countryList) ? countryList.find((country) => country.countryName === e.target.value) : null;
         setStateList(found?.states || []);
-    }
+        if (found) {
+            setShowCountryListReload(false);
+        }
+    };
 
     const handleStateChange = (e) => {
         const { name, value } = e.target;
@@ -289,46 +330,64 @@ function AddMerchantPage() {
     }
 
     const handleCategoryChange = (e) => {
-        setIndustryId(e.target.value);
-        getIndustryCategories(e.target.value);
+        // setIndustryId(e.target.value);
+        // getIndustryCategories(e.target.value);
+        const newIndustryId = e.target.value;
+
+        setFormData(prev => ({
+            ...prev,
+            industryId: newIndustryId
+        }));
+        getIndustryCategories(newIndustryId);
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Merchant Ye Submitted', formData);
         const v1 = BUSINESS_REGEX.test(formData.businessName);
         const v2 = EMAIL_REGEX.test(formData.contactEmail);
-        const v3 = PHONE_REGEX.test(formData.contactPhoneNumber);
-        const v4 = NAME_REGEX.test(formData.contactFirstName);
-        const v5 = NAME_REGEX.test(formData.contactLastName);
+        const v3 = PHONE_REGEX.test(formData.phoneNumber);
+        // const v4 = NAME_REGEX.test(formData.contactFirstName);
+        // const v5 = NAME_REGEX.test(formData.contactLastName);
 
 
-        if (!v1 || !v2 || !v3 || !v4 || !v5) {
+        if (!v1 || !v2 || !v3) {
+            console.log('Merchant error is here', v1, v2, v3);
             setErrMsg('Invalid Entry');
             return;
         }
         setLoading(true);
 
         try {
-            await axiosPrivate.post('',
-                JSON.stringify(formData),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    // withCredentials: true
-                })
+            await merchantService.createMerchant(formData, dispatch);
+            console.log('Merchant Ye Registered Successfully');
             setSuccess(true);
             toast.success("Registration successful! Please check your email to confirm your account.");
 
             setFormData({
-                country: 'NG',
                 businessName: '',
+                industryId: 1,
                 contactEmail: '',
-                contactPhoneNumber: '',
-                contactFirstName: '',
-                contactLastName: '',
-                industryCategoryId: 1,
+                supportEmail: '',
+                disputeEmail: '',
+                businessEmail: '',
+                phoneNumber: '',
+                website: '',
+                bvn: '',
+                accountBalance: 0,
+                address: '',
+                stateCode: '',
+                postalCode: '',
+                countryCode: '',
+                businessDescription: '',
+                returnUrl: '',
+                notificationURL: '',
+                country: 'NG',
+                // industryCategoryId: 1,
             });
 
         } catch (err) {
+            console.error('Merchant Registration Error:', err);
             if (err.response.status === 400) {
                 toast(err.response.data.message);
             } else if (!err.response) {
@@ -346,7 +405,7 @@ function AddMerchantPage() {
     return (
         <div className=''>
             <div className="bg-white p-5">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='space-y-4'>
                     <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4'>
                         <AuthInputField
                             label="Business Name"
@@ -419,15 +478,15 @@ function AddMerchantPage() {
                                 Country
                             </label>
                             <select
-                                id="country"
-                                name="country"
+                                id="countryCode"
+                                name="countryCode"
                                 value={formData.countryCode}
-                                onChange={handleCountryChange}
+                                onChange={(e) => handleCountryChange(e)}
                                 className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
                             >
                                 {countryList.map((country) => (
-                                    <option key={country.id} value={country.id}>
+                                    <option key={country.countryName} value={country.countryName}>
                                         {country.countryName}
                                     </option>
                                 ))}
@@ -616,31 +675,14 @@ function AddMerchantPage() {
                                 </>
                             )}
                         />
-                        <AuthInputField
-                            label="Business Description"
-                            type='text'
-                            validName={validBusinessDescription}
-                            valueName={formData.businessDescription}
-                            id="businessDescription"
-                            onChange={handleChange}
-                            setOnFocus={setBusinessDescriptionFocus}
-                            nameFocus={businessDescriptionFocus}
-                            errNote={(
-                                <>
-                                    Business description is required.
-                                    <br />
-                                    Business description cannot contain spaces.
-                                </>
-                            )}
-                        />
                         <div className="w-full">
                             <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industry">
                                 Industry
                             </label>
-                            <select
+                            {/* <select
                                 id="industry"
-                                name="industry"
-                                value={formData.industry}
+                                name="industryId"
+                                value={formData.industryId}
                                 onChange={(e) => handleCategoryChange(e)}
                                 className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
                                 required
@@ -650,9 +692,27 @@ function AddMerchantPage() {
                                         {industry.industryName}
                                     </option>
                                 ))}
+                            </select> */}
+                            <select
+                                id="industry"
+                                name="industryId"
+                                value={formData.industryId}
+                                onChange={(e) => {
+                                    const newId = e.target.value;
+                                    setFormData((prev) => ({ ...prev, industryId: newId }));
+                                    getIndustryCategories(newId);
+                                }}
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
+                                required
+                                >
+                                {industryList.map((industry) => (
+                                    <option key={industry.id} value={industry.id}>
+                                    {industry.industryName}
+                                    </option>
+                                ))}
                             </select>
                         </div>
-                        {
+                        {/* {
                             industryId !== null &&
                             <div className="w-full">
                                 <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
@@ -673,10 +733,57 @@ function AddMerchantPage() {
                                     ))}
                                 </select>
                             </div>
-                        }
+                        } */}
+                        {/* {formData.industryId && (
+                            <div className="w-full">
+                                <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
+                                    Industry Category
+                                </label>
+                                <select
+                                    id="industryCategoryId"
+                                    name="industryCategoryId"
+                                    value={formData.industryCategoryId}
+                                    onChange={handleChange}
+                                    className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
+                                    required
+                                >
+                                    {industryCategoryList.map((industry) => (
+                                        <option key={industry.id} value={industry.id}>
+                                            {industry.categoryName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )} */}
+                        {formData.industryId && industryCategoryList.length > 0 && (
+  <div className="w-full">
+    <label className="text-black text-xs mb-1 lg:mb-2 flex items-center" htmlFor="industryCategoryId">
+      Industry Category
+    </label>
+    <select
+      id="industryCategoryId"
+      name="industryCategoryId"
+      value={formData.industryCategoryId}
+      onChange={handleChange}
+      className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none bg-transparent"
+      required
+    >
+      {industryCategoryList.map((cat) => (
+        <option key={cat.industryId} value={cat.industryId}>
+          {cat.categoryName}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
+
                     </div>
+                    {/* <button onClick={handleSubmit}>
+                        {isLoading ? <span className="spinner-border spinner-border-sm mr-2">Registering</span> : 'Register'}
+                    </button> */}
                     <Button
                         type='submit'
+                        // onClick={handleSubmit}
                     >
                         {loading ? 'Registering...' : 'Register'}
                     </Button>

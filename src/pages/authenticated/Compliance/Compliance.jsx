@@ -34,18 +34,34 @@ const Compliance = () => {
     setAppTitle("Compliance");
   }, [ setAppTitle]);
 
-  const handleNextStep = async (val, next) => {
+  const handleNextStep = async (val, next, options = {}) => {
     const progress = complianceData?.progress;
+    const { isEditMode = false, ownerId = null } = options;
 
     if (next) {
       dispatch(complianceStep(step + 1));
     } else {
-      if (progress > 0) {
+      if (isEditMode && ownerId) {
+        try{
+          await complianceService.updateComplianceOwnerData(
+            ownerId,
+            user?.merchantCode,
+            val,
+            dispatch
+          );
+          dispatch(complianceStep(4));
+        }catch (error) {
+          console.error("Error updating owner:", error);
+        }
+        
+      }
+      else if (complianceData?.status === 'rejected' || progress > 0) {
         await complianceService.updateComplianceData(
           user?.merchantCode,
           val,
           dispatch
         );
+         await complianceService.fetchComplianceData(dispatch, user?.merchantCode);
       } else {
         await complianceService.complianceUpload(
           user?.merchantCode,

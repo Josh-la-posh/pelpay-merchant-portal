@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import DataTable from '@/components/Table';
 import { dateFormatter, timeFormatter } from '@/utils/dateFormatter';
 import { EyeIcon } from 'lucide-react';
+import { useMemo } from 'react';
 
 const TransactionTable = ({ data, handleOpenModal, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage, drpp }) => {
     // selectedIndex removed — not used
@@ -65,7 +66,7 @@ const TransactionTable = ({ data, handleOpenModal, totalSize, currentPage, setCu
     
     const getDataToParent = (row) => {
         handleOpenModal(row);
-    }
+    };
 
     return (
         <div className="mt-4">
@@ -77,7 +78,7 @@ const TransactionTable = ({ data, handleOpenModal, totalSize, currentPage, setCu
                 setCurrentPage={setCurrentPage}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
-                drpp={drpp}
+                drpp="true"
             />
         </div>
     );

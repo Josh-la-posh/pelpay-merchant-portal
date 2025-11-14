@@ -3,7 +3,8 @@ import { toast } from 'react-toastify';
 import AuthInputField from '@/components/AuthInptField';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
 import MerchantService from '@/services/api/merchantApi';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
 import useAuth from '@/services/hooks/useAuth';
 import { useDispatch, useSelector } from 'react-redux';
 import useTitle from '@/services/hooks/useTitle';
@@ -15,7 +16,7 @@ function ContactPage() {
     // errRef not used
     const { auth } = useAuth();
     const dispatch = useDispatch();
-    const { merchantContact } = useSelector((state) => state.merchant);
+    const {  merchantProfile} = useSelector((state) => state.merchant);
     const { setSettingsTitle } = useSettingsTitle();
     const { setAppTitle } = useTitle();
     const axiosPrivate = useAxiosPrivate();
@@ -37,20 +38,20 @@ function ContactPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
-        disputeEmail: merchantContact.disputeEmail ?? '',
-        supportEmail: merchantContact.supportEmail ?? '',
-        businessEmail: merchantContact.businessEmail ?? '',
-        contactEmail: merchantContact.contactEmail ?? '',
+        disputeEmail: merchantProfile.disputeEmail ?? '',
+        supportEmail: merchantProfile.supportEmail ?? '',
+        // businessEmail: merchantProfile.businessEmail ?? '',
+        contactEmail: merchantProfile.contactEmail ?? '',
     });
 
     useEffect(() => {
         setFormData({
-            disputeEmail: merchantContact.disputeEmail ?? '',
-            supportEmail: merchantContact.supportEmail ?? '',
-            businessEmail: merchantContact.businessEmail ?? '',
-            contactEmail: merchantContact.contactEmail ?? '',
+            disputeEmail: merchantProfile.disputeEmail ?? '',
+            supportEmail: merchantProfile.supportEmail ?? '',
+            // businessEmail: merchantProfile.businessEmail ?? '',
+            contactEmail: merchantProfile.contactEmail ?? '',
         });
-    }, [merchantContact]);
+    }, [merchantProfile]);
     
 
     useEffect(() => {
@@ -60,7 +61,7 @@ function ContactPage() {
 
   useEffect(() => {
     const loadData = async () => {
-        await merchantService.fetchMerchantContact(merchantCode, dispatch);
+        await merchantService.fetchMerchantProfile(merchantCode, dispatch);
     };
     loadData();
   }, [merchantCode, dispatch]);
@@ -75,10 +76,10 @@ function ContactPage() {
         setValidSupportEmail(result);
     }, [formData.supportEmail])
 
-    useEffect(() => {
-        const result = EMAIL_REGEX.test(formData.businessEmail);
-        setValidBusinessEmail(result);
-    }, [formData.businessEmail])
+    // useEffect(() => {
+    //     const result = EMAIL_REGEX.test(formData.businessEmail);
+    //     setValidBusinessEmail(result);
+    // }, [formData.businessEmail])
 
     useEffect(() => {
         const result = EMAIL_REGEX.test(formData.contactEmail);
@@ -115,7 +116,7 @@ function ContactPage() {
 
     return (
         <div className="mb-8  bg-white px-5 py-5">
-            <p className="text-xs font-normal my-8 text-center px-5">As soon as a dispute (chargeback or fraud claim) is raised for a transaction or more support is required from your team, Glass will notify you via email in the email addresses that you specify below.</p>
+            <p className="text-xs font-normal my-8 text-center px-5">As soon as a dispute (chargeback or fraud claim) is raised for a transaction or more support is required from your team, Glass will notify you via email in the email addresses that you specified below.</p>
             <form onSubmit={handleSubmit} className="space-y-4 mt-5">
                 <AuthInputField
                     label="Dispute emails"
@@ -132,6 +133,7 @@ function ContactPage() {
                             Enter a valid email address
                         </>
                     )}
+                    disabled={true}
                 />
                 <AuthInputField
                     label="Support email"
@@ -148,8 +150,9 @@ function ContactPage() {
                             Enter a valid email address
                         </>
                     )}
+                     disabled={true}
                 />
-                <AuthInputField
+                {/* <AuthInputField
                     label="Business email"
                     type='email'
                     icon={<Contact size='15px' />}
@@ -164,7 +167,7 @@ function ContactPage() {
                             Enter a valid email address
                         </>
                     )}
-                />
+                /> */}
                 <AuthInputField
                     label="Contact email"
                     type='email'
@@ -180,15 +183,16 @@ function ContactPage() {
                             Enter a valid email address
                         </>
                     )}
+                    disabled={true}
                 />
-                <div className="w-full flex justify-end">
+                {/* <div className="w-full flex justify-end">
                     <button 
                         type="submit"
                         className="py-3 px-6 bg-priColor text-xs text-white rounded-md"
                     >
                         {isLoading ? 'Updating ...' : 'Save Changes'}
                     </button>
-                </div>
+                </div> */}
             </form>
         </div>
     );

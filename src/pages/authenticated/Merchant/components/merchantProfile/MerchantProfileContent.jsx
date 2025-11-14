@@ -5,8 +5,8 @@ const MerchantProfileContent = ({ title, value }) => {
     const displayValue = typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value;
     return (
         <div className="flex">
-            <p className='flex-1'>{title}:</p>
-            <span className='font-[400] ml-0 sm:ml-4 flex-1'>{displayValue}</span>
+            <p className='flex-1  text-sm font-medium'>{title}:</p>
+            <span className='ml-0 sm:ml-4 flex-1 text-sm font-semibold  text-gray-600 break-words'>{displayValue}</span>
         </div>
     );
 }

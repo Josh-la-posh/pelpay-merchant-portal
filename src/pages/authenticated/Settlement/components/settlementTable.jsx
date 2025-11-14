@@ -4,13 +4,18 @@ import { dateFormatter, timeFormatter } from '@/utils/dateFormatter';
 import { Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Cloud } from 'lucide-react';
 
-const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage}) => {
+const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, rowsPerPage, setRowsPerPage, onDownload,}) => {
     
     const columns = [
         {
             header: 'Batch Code',
             accessor: 'id',
+        },
+        {
+            header: "Total Amount",
+            accessor: 'totalAmount',
         },
         {
             header: 'Settlement Date',
@@ -53,12 +58,24 @@ const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, 
             )
         },
         {
-            header: '',
+            header: 'View',
             accessor: 'id',
             render: (id) => (
                 <Link to={`/settlement/batch/transaction/${id}`}>
                     <Edit size={14} color='green'/>
                 </Link>
+            )
+        },
+        {
+            header: 'Download',
+            accessor: 'id',
+            render: (id) => (
+                 <button
+              onClick={() => onDownload(id)}
+              className="text-priColor flex items-center gap-2 text-xs px-2 py-1 rounded-[4px]"
+          >
+              <Cloud size={'18px'} />
+          </button>
             )
         },
     ];
@@ -72,6 +89,7 @@ const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, 
                 setCurrentPage={setCurrentPage}
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
+                drpp="true"
             />
         </div>
     );

@@ -10,7 +10,7 @@ const initialState = {
   aggregatorUserLoading: false,
   aggregatorUserError: null,
   aggregatorUser: [],
-  aggregatorUserPageSize: 10,
+  aggregatorUserPageSize: 20,
   aggregatorUserPageNumber: 1,
   aggregatorUserTotalSize: 0,
 };

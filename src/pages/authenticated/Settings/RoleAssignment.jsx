@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import RoleService from '@/services/api/rolesApi';
 import { useDispatch, useSelector } from 'react-redux';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
@@ -38,17 +39,9 @@ function RoleAssignment() {
     }, [userRolesError]);
 
     // useEffect(() => {
-    //     setPermissionLists(permissions);
-    // }, [permissions]);            
+    //     setPermissionLists(permissionLists);
+    // }, [permissionLists]);            
                 
-    // useEffect(() => {
-    //     setIsPermissionsLoading(permissionsLoading);
-    // }, [permissionsLoading]);
-
-    // useEffect(() => {
-    //     loadPermissions();
-    // }, []);
-
     useEffect(() => {
         loadUserRoles();
     }, []);
@@ -63,15 +56,15 @@ function RoleAssignment() {
     
     // const loadPermissions = async () => {
     //     if (id) {
-    //         await permisssionService.fetchRolePermission(id, aggregatorCode, dispatch);
+    //         await permissionService.fetchRolePermission(roleId, aggregatorCode, dispatch);
     //     }
     // };
     
     const loadUserRoles = async () => {
         if (id) {
-            await roleService.fetchRolesByUserId(id, merchantCode, aggregatorCode, dispatch);
+            await roleService.fetchRolesByUserId(id,  aggregatorCode, dispatch);
         }
-    };
+    }; 
 
     return (
         <RoleAssignmentTable

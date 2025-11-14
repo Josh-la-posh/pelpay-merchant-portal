@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import useAuth from '@/services/hooks/useAuth';
-import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+// import useAxiosPrivate from '@/services/hooks/useAxiosPrivate';
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import RoleService from '@/services/api/rolesApi';
 import { useDispatch, useSelector } from 'react-redux';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
@@ -47,7 +48,7 @@ function RolesAndPermission() {
     
     const loadData = async () => {
         if (merchantCode) {
-        await roleService.fetchRoles(aggregatorCode, merchantCode, dispatch);
+        await roleService.fetchRoles(aggregatorCode,  dispatch);
         }
     };
 

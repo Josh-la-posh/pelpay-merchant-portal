@@ -9,28 +9,31 @@ class RoleService {
 
     // roles
   
-    async fetchRolesByAggregatorCode(aggregatorCode) {
+    async fetchRolesByAggregatorCode(aggregatorCode, dispatch) {
+      dispatch(rolesStart());
       try {
         const response = await this.axiosPrivate.get(
           `api/Roles/user/${aggregatorCode}`
         );
-        
-        return response.data;
+        const data = response.data;
+        dispatch(rolesSuccess(data));
+        localStorage.setItem('roles', JSON.stringify(data));
+        return data;
       } catch (err) {
         if (!err.response) {
-            // dispatch(invoiceFailure('No response from server'));
+            dispatch(rolesFailure('No response from server'));
         } else {
-            // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
+            dispatch(rolesFailure('Failed to load user role. Try again.'));
         }
         console.error('fetchRolesByAggregatorCode error:', err);
       }
     }
   
-    async fetchRolesByUserId(userId, merchantCode, aggregatorCode, dispatch) {
+    async fetchRolesByUserId(userId, aggregatorCode, dispatch) {
       dispatch(userRolesStart());
       try {
         const response = await this.axiosPrivate.get(
-          `api/Roles/user/${userId}/${merchantCode}?aggregatorCode=${aggregatorCode}`
+          `api/Roles/user/aggregator/${userId}?aggregatorCode=${aggregatorCode}`
         );
         const data = response.data.responseData;
         dispatch(userRolesSuccess(data));
@@ -46,14 +49,15 @@ class RoleService {
       }
     }
   
-    async fetchRoles(aggregatorCode, merchantCode, dispatch) {
+    async fetchRoles(aggregatorCode, dispatch) {
       dispatch(rolesStart());
       try {
         const response = await this.axiosPrivate.get(
-          `api/Roles/${merchantCode}?aggregatorCode=${aggregatorCode}`
+          `api/Roles?aggregatorCode=${aggregatorCode}`
         );
         
         const data = response.data.responseData;
+        // console.log('Fetched roles data:', data);
         dispatch(rolesSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -65,14 +69,21 @@ class RoleService {
       }
     }
   
-    async createRole(aggregatorCode, formData, merchantCode, dispatch) {
+    async createRole(aggregatorCode, formData,  dispatch) {
+      console.log("createRole payload:",  JSON.stringify(formData));
       try {
         await this.axiosPrivate.post(
           `api/Roles/${aggregatorCode}`,
-          JSON.stringify(formData)
+          JSON.stringify(formData),
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
+         }
         );
         toast('Role created successfully');
-        await this.fetchRoles(aggregatorCode, merchantCode, dispatch);
+        await this.fetchRoles(aggregatorCode, dispatch);
+        console.log('createRole success', aggregatorCode);
       } catch (err) {
         if (!err.response) {
           dispatch(updateRolesFailure('No response from server'));
@@ -83,16 +94,16 @@ class RoleService {
       }
     }
   
-    async updateRolesById(id, merchantCode, aggregatorCode, formData, dispatch) {
+    async updateRolesById(Id,  aggregatorCode, formData, dispatch) {
       dispatch(updateRolesStart());
       try {
         await this.axiosPrivate.put(
-          `api/Roles/${id}/${merchantCode}?aggregatorCode=${aggregatorCode}`,
-          JSON.stringify(formData)
+          `api/Roles/${Id}/${aggregatorCode}`,
+          formData
         );
         toast('Role updated successfully');
         dispatch(updateRolesSuccess());
-        await this.fetchRoles(aggregatorCode, merchantCode, dispatch);
+        await this.fetchRoles(aggregatorCode,  dispatch);
       } catch (err) {
         if (!err.response) {
           dispatch(updateRolesFailure('No response from server'));
@@ -103,13 +114,13 @@ class RoleService {
       }
     }
   
-    async activateRole(id, aggregatorCode, merchantCode, dispatch) {
+    async activateRole(Id, aggregatorCode,  dispatch) {
       try {
         await this.axiosPrivate.put(
-          `api/Roles/${id}/activate/${aggregatorCode}`
+          `api/Roles/${Id}/activate/${aggregatorCode}`
         );
         toast('Role activated successfully');
-        await this.fetchRoles(aggregatorCode, merchantCode, dispatch);
+        await this.fetchRoles(aggregatorCode,  dispatch);
       } catch (err) {
         if (!err.response) {
             toast('No response from server');
@@ -120,13 +131,13 @@ class RoleService {
       }
     }
   
-    async deactivateRole(id, aggregatorCode, merchantCode, dispatch) {
+    async deactivateRole(Id, aggregatorCode, dispatch) {
       try {
         await this.axiosPrivate.put(
-          `api/Roles/${id}/deactivate/${aggregatorCode}`
+          `api/Roles/${Id}/deactivate/${aggregatorCode}`
         );
         toast('Role deactivated successfully');
-        await this.fetchRoles(aggregatorCode, merchantCode, dispatch);
+        await this.fetchRoles(aggregatorCode, dispatch);
       } catch (err) {
         if (!err.response) {
             toast('No response from server');
@@ -160,9 +171,8 @@ class RoleService {
     async fetchAllUserRoles(merchantCode, pageSize, pageNumber) {
         try {
           const response = await this.axiosPrivate.get(
-            `api/UserRoles/all/${merchantCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
+            `api/UserRole/all/${merchantCode}?pageSize=${pageSize}&pageNumber=${pageNumber}`
           );
-          
           return response.data;
         } catch (err) {
           if (!err.response) {
@@ -175,11 +185,15 @@ class RoleService {
       }
   
     async addUserRole(merchantCode, formData) {
-
         try {
           await this.axiosPrivate.post(
-            `api/UserRoles/addrole/${merchantCode}`,
-            JSON.stringify(formData)
+            `api/UserRole/addrole/${merchantCode}`,
+            JSON.stringify(formData),
+            {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
           );
           toast.success('User role assigned successfully');
         } catch (err) {
@@ -190,12 +204,12 @@ class RoleService {
           }
           console.error('addUserRole error:', err);
         }
-      }
+    }
   
-      async removeUserRole(userRoleId, merchantCode) {
+      async removeUserRole(userId, merchantCode) {
         try {
           await this.axiosPrivate.post(
-            `api/UserRoles/removerole/${userRoleId}/merchant/${merchantCode}`,
+            `api/UserRole/removerole/${userId}/merchant/${merchantCode}`,
           );
           toast('User role removed successfully');
         } catch (err) {
@@ -208,23 +222,26 @@ class RoleService {
         }
       }
   
-      async fetchUserRolesBytMerchantCode(merchantCode) {
+      async fetchUserRoleByMerchantCode(merchantCode, dispatch) {
+         dispatch(rolesStart());
           try {
             const response = await this.axiosPrivate.get(
-              `api/UserRoles/${merchantCode}`
-            );
-            
-            return response.data;
-          } catch (err) {
+              `api/UserRole/${merchantCode}`
+            ); 
+            const data = response.data?.responseData;
+            dispatch(rolesSuccess(data));
+            // localStorage.setItem('roles', JSON.stringify(data));
+            return data;
+          } catch (err) { 
             if (!err.response) {
-                // dispatch(invoiceFailure('No response from server'));
+              dispatch(rolesFailure('No response from server'));
             } else {
-                // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
+              dispatch(rolesFailure('Failed to load user role. Try again.'));
             }
-            console.error('fetchUserRolesBytMerchantCode error:', err);
+            console.error('fetchUserRoleByMerchantCode error:', err);
           }
         }
 
   }
   
-  export default RoleService;
+  export default RoleService; 

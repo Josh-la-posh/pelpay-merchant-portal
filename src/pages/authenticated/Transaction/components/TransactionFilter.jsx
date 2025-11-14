@@ -48,7 +48,7 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
         setPageNumber && setPageNumber(1);
         const merchantCode = auth?.merchant?.merchantCode;
         if (merchantCode) {
-            await transactionService.fetchtransactions(merchantCode, env, {}, 1, pageSize || 40, dispatch);
+            await transactionService.fetchtransactions(merchantCode, env, {}, 1, pageSize || 20, dispatch);
         }
         handleRefresh();
     };
@@ -111,21 +111,28 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
 
     // date and payment-reference flows now use doDeepSearch directly via handleFilter
 
-    const downloadTransaction = async () => {
-        const merchantCode = auth?.merchant?.merchantCode;
-        await transactionService.downloadTransactionReceipt(
-            merchantCode,
-            pageNumber || 1,
-            pageSize || 40,
-            env,
-            filters.startDate,
-            filters.endDate,
-            filterStatus,
-            filters.sessionId,
-            filters.accountNumber,
-            filters.paymentReference,
-        );
-    };
+    // const downloadTransaction = async () => {
+    //     const merchantCode = auth?.merchant?.merchantCode;
+    //     await transactionService.downloadTransactionReceipt(
+    //         merchantCode,
+    //         pageNumber || 1,
+    //         pageSize || 40,
+    //         env,
+    //         filters.startDate,
+    //         filters.endDate,
+    //         filterStatus,
+    //         filters.sessionId,
+    //         filters.accountNumber,
+    //         filters.paymentReference,
+    //     );
+    // };
+const downloadTransaction = async () => {
+  const merchantCode = auth?.merchant?.merchantCode;
+  await transactionService.downloadTransactionReceipt(
+    merchantCode,
+    env,
+  );
+};
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -225,16 +232,16 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
                             <button onClick={handleRefreshAllTransctions} type='button' className='flex items-center gap-1 text-[11px] px-3 py-2 rounded-sm border border-gray-300 text-gray-600 hover:bg-gray-100'>
                                 <RotateCcw size={12} /> Reset
                             </button>
-                            <button
+                            {/* <button
                                 type='button'
                                 onClick={() => {
                                     if (window.innerWidth < 768) setShowDrawer(true); else setShowAdvanced(p => !p);
                                 }}
                                 className='flex items-center gap-1 text-[11px] px-3 py-2 rounded-sm border border-gray-300 text-gray-600 hover:bg-gray-100'>
                                 { (showAdvanced || showDrawer) ? <ChevronUp size={12} /> : <ChevronDown size={12} /> } Adv
-                            </button>
+                            </button> */}
                             <button onClick={downloadTransaction} className='flex items-center gap-1 text-[11px] px-3 py-2 rounded-sm border border-gray-300 text-priColor hover:bg-priColor/10'>
-                                <Cloud size={12} /> CSV
+                                <Cloud size={12} /> Download
                             </button>
                         </div>
                     </div>
@@ -242,11 +249,11 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
             </div>
 
             {/* Desktop Inline Advanced (md and up) */}
-            {showAdvanced && (
+            {/* {showAdvanced && (
                 <div className='hidden md:block border border-gray-200 rounded-md p-3 bg-white shadow-sm animate-in fade-in slide-in-from-top-2 duration-150'>
                     <AdvancedFields />
                 </div>
-            )}
+            )} */}
 
             {/* Mobile Drawer */}
             {showDrawer && (

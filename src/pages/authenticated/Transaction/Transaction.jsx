@@ -10,6 +10,7 @@ import TransactionFilter from './components/TransactionFilter';
 import TransactionForm from './components/TransactionForm';
 import Spinner from '@/components/Spinner';
 import ErrorLayout from '@/components/ErrorLayout';
+import { setTransactionPageNumber, setTransactionPageSize } from '../../../redux/slices/transactionSlice';
 
 function TransactionPage() {
   const { auth } = useAuth();
@@ -25,8 +26,8 @@ function TransactionPage() {
   const transactionService = useMemo(() => new TransactionService(axiosPrivate, auth), [axiosPrivate, auth]);
   const [pageNumber, setPageNumber] = useState(transactionPageNumber);
   const [pageSize, setPageSize] = useState(transactionPageSize);
-  const [currentFilters, setCurrentFilters] = useState({});
   const [totalSize, setTotalSize] = useState(transactionTotalSize);
+  const [currentFilters, setCurrentFilters] = useState({});
   // const env = 'Test';
   const env = useSelector((state) => state.env.env);
 
@@ -54,9 +55,9 @@ function TransactionPage() {
 
   const loadData = useCallback(async () => {
     if (merchantCode) {
-      await transactionService.fetchtransactions(merchantCode, env, currentFilters, pageNumber, pageSize, dispatch);
+      await transactionService.fetchtransactions(merchantCode, env, currentFilters, transactionPageNumber, transactionPageSize, dispatch);
     }
-  }, [merchantCode, env, currentFilters, pageNumber, pageSize, transactionService, dispatch]);
+  }, [merchantCode, env, currentFilters, transactionPageNumber, transactionPageSize,  transactionService, dispatch]);
 
   useEffect(() => {
       loadData();
@@ -84,10 +85,11 @@ function TransactionPage() {
     <div>
       <TransactionFilter
         handleRefresh={handleRefresh}
-        pageNumber={pageNumber}
-        pageSize={pageSize}
+        pageNumber={transactionPageNumber}
+        pageSize={transactionPageSize}
         setCurrentFilters={setCurrentFilters}
-        setPageNumber={setPageNumber}
+        // setPageNumber={setPageNumber}
+        setPageNumber={(page) => dispatch(setTransactionPageNumber(page))}
         currentFilters={currentFilters}
       />
 
@@ -106,11 +108,13 @@ function TransactionPage() {
         : <TransactionTable
             data={transactions}
             handleOpenModal={handleOpenModal}
-            totalSize={totalSize}
-            currentPage={pageNumber}
-            setCurrentPage={setPageNumber}
-            rowsPerPage={pageSize}
-            setRowsPerPage={setPageSize}
+            totalSize={transactionTotalSize}
+            currentPage={transactionPageNumber}
+            // setCurrentPage={setPageNumber}
+             setCurrentPage={(page) => dispatch(setTransactionPageNumber(page))}
+            rowsPerPage={transactionPageSize}
+            // setRowsPerPage={setPageSize}
+            setRowsPerPage={(size) => dispatch(setTransactionPageSize(size))}
           />
       }
     </div>
