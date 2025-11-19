@@ -38,7 +38,7 @@ class TransactionService {
       const url = this.buildQuery(merchantCode, env, pageNumber, pageSize, filters);
       const response = await this.axiosPrivate.get(url);
       const data = response.data;
-      console.log("Transaction Api data", data)
+      // console.log("Transaction Api data", data)
       dispatch(transactionSuccess(data));
       dispatch(transactionSecondSuccess(data));
     //   dispatch(transactionSecondSuccess({

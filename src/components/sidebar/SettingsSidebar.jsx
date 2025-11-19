@@ -60,8 +60,8 @@ const SettingsSidebar = () => {
 
     useEffect(() => {
     try {
-        const stored = JSON.parse(localStorage.getItem('roles'));
-        const userRoles = stored?.responseData || [];
+        const stored = JSON.parse(localStorage.getItem('auth'));
+        const userRoles = stored?.data?.roles || [];
         const roleName = userRoles.some(
         (role) => role.roleName === 'SuperAdmin'
         );

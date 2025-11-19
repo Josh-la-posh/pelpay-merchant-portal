@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 
 function ManagePermission() {
     const { id } = useParams();
-    console.log("manage permission role id:", id);
+    // console.log("manage permission role id:", id);
     const { setSettingsTitle } = useSettingsTitle();
     const axiosPrivate = useAxiosPrivate();
     const { auth } = useAuth();
