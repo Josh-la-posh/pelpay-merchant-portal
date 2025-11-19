@@ -18,6 +18,14 @@ const SettlementTable = ({filteredData, totalSize, currentPage, setCurrentPage, 
             accessor: 'totalAmount',
         },
         {
+            header: "Total Fee",
+            accessor: 'totalFee',
+        },
+        {
+            header: "Amount Payable",
+            accessor: 'amountPayable',
+        },
+        {
             header: 'Settlement Date',
             accessor: 'createdDate',
             render: (value) => (

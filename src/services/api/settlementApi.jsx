@@ -31,7 +31,7 @@ class SettlementService {
         dispatch(settlementSuccess(data));
       } catch (err) {
         if (!err.response) {
-            dispatch(settlementFailure('No response from serverss'));
+            dispatch(settlementFailure('No response from servers'));
         } else {
             dispatch(settlementFailure('Failed to load settlement data. Try again.'));
         }

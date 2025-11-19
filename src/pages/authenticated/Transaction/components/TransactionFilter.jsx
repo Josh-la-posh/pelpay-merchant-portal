@@ -48,9 +48,14 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
         setPageNumber && setPageNumber(1);
         const merchantCode = auth?.merchant?.merchantCode;
         if (merchantCode) {
-            await transactionService.fetchtransactions(merchantCode, env, {}, 1, pageSize || 20, dispatch);
+            await transactionService.fetchtransactions(merchantCode, env, {}, 1,  20, dispatch);
         }
-        handleRefresh();
+
+         if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
+            debounceRef.current = null;
+        }
+        // handleRefresh();
     };
 
     useEffect(() => {
@@ -75,7 +80,7 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
         setFilters(base);
         setCurrentFilters && setCurrentFilters(base);
         setPageNumber && setPageNumber(1);
-        await transactionService.fetchtransactions(merchantCode, env, base, 1, pageSize || 40, dispatch);
+        await transactionService.fetchtransactions(merchantCode, env, base, 1, 20, dispatch);
         setIsSubmitting(false);
     };
 
@@ -90,7 +95,7 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
         setFilters(next);
         setCurrentFilters && setCurrentFilters(next);
         setPageNumber && setPageNumber(1);
-        await transactionService.fetchtransactions(merchantCode, env, next, 1, pageSize || 40, dispatch);
+        await transactionService.fetchtransactions(merchantCode, env, next, 1, 20, dispatch);
     };
 
     const handleSearchFilterType = (e) => {
