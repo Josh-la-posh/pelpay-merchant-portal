@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
-import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck  } from 'lucide-react';
+import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck, Activity, History  } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
 import { useSelector } from 'react-redux';
@@ -52,6 +52,13 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
             url: '/settings/profile',
             openSidebar: false
         },
+        {
+            id: 7,
+            icon: <History size={isSidebarTextVisible ? '18' : '22'} />,
+            name: 'Activities',
+            url: '/activity',
+            title: 'Activities'
+        }
         // {
         //     id: 7,
         //     icon: <Headset size={isSidebarTextVisible ? '18' : '22'} />,

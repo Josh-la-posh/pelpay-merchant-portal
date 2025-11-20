@@ -28,6 +28,7 @@ const HelpCenter = lazy(() => import('../pages/authenticated/HelpCenter/HelpCent
 const SettlementConfiguration = lazy(() => import('../pages/authenticated/Settlement/Configuration'));
 const SettlementBankAccount = lazy(() => import('../pages/authenticated/Settlement/BankAccount'));
 const SettlementBatchTransaction = lazy(() => import('../pages/authenticated/Settlement/SettlementBatchTransaction'));
+const ActivityPage= lazy(() => import('../pages/authenticated/Activity/Activity'));
 
 // merchant pages
 const AddMerchantPage = lazy(() => import('../pages/authenticated/Merchant/AddMerchant'));
@@ -111,6 +112,7 @@ const RoutesSystem = () => {
               <Route path="user/:id/roleAssign" element={<RoleAssignment />} />
             </Route>
           </Route>
+          <Route path="/activity" element={<ActivityPage />} />
           <Route path="/compliance" element={<Compliance />} />
 
 
