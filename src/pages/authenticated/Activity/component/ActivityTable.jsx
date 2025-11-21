@@ -38,6 +38,11 @@ const ActivityTable = ({data, totalSize, currentPage, setCurrentPage, rowsPerPag
         {
             header: 'Description',
             accessor: 'description',
+            render: (value) => (
+                <span className="whitespace-normal break-words">
+                    {value}
+                </span>
+            ),
              
         }
 

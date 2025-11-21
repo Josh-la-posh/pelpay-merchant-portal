@@ -94,7 +94,7 @@ import PropTypes from 'prop-types';
                                             {column.render
                                                 ? column.render(row[column.accessor], row)
                                                 : typeof row[column.accessor] === 'string' && row[column.accessor].length > 17
-                                                    ? `${row[column.accessor].slice(0, 17)}...`
+                                                    ? `${row[column.accessor].slice(0, 25)}...`
                                                     : row[column.accessor]}
                                         </td>
                                     ))}

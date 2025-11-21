@@ -34,19 +34,6 @@ const ActivityFilter = ({getFilters, setGetFilters,setPageNumber, searchTerm, se
     }
     };
 
-    const ACTION_MAP = {
-        Login: "LOGIN",
-        SignUp: "SIGNUP",
-        Compliance: "COMPLIANCE",
-        Merchant: "MERCHANT",
-        Merchant_Settings: "MERCHANT_SETTINGS",
-        Role_Permission: "ROLE_PERMISSION",
-        Role_Management: "ROLE_MANAGEMENT",
-        Transactions_Management: "TRANSACTIONS_MANAGEMENT",
-        Settlement_Management: "SETTLEMENT_MANAGEMENT",
-        User_Management: "USER_MANAGEMENT"
-    };
-
     const handleFilter = async () => {
         clearDebounce();
         setIsApply(true);
@@ -55,10 +42,10 @@ const ActivityFilter = ({getFilters, setGetFilters,setPageNumber, searchTerm, se
             toast('Merchant code not found');
             return;
         }
-        const apiAction = ACTION_MAP[searchFilterType] || "";
+        const apiAction = searchFilterType || "";
         const newFilters = {
-            // startDate: startDate || '',
-            // endDate: endDate || '',
+            startDate: startDate || '',
+            endDate: endDate || '',
             action: apiAction || '',
         };
 
@@ -139,16 +126,16 @@ const ActivityFilter = ({getFilters, setGetFilters,setPageNumber, searchTerm, se
                             className="p-2 border border-gray-300 focus:outline-none rounded-sm bg-white text-gray-600 text-xs w-50"
                         >
                             <option value="">Select</option>
-                            <option value="Login">Login</option>
-                            <option value="SignUp">SignUp</option>
-                            <option value="Compliance">Compliance</option>
-                            <option value="Merchant">Merchant</option>
-                            <option value="Merchant_Settings">Merchant Settings</option>
-                            <option value="Role_Permission">Role Permission</option>
-                            <option value="Role_Management">Role Management</option>
-                            <option value="Transactions_Management">Transactions Management</option>
-                            <option value="Settlement_Management">Settlement Management</option>
-                            <option value="User_Management">User Management</option>
+                            <option value="LOGIN">Login</option>
+                            <option value="SIGNUP">SignUp</option>
+                            <option value="COMPLIANCE">Compliance</option>
+                            <option value="MERCHANT">Merchant</option>
+                            <option value="MERCHANT_SETTINGS">Merchant Settings</option>
+                            <option value="ROLE_PERMISSION">Role Permission</option>
+                            <option value="ROLE_MANAGEMENT">Role Management</option>
+                            <option value="TRANSACTIONS_MANAGEMENT">Transactions Management</option>
+                            <option value="SETTLEMENT_MANAGEMENT">Settlement Management</option>
+                            <option value="USER_MANAGEMENT">User Management</option>
                         </select>
 
                         <div className="relative flex-1 min-w-[140px]">
