@@ -1,18 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CustomModal from '@/components/Modal'
 import UpdateInputField from '@/components/UpdateInputField';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { X } from 'lucide-react';
 import Spinner from '../../../../../components/Spinner';
 
 import PropTypes from 'prop-types';
 
 function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
     const uniqueId = crypto.randomUUID();
-    const iframeRef = useRef(null);
-    const [openPopupWithIframe, setOpenPopupWithIframe] = useState(false);
-    const [redirectUrl, setRedirectUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -42,8 +38,6 @@ function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
         channels: ["Card", "BankTransfer", "USSD"],
       });
     
-    const callbackUrl = formData.callBackUrl ?? 'merchant.pelpay.ng';
-
     useEffect(() => {
     }, [])
 
@@ -60,10 +54,6 @@ function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
         }))
     }
 
-    const closeIframePopup = () => {
-        setOpenPopupWithIframe(false);
-    };
-
     const handleSubmit = async () => {
         const headers = {
             'Authorization': `Bearer ${accessToken}`,
@@ -77,12 +67,9 @@ function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
           { headers },
         );
         const data = response.data.responseData;
-        setRedirectUrl(data.paymentUrl);
         setIsLoading(false);
-        setOpenPopupWithIframe(true);
-
-        // window.open(data.paymentUrl, '_blank');
-        // window.location.href = data.paymentUrl;
+        // Open payment URL in a new tab
+        window.open(data.paymentUrl, '_blank');
       } catch (e) {
         setIsLoading(false);
         const errMsg = e.response.data.message;
@@ -104,14 +91,19 @@ function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
                     onChange={handleChange}
                     disabled={false}
                 />
-                <UpdateInputField 
-                    label='Currency'
-                    type='text'
-                    id='currency'
-                    valueName={formData.currency}
-                    onChange={handleChange}
-                    disabled={true}
-                />
+                <div className="flex flex-col">
+                    <label htmlFor="currency" className="text-xs font-medium mb-1">Currency</label>
+                    <select
+                        id="currency"
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-priColor"
+                    >
+                        <option value="NGN">NGN</option>
+                        <option value="USD">USD</option>
+                    </select>
+                </div>
                 <UpdateInputField 
                     label='Merchant Reference'
                     type='text'
@@ -261,75 +253,9 @@ function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
             <button onClick={handleSubmit} className='py-2 px-4 bg-priColor text-white text-xs rounded-sm'>
                 Submit
             </button>
-
-            {openPopupWithIframe && (
-                <div style={styles.overlay}>
-                    <div style={styles.popup}>
-                        <button style={styles.closeButton} onClick={closeIframePopup}>
-                            <X />
-                        </button>
-
-                        <iframe
-                            id='paymentIframe'
-                            ref={iframeRef}
-                            src={redirectUrl}
-                            title="Glass"
-                            style={styles.iframe}
-                            onLoad={() => {
-                                try {
-                                    const iframe = iframeRef.current;
-                                    const currentUrl = iframe?.contentWindow?.location.href;
-
-                                    if (currentUrl?.includes(callbackUrl)) {
-                                        closeIframePopup()
-                                    }
-                                } catch (err) {
-                                    console.warn("Unable to access iframe URL (possibly cross-origin)", err);
-                                }
-                            }}
-                        ></iframe>
-                    </div>
-                </div>
-            )}
         </CustomModal>)
     )
 }
-
-const styles = {
-  overlay: {
-    position: "fixed",
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
-  },
-  popup: {
-    position: "relative",
-    borderRadius: "5px",
-    width: "90%",
-    maxWidth: "800px",
-    height: "90%",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
-  },
-  iframe: {
-    flex: 1,
-    border: "none",
-    borderRadius: "5px",
-    
-  },
-  closeButton: {
-    position: 'absolute',
-    top: '5px',
-    right: '10px',
-    color: 'gray',
-    border: "none",
-    cursor: "pointer",
-  },
-};
 
 export default PaymentForm;
 
