@@ -24,7 +24,8 @@ function DashboardPie({ graph = [], type = 'Count' }) {
             fontSize: '13px',
             width: 220           
         },
-        labels: ['Success', 'Processing', 'Failed', 'Pending', 'Otp', 'Cancel'],
+        labels: ['Bank Transfer', 'Card Payments', 'USSD', 'Fund Transfer', 'Wallets', 'Other'],
+        // labels: ['Success', 'Processing', 'Failed', 'Pending', 'Otp', 'Cancel'],
         plotOptions: {
             pie: {
                 donut: {
@@ -71,11 +72,14 @@ function DashboardPie({ graph = [], type = 'Count' }) {
     };
 
     if (totalTransactionsCount === 0) return (
-        <div className="text-md font-[600] w-full h-[20vh] flex items-center justify-center">No Data</div>
+        <div className="text-md font-[600] w-full h-[32vh] flex items-center justify-center bg-white">No Data</div>
     )
 
     return (
-        <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
+         <div className="bg-white rounded-lg p-8 mt-10">
+            <h3 className="text-xl font-bold">Volume Breakdown by Payment Method</h3>
+            <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
+         </div>
     );
   }
 

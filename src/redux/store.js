@@ -14,6 +14,7 @@ import permissionsReducer from './slices/permissionSlice';
 import complianceReducer from './slices/complianceSlice';
 import envReducer from './slices/envSlice';
 import activityReducer from './slices/activitySlice';
+import pageCustomizationReducer from './slices/pageCustomizationSlice'
 
 // Read persisted env from localStorage if available
 const persistedEnv = (() => {
@@ -53,6 +54,7 @@ export const store = configureStore({
     compliance: complianceReducer,
     env: envReducer,
     activity: activityReducer,
+    pageCustomization: pageCustomizationReducer,
   },
   preloadedState: {
     env: {
