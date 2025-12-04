@@ -13,11 +13,11 @@ class ActivityService {
     if (filters.action) params.append("action", filters.action);
     if (pageNumber) params.append("pageNumber", pageNumber);
     if (pageSize) params.append("pageSize", pageSize);
-    // if (filters.startDate) params.append("startDate", filters.startDate);
-    // if (filters.endDate) params.append("endDate", filters.endDate);
+    if (filters.startDate) params.append("startDate", filters.startDate);
+    if (filters.endDate) params.append("endDate", filters.endDate);
 
-    const mapping = ['action'];
-    // const mapping = ['action', 'startDate', 'endDate'];
+    // const mapping = ['action'];
+    const mapping = ['action', 'startDate', 'endDate'];
 
     mapping.forEach((key) => {
         const value = filters[key];
@@ -43,7 +43,7 @@ class ActivityService {
         }
         catch(err){
             if (!err.response) {
-                dispatch(activityFailure('No response from serversss'));
+                dispatch(activityFailure('No response from server'));
             } else {
                 dispatch(activityFailure('Failed to load Activities. Try again.'));
             }

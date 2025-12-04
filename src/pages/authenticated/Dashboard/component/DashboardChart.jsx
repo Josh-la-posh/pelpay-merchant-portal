@@ -2,7 +2,7 @@ import ReactApexChart from "react-apexcharts";
 import { processGraphData } from "@/data/processedGraphData";
 import PropTypes from 'prop-types';
 
-function DashboardChart({ graph = [], type = 'Count' }) {
+function DashboardChart({ graph = [], type = 'Count', title,}) {
     const {
         successfulGraphCount,
         successfulGraphVolume,
@@ -11,7 +11,7 @@ function DashboardChart({ graph = [], type = 'Count' }) {
     } = processGraphData(graph || []);
 
     const chartSeries = [{
-        name: "Transactions",
+        name: "Total Processed Volume",
         data: type === 'Count'
             ? successfulGraphCount
             : successfulGraphVolume
@@ -37,7 +37,32 @@ function DashboardChart({ graph = [], type = 'Count' }) {
     )
 
     return (
-        <ReactApexChart options={chartOptions} series={chartSeries} type="area" height={350} />
+        <div className="bg-white rounded-lg p-8">
+            {/* <h3 className="text-xl font-bold text-gray-800">Trend Over Time</h3> */}
+
+            <ReactApexChart options={chartOptions} series={chartSeries} type="area" height={350} />
+            
+            <div className="flex items-center justify-center gap-2">
+                <svg 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 32 32" 
+                    fill="none" 
+                    stroke="currentColor"  
+                    strokeWidth="3" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                >
+                    <path d="M2 16 H10
+                            C12 10, 20 10, 22 16
+                            H30
+                            M22 16
+                            C20 22, 12 22, 10 16" />
+                </svg>
+
+                <span>{title}</span>
+            </div>
+        </div>
     );
   }
 
@@ -47,3 +72,4 @@ DashboardChart.propTypes = {
     graph: PropTypes.array,
     type: PropTypes.string,
 };
+

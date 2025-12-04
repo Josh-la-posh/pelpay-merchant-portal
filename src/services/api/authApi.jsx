@@ -6,8 +6,6 @@ import {
 } from "@/redux/slices/authSlice";
 import axios from "./axios";
 import { complianceStep, complianceSuccess, setComplianceStatus } from "../../redux/slices/complianceSlice";
-import RoleService from "@/services/api/rolesApi";
-import PermissionService from "@/services/api/permissionApi";
 
 class AuthService {
   constructor(axiosPrivate) {

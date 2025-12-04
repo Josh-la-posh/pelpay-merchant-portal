@@ -81,6 +81,12 @@ function TransactionPage() {
       </div>
   );
 
+  if (isLoading) return (
+      <div className='h-[80vh] w-full'>
+        <Spinner />
+      </div>
+    );
+
   return (
     <div>
       <TransactionFilter
@@ -100,12 +106,13 @@ function TransactionPage() {
         />
       )}
 
-      {
+      {/* {
         isLoading
         ? <div className='h-[40vh] w-full'>
             <Spinner />
         </div>
-        : <TransactionTable
+        :  */}
+        <TransactionTable
             data={transactions}
             handleOpenModal={handleOpenModal}
             totalSize={transactionTotalSize}
@@ -116,7 +123,7 @@ function TransactionPage() {
             // setRowsPerPage={setPageSize}
             setRowsPerPage={(size) => dispatch(setTransactionPageSize(size))}
           />
-      }
+      {/* } */}
     </div>
   )
 }
