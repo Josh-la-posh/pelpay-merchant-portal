@@ -64,8 +64,9 @@ function Dashboard() {
   // const [totalSize, setTotalSize] = useState(transactionTotalSize);
   const [currentFilters, setCurrentFilters] = useState({});
 
-  const { env } = useSelector((state) => state.env);
+  const { env, token } = useSelector((state) => state.env);
   const { complianceStatus } = useSelector((state) => state.compliance || {});
+  const tokenizationStatus = token
 
   const [isLive, setIsLive] = useState(false);
 
@@ -144,14 +145,13 @@ function Dashboard() {
 
   const loadData = useCallback(async () => {
     if (merchantCode) {
-      // await dashboardService.fetchLumpsum(
-      //   merchantCode,
-      //   env,
-      //   interval,
-      //   dispatch
-      // );
-      // await dashboardService.fetchGraph(merchantCode, env, interval, dispatch);
-
+      await dashboardService.fetchLumpsum(
+        merchantCode,
+        env,
+        interval,
+        dispatch
+      );
+      await dashboardService.fetchGraph(merchantCode, env, interval, dispatch);
       await dashboardService.fetchAnalytics(merchantCode, env, interval, mode, dispatch)
     }
   }, [dashboardService,  merchantCode, env, interval, mode, dispatch]);
@@ -194,7 +194,7 @@ function Dashboard() {
     const newEnv = nextLive ? 'Live' : 'Test';
     setUpdatingEnv(true);
     try {
-      await settingsService.updateEnv(newEnv, dispatch);
+      await settingsService.updateEnv(newEnv, tokenizationStatus, dispatch);
       dispatch(toggleEnv(newEnv));
       setIsLive(nextLive);
     } catch {
@@ -387,7 +387,7 @@ function Dashboard() {
               </div>
             </div>
             <div className="xl:grid grid-cols-4">
-              <div className="col-span-3 p-4 border-r border-r-gray-300">
+              <div className="col-span-4 p-4 border-r border-r-gray-300">
                 <DashboardChart graph={graph} type={transactionMode} />
               </div>
               {/* <div className="hidden xl:block py-4 px-5">

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     env: 'Test',
+    token: false
 };
 
 const envSlice = createSlice({
@@ -13,10 +14,16 @@ const envSlice = createSlice({
         },
         toggleEnv: (state, action) => {
             state.env = action.payload;
-        }
+        },
+        setToken: (state, action) => {
+            state.token = action.payload;
+        },
+        tokenToggle: (state, action) => {
+            state.token = action.payload;
+        },
     }
 });
 
-export const { setEnv, toggleEnv } = envSlice.actions;
+export const { setEnv, toggleEnv, setToken, tokenToggle } = envSlice.actions;
 
 export default envSlice.reducer;
