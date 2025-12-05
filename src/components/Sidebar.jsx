@@ -4,12 +4,8 @@ import useTitle from '../services/hooks/useTitle';
 import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck, Activity, History  } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
-import useAuth from "@/services/hooks/useAuth";
-import PageCustomizationService from "@/services/api/pageCustomizationApi";
-import useAxiosPrivate from "@/services/hooks/useFormAxios";
 
 const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     const [sidebarItems, setSideBarItems] = useState([
@@ -72,31 +68,9 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     ])
 
     const { appTitle } = useTitle();
-    const { auth } = useAuth();
-    const dispatch = useDispatch();
     const { complianceStatus } = useSelector((state) => state.compliance || {});
     const storedStatus = (() => { try { return localStorage.getItem('complianceStatus'); } catch { return null; } })();
     const effectiveStatus = complianceStatus || storedStatus;
-    const [logoUrl, setLogoUrl] = useState("");
-    const axiosPrivate = useAxiosPrivate();
-    const { pageCustomization } = useSelector(state => state.pageCustomization || {});
-
-    useEffect(() => {
-        const service = new PageCustomizationService(axiosPrivate, auth);
-        service.fetchPageCustomization(dispatch);
-    }, []);
-
-   useEffect(() => {
-    const cloudUrl = pageCustomization?.merchantLogoCloudinaryUrl;
-    if (!cloudUrl) return;
-
-    const img = new Image();
-    img.src = cloudUrl;
-
-    img.onload = () => {
-        setLogoUrl(cloudUrl);  
-    };
-    }, [pageCustomization]);
 
     useEffect(() => {
         const hideStatuses = ['approved'];
@@ -170,12 +144,7 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
                 <X />
             </button>
             <div className='bg-[#f7f7f7] w-full h-16 flex items-center'>
-                <img
-                    src={logoUrl}
-                    alt="Logo"
-                    className="max-h-fit max-w-[85%] object-contain"
-                />
-                {/* <img src='/assets/logo.jpg' alt="Logo" className="max-h-fit max-w-[85%]" /> */}
+                <img src='/assets/logo.jpg' alt="Logo" className="max-h-fit max-w-[85%]" />
             </div>
             <nav className={`flex-1 my-2 ${isSidebarTextVisible ? 'pl-6' : ''} overflow-y-auto scrollbar-none`}>
                 {
