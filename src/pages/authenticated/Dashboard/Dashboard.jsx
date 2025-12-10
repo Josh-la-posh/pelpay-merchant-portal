@@ -21,6 +21,9 @@ import Card from "../../../components/Card";
 import AnalyticsChart from "./component/AnalyticsChart";
 import { saveAs } from "file-saver";
 import AnalyticsPie from "./component/AnalyticsPie";
+import useWebSocket from "@/services/hooks/useWebSocket";
+import { useDashboardData } from "@/services/hooks/useDashboardData";
+import { updateRealtimeAnalytics, setConnectionStatus } from "@/redux/slices/realtimeSlice";
 
 function Dashboard() {
   const { setAppTitle } = useTitle();
@@ -36,17 +39,21 @@ function Dashboard() {
   const merchantCode = merchant?.merchantCode;
   const dashboardService = useMemo(() => new DashboardService(axiosPrivate, auth), [axiosPrivate, auth]);
   const settingsService = useMemo(() => new SettingsService(axiosPrivate), [axiosPrivate]);
+  
+  // WEB SOCKET SETUP
+  const wsUrl = import.meta.env.VITE_WEBSOCKET_URL;
+  const { on, off, joinRoom, fetchAnalysis, isConnected: wsConnected } = useWebSocket(wsUrl);
+
+  // Use merged data from realtime and API - pass WebSocket connection status
+  const { analytics: mergedAnalytics, lumpsum: mergedLumpsum, graph: mergedGraph, transactions: mergedTransactions, isRealtime } = useDashboardData();
+  
   const {
-    lumpsum,
     lumpsumLoading,
     lumpsumError,
-    graph,
     graphLoading,
     graphError,
-    transactions,
     transactionLoading,
     transactionError,
-    analytics,
     analyticsLoading,
     analyticsError,
   } = useSelector((state) => state.dashboard);
@@ -62,7 +69,7 @@ function Dashboard() {
   // const [pageNumber, setPageNumber] = useState(transactionPageNumber);
   // const [pageSize, setPageSize] = useState(transactionPageSize);
   // const [totalSize, setTotalSize] = useState(transactionTotalSize);
-  const [currentFilters, setCurrentFilters] = useState({});
+  // const [currentFilters, setCurrentFilters] = useState({});
 
   const { env, token } = useSelector((state) => state.env);
   const { complianceStatus } = useSelector((state) => state.compliance || {});
@@ -144,7 +151,8 @@ function Dashboard() {
   }, [lumpsumError, graphError, analyticsError]);
 
   const loadData = useCallback(async () => {
-    if (merchantCode) {
+    // Only fetch from API if WebSocket is not connected or not providing realtime data
+    if (merchantCode && !wsConnected) {
       await dashboardService.fetchLumpsum(
         merchantCode,
         env,
@@ -154,28 +162,130 @@ function Dashboard() {
       await dashboardService.fetchGraph(merchantCode, env, interval, dispatch);
       await dashboardService.fetchAnalytics(merchantCode, env, interval, mode, dispatch)
     }
-  }, [dashboardService,  merchantCode, env, interval, mode, dispatch]);
+  }, [dashboardService, merchantCode, env, interval, mode, dispatch, wsConnected]);
 
   useEffect(() => {
     if (!merchant) return;
-    loadData();
-  }, [merchant, interval, dispatch, dashboardService, loadData]);
+    // Load API data on initial mount or when WebSocket disconnects
+    if (!wsConnected) {
+      loadData();
+    }
+  }, [merchant, interval, dispatch, dashboardService, loadData, wsConnected]);
 
   const loadTransactions = useCallback(async () => {
-    if (merchantCode) {
+    // Only fetch from API if WebSocket is not connected or not providing realtime data
+    if (merchantCode && !wsConnected) {
       await dashboardService.fetchtransactions(merchantCode, env, dispatch);
     }
-  }, [dashboardService, merchantCode, env, dispatch]);
+  }, [dashboardService, merchantCode, env, dispatch, wsConnected]);
+
+// Join room whenever env / merchant / interval / mode changes
+useEffect(() => {
+  if (!merchantCode) return;
+
+  joinRoom({
+    room_id: merchantCode,
+    env: env === "Live" ? "Live" : "Test",
+    interval: interval || "Daily",
+    mode: mode || "OVER_VIEW",
+  });
+
+}, [merchantCode, env, interval, mode, joinRoom, fetchAnalysis]);
+
+// Join room whenever env / merchant / interval / mode changes
+// useEffect(() => {
+//   if (!merchantCode) return;
+
+//   fetchAnalysis({
+//     room_id: merchantCode,
+//     env: env === "Live" ? "Live" : "Test",
+//     interval: interval || "Daily",
+//     mode: mode || "OVER_VIEW",
+//   });
+
+// }, [merchantCode, env, interval, mode, joinRoom, fetchAnalysis]);
+
+
+// Listen for real-time events
+useEffect(() => {
+  if (!on || !off) return;
+
+  const handleAnalytics = (data) => {
+    console.log("📊 Real-time analytics update:", data);
+    // Data is automatically processed in the realtimeSlice
+    dispatch(updateRealtimeAnalytics(data));
+  };
+
+  const handleDashboardUpdate = () => {
+    console.log("⚡ Real-time dashboard update received");
+    // Refresh analytics when dashboard updates
+    fetchAnalysis({
+      room_id: merchantCode,
+      env: env === "Live" ? "Live" : "Test",
+      interval: interval || "Daily",
+      mode: mode || "OVER_VIEW",
+    });
+  };
+
+  const handleTransactionUpdate = () => {
+    console.log("📡 Real-time transaction update");
+    // Fetch fresh analytics which includes transaction data
+    fetchAnalysis({
+      room_id: merchantCode,
+      env: env === "Live" ? "Live" : "Test",
+      interval: interval || "Daily",
+      mode: mode || "OVER_VIEW",
+    });
+  };
+
+  // Initial fetch when params change
+  fetchAnalysis({
+    room_id: merchantCode,
+    env: env === "Live" ? "Live" : "Test",
+    interval: interval || "Daily",
+    mode: mode || "OVER_VIEW",
+  });
+
+  on("analytics", handleAnalytics);
+  on("dashboard:update", handleDashboardUpdate);
+  on("transaction:new", handleTransactionUpdate);
+  on("transaction:update", handleTransactionUpdate);
+
+  // Update connection status
+  dispatch(setConnectionStatus(wsConnected));
+
+  return () => {
+    off("analytics", handleAnalytics);
+    off("dashboard:update", handleDashboardUpdate);
+    off("transaction:new", handleTransactionUpdate);
+    off("transaction:update", handleTransactionUpdate);
+  };
+}, [on, off, dispatch, wsConnected, merchantCode, env, interval, mode, fetchAnalysis]);
+
 
   useEffect(() => {
     if (!merchant) return;
-    loadTransactions();
-  }, [merchant, dispatch, dashboardService, loadTransactions]);
+    // Load API data on initial mount or when WebSocket disconnects
+    if (!wsConnected) {
+      loadTransactions();
+    }
+  }, [merchant, dispatch, dashboardService, loadTransactions, wsConnected]);
 
   const handleRefresh = useCallback(() => {
-    loadData();
-    loadTransactions();
-  }, [loadData, loadTransactions]);
+    if (wsConnected) {
+      // If connected to WebSocket, request fresh data
+      fetchAnalysis({
+        room_id: merchantCode,
+        env: env === "Live" ? "Live" : "Test",
+        interval: interval || "Daily",
+        mode: mode || "OVER_VIEW",
+      });
+    } else {
+      // Fallback to API calls when disconnected
+      loadData();
+      loadTransactions();
+    }
+  }, [wsConnected, fetchAnalysis, merchantCode, env, interval, mode, loadData, loadTransactions]);
 
   const handleOpenModal = (val) => {
     setSelectedTransactionData(val);
@@ -232,11 +342,11 @@ function Dashboard() {
   if (errMsg !== null)
     return <ErrorLayout errMsg={errMsg} handleRefresh={handleRefresh} />;
 
-  if (isLoading) return (
-    <div className='h-[80vh] w-full '>
-      <Spinner />
-    </div>
-  );
+  // if (isLoading) return (
+  //   <div className='h-[80vh] w-full '>
+  //     <Spinner />
+  //   </div>
+  // );
   return (
     <div>
       <div className="relative">
@@ -334,7 +444,7 @@ function Dashboard() {
           </div>
 
           <div className="">
-            <DashboardCards lumpsum={lumpsum} analytics={analytics} onModeChange={(m) => setMode(m)}/>
+            <DashboardCards lumpsum={mergedLumpsum} analytics={mergedAnalytics} onModeChange={(m) => setMode(m)} isRealtime={isRealtime} isLoading={isLoading}/>
           </div>
 
           <div className="xl:grid grid-cols-7 gap-4">
@@ -388,7 +498,7 @@ function Dashboard() {
             </div>
             <div className="xl:grid grid-cols-4">
               <div className="col-span-4 p-4 border-r border-r-gray-300">
-                <DashboardChart graph={graph} type={transactionMode} />
+                <DashboardChart graph={mergedGraph} type={transactionMode} />
               </div>
               {/* <div className="hidden xl:block py-4 px-5">
                 <DashboardCards lumpsum={lumpsum} />
@@ -422,7 +532,7 @@ function Dashboard() {
               </button>
             </div>
             <div className="border-b border-b-gray-300 pb-8">
-              <DashboardPie graph={lumpsum} type={transactionMode} />
+              <DashboardPie graph={mergedLumpsum} type={transactionMode} />
             </div>
           </div>
           </div>
@@ -430,7 +540,7 @@ function Dashboard() {
 
           <div className="col-span-3 p-4 border-r border-r-gray-300 text-blue-300">
             <AnalyticsChart 
-                analytics={analytics?.trendLine}
+                analytics={mergedAnalytics?.trendLine}
                 type="count"
                 title="Total Processed Volume (₦M)"
                 name="Total Processed Volume"
@@ -439,7 +549,7 @@ function Dashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-10">
               <div className="col-span-2">
-                <AnalyticsPie analytics={analytics?.paymentmethodBreakdown}  title={"Volume Breakdown by Payment Method"}/>
+                <AnalyticsPie analytics={mergedAnalytics?.paymentmethodBreakdown}  title={"Volume Breakdown by Payment Method"}/>
               </div>
               <div className="h-full">
                 <Link to="/analytics/dispute-ratio" className="h-full block" >
@@ -455,7 +565,7 @@ function Dashboard() {
               </div>
 
               <div className="">
-                <button onClick={() => exportToCSV(transactions)} className="flex items-center gap-2 text-[14px] px-3 py-2 rounded-sm border border-gray-300 bg-gray-50 hover:bg-green-300/90 hover:text-white">
+                <button onClick={() => exportToCSV(mergedTransactions)} className="flex items-center gap-2 text-[14px] px-3 py-2 rounded-sm border border-gray-300 bg-gray-50 hover:bg-green-300/90 hover:text-white">
                   <DownloadIcon size={17} /> Export CSV
                 </button>
               </div>
@@ -473,7 +583,7 @@ function Dashboard() {
           )}
 
              <TransactionTable
-              data={transactions}
+              data={mergedTransactions}
               handleOpenModal={handleOpenModal}
               drpp=""
               // totalSize={totalSize}

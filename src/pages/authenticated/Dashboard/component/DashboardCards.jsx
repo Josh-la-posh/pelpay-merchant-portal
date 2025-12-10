@@ -1,30 +1,29 @@
 import Card from "@/components/Card";
-import {DollarSign, TrendingUp,} from "lucide-react";
+import {DollarSign, TrendingUp} from "lucide-react";
 import { Link } from "react-router-dom";
-import { useMemo } from "react";
 import PropTypes from "prop-types";
 import AnimatedLineChart from "./AnimatedLine";
 
-function DashboardCards({ lumpsum, analytics, onModeChange }) {
-  const totalRevenue = useMemo(() => {
-    if (!lumpsum || !Array.isArray(lumpsum)) return 0;
-    return lumpsum
-      .filter((data) => data.transactionStatus === "Successful")
-      .reduce((sum, data) => sum + Number(data.transactionVolume || 0), 0);
-  }, [lumpsum]);
+function DashboardCards({ lumpsum, analytics, onModeChange, isRealtime, isLoading }) {
+  // const totalRevenue = useMemo(() => {
+  //   if (!lumpsum || !Array.isArray(lumpsum)) return 0;
+  //   return lumpsum
+  //     .filter((data) => data.transactionStatus === "Successful")
+  //     .reduce((sum, data) => sum + Number(data.transactionVolume || 0), 0);
+  // }, [lumpsum]);
 
-  const totalCounts = useMemo(() => {
-    if (!lumpsum || !Array.isArray(lumpsum)) return 0;
-    return lumpsum.reduce((sum, t) => sum + t.transactionCount, 0);
-  }, [lumpsum]);
+  // const totalCounts = useMemo(() => {
+  //   if (!lumpsum || !Array.isArray(lumpsum)) return 0;
+  //   return lumpsum.reduce((sum, t) => sum + t.transactionCount, 0);
+  // }, [lumpsum]);
 
-  const successfulTransaction = useMemo(() => {
-    if (!lumpsum || !Array.isArray(lumpsum)) return 0;
-    return (
-      lumpsum.find((item) => item.transactionStatus === "Successful")
-        ?.transactionCount ?? 0
-    );
-  }, [lumpsum]);
+  // const successfulTransaction = useMemo(() => {
+  //   if (!lumpsum || !Array.isArray(lumpsum)) return 0;
+  //   return (
+  //     lumpsum.find((item) => item.transactionStatus === "Successful")
+  //       ?.transactionCount ?? 0
+  //   );
+  // }, [lumpsum]);
 
 const formatNumber = (num) => {
   if (num === null || num === undefined) return "0";
@@ -35,20 +34,34 @@ const totalProcessedVolume = analytics?.totalProcesseVolume;
 const netSettledVolume = analytics?.totalNetted;
 const averageTransactionVolume = analytics?.averageTransactionValue;
 
-const handleMode = (mode) =>{
-if (onModeChange) onModeChange(mode);
-}
+// const handleMode = (mode) =>{
+//  if (onModeChange) onModeChange(mode);
+// }
 
   // failedTransaction intentionally omitted (not currently displayed)
 
   return (
-    
+    <>
+      {/* Real-time indicator */}
+      {/* {isRealtime && (
+        <div className="mb-3 flex items-center gap-2 text-green-600 text-sm">
+          <Wifi size={16} className="animate-pulse" />
+          <span>Live data - Auto-updating</span>
+        </div>
+      )} */}
+      
+      {/* {!isRealtime && (
+        <div className="mb-3 flex items-center gap-2 text-gray-500 text-xs">
+          <WifiOff size={14} />
+          <span>Using cached data</span>
+        </div>
+      )} */}
 
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-8 md:mb-0">
       <Link to="/analytics/total-processed-volume">
         <Card
           title="Total Processed Volume"
-          value={`₦${formatNumber(totalProcessedVolume?.totalProcessedVolume ?? 0)}`}
+          value={isLoading ? '---' : `₦${formatNumber(totalProcessedVolume?.totalProcessedVolume ?? 0)}`}
           subtitle={`${totalProcessedVolume?.percentChange}% vs last month`}
           // subtitle="+8% vs last month"
           icon={<DollarSign size="40px" className="text-[#40B869] bg-green-50 rounded-full p-2" />}
@@ -64,7 +77,7 @@ if (onModeChange) onModeChange(mode);
       <Link to="/analytics/net-settled-volume">
       <Card
         title="Net Settled Volume"
-        value={`₦${formatNumber(netSettledVolume?.netSettledVolume ?? 0)}`}
+        value={isLoading ? '---' : `₦${formatNumber(netSettledVolume?.netSettledVolume ?? 0)}`}
         subtitle2="Funds confirmed and deposited"
         icon={<TrendingUp size="40px" className="text-[#40B869] bg-green-50 rounded-full p-2" />}
         svg={
@@ -79,7 +92,7 @@ if (onModeChange) onModeChange(mode);
       <Link to="/analytics/average-transaction-value">
         <Card
         title="Average Transaction Value"
-        value={`₦${averageTransactionVolume?.averageTransactionValue ?? 0}`}
+        value={isLoading ? '---' : `₦${averageTransactionVolume?.averageTransactionValue === 'NaN' ? 0 : averageTransactionVolume?.averageTransactionValue ?? 0}`}
         subtitle={`${averageTransactionVolume?.percentChange}% vs last month`}
         icon={<DollarSign size="40px" className="text-blue-500 bg-green-50 rounded-full p-2" />}
         svg={<AnimatedLineChart className="text-blue-500 w-[100%] h-[100%]" />}
@@ -89,7 +102,7 @@ if (onModeChange) onModeChange(mode);
       <Link to='/analytics/revenue-growth-rate'>
         <Card
           title="Revenue Growth Rate"
-          value={`${analytics?.revenueGrowth?.percentChange}%`}
+          value={isLoading ? '---' : `${analytics?.revenueGrowth?.percentChange ?? 0}`}
           subtitle2="Mont-over-month growth"
           icon={<TrendingUp size="40px" className="text-[#40B869] bg-green-50 rounded-full p-2" />}
           svg={<AnimatedLineChart className="text-green-500 w-[100%] h-[100%]"
@@ -100,6 +113,7 @@ if (onModeChange) onModeChange(mode);
       </Link>
       
     </div>
+    </>
   );
 }
 
@@ -107,5 +121,8 @@ export default DashboardCards;
 
 DashboardCards.propTypes = {
   lumpsum: PropTypes.array,
-  onModeChange: PropTypes.func
+  analytics: PropTypes.object,
+  onModeChange: PropTypes.func,
+  isRealtime: PropTypes.bool,
+  isLoading: PropTypes.bool,
 };
