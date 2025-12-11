@@ -14,14 +14,13 @@ import {
   transactionStart,
   transactionSuccess,
 } from "../../redux/slices/dashboardSlice";
-import { transactionSecondSuccess } from "../../redux/slices/transactionSlice";
 class DashboardService {
   constructor(axiosPrivate, auth) {
     this.axiosPrivate = axiosPrivate;
     this.auth = auth;
   }
 
-  buildQuery(merchantCode, env, filters = {}){
+  buildQuery(merchantCode, env, filters = {}) {
     const params = new URLSearchParams();
 
     if (env) params.set('env', env)
@@ -34,7 +33,6 @@ class DashboardService {
     });
 
     return `/api/Dashboard/analytics/${merchantCode}?${params.toString()}`;
-
   }
 
   async fetchLumpsum(merchantCode, env, interval, dispatch) {

@@ -3,10 +3,19 @@ import ReactApexChart from "react-apexcharts";
 function AnalyticsPie({ analytics = {}, type = "Count", title }) {
   const breakDown = analytics?.breakDown || [];
 
-  const pieSeries = breakDown.map((item) => Number(item.transactionCount || item.countPercentage));
-  // const pieLabels = breakDown.map((item) => Number(item.totalAmount));
+  // Validate and filter out invalid data
+  const validData = breakDown.filter(item => 
+    item && 
+    item.channelCode && 
+    (item.transactionCount != null || item.countPercentage != null)
+  );
 
-  const pieLabels = breakDown.map((item) => item.channelCode);
+  const pieSeries = validData.map((item) => {
+    const value = Number(item.transactionCount || item.countPercentage || 0);
+    return isNaN(value) ? 0 : value;
+  });
+
+  const pieLabels = validData.map((item) => item.channelCode || 'Unknown');
 
   //   const totalTransactionsCount = breakDown.reduce(
   //     (sum, item) =>
@@ -14,6 +23,15 @@ function AnalyticsPie({ analytics = {}, type = "Count", title }) {
   //     0
   //   );
   const totalTransactionsCount = pieSeries.reduce((sum, val) => sum + val, 0);
+
+  // Early return if no valid data
+  if (validData.length === 0 || pieSeries.length === 0 || totalTransactionsCount === 0) {
+    return (
+      <div className="text-md font-[600] w-full h-[32vh] flex items-center justify-center bg-white">
+        No Data
+      </div>
+    );
+  }
 
   const pieOptions = {
     chart: {

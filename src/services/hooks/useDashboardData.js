@@ -2,31 +2,43 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 /**
- * Custom hook to get dashboard data with realtime WebSocket updates
- * Falls back to API data when realtime is unavailable
- * Data is pre-processed in the realtimeSlice, so we just merge based on availability
- * @returns {Object} Dashboard data merged from realtime and API sources
+ * Custom hook to get dashboard data with realtime WebSocket updates only
+ * No API fallback - displays empty/zero data when WebSocket is unavailable
+ * Data is pre-processed in the realtimeSlice
+ * @returns {Object} Dashboard data from WebSocket only
  */
 export const useDashboardData = () => {
   const { useRealtime, realtimeAnalytics, realtimeLumpsum, realtimeGraph, realtimeTransactions, isConnected } = useSelector((state) => state.realtime);
-  const { analytics, lumpsum, graph, transactions } = useSelector((state) => state.dashboard);
 
-  // Use realtime data if connected and available, otherwise fall back to API data
+  // Only use realtime data - no API fallback
   const mergedAnalytics = useMemo(() => {
-    return (useRealtime && isConnected && realtimeAnalytics) ? realtimeAnalytics : analytics;
-  }, [useRealtime, isConnected, realtimeAnalytics, analytics]);
+    if (useRealtime && isConnected && realtimeAnalytics) {
+      return realtimeAnalytics;
+    }
+    
+    // Return empty data structure when not connected
+    return {
+      totalProcesseVolume: { totalProcessedVolume: '0.00', totalSettledVolume: '0.00', percentChange: '➡️ No change' },
+      totalNetted: { netSettledVolume: '0.00', nettedSettledCount: '0.00', percentChange: '➡️ No change' },
+      averageTransactionValue: { averageTransactionValue: '0.00', percentChange: '➡️ No change' },
+      revenueGrowth: { currentRevenue: '0.00', previousRevenue: '0.00', percentChange: '+ 0.00%' },
+      paymentmethodBreakdown: { breakDown: [], insight: 'No data available' },
+      transactionDetails: [],
+      trendLine: [],
+    };
+  }, [useRealtime, isConnected, realtimeAnalytics]);
 
   const mergedLumpsum = useMemo(() => {
-    return (useRealtime && isConnected && realtimeLumpsum) ? realtimeLumpsum : lumpsum;
-  }, [useRealtime, isConnected, realtimeLumpsum, lumpsum]);
+    return (useRealtime && isConnected && realtimeLumpsum) ? realtimeLumpsum : [];
+  }, [useRealtime, isConnected, realtimeLumpsum]);
 
   const mergedGraph = useMemo(() => {
-    return (useRealtime && isConnected && realtimeGraph) ? realtimeGraph : graph;
-  }, [useRealtime, isConnected, realtimeGraph, graph]);
+    return (useRealtime && isConnected && realtimeGraph) ? realtimeGraph : [];
+  }, [useRealtime, isConnected, realtimeGraph]);
 
   const mergedTransactions = useMemo(() => {
-    return (useRealtime && isConnected && realtimeTransactions) ? realtimeTransactions : transactions;
-  }, [useRealtime, isConnected, realtimeTransactions, transactions]);
+    return (useRealtime && isConnected && realtimeTransactions) ? realtimeTransactions : [];
+  }, [useRealtime, isConnected, realtimeTransactions]);
 
   return {
     analytics: mergedAnalytics,

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import AnimatedLineChart from "./AnimatedLine";
 
-function DashboardCards({ lumpsum, analytics, onModeChange, isRealtime, isLoading }) {
+function DashboardCards({ analytics, isLoading }) {
   // const totalRevenue = useMemo(() => {
   //   if (!lumpsum || !Array.isArray(lumpsum)) return 0;
   //   return lumpsum

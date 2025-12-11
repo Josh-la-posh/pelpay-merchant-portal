@@ -11,10 +11,19 @@ function AnalyticsChart({ analytics = [], type = "count", title, name }) {
         average: avgAmounts,
     };
 
+    // Validate data - ensure it's an array of valid numbers
+    const rawData = seriesData[type] || [];
+    const validData = Array.isArray(rawData)
+        ? rawData.map(val => {
+            const num = Number(val);
+            return isNaN(num) ? 0 : num;
+          })
+        : [];
+
     const chartSeries = [
         {
             name:  name,
-            data: seriesData[type] || []
+            data: validData
         }
     ];
 

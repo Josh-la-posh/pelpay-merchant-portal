@@ -5,115 +5,73 @@ import {
   DownloadIcon,
   TrendingUp,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
-import DashboardChart from "./DashboardChart";
-import DashboardPie from "./DashboardPie";
-import TransactionTable from "../../Transaction/components/TransactionTable";
+import { useEffect, useState } from "react";
 import Card from "../../../../components/Card";
 import { Link } from "react-router-dom";
 import AnalyticsChart from "./AnalyticsChart";
-import { useDispatch, useSelector } from "react-redux";
-import useAxiosPrivate from "@/services/hooks/useFormAxios";
-import useAuth from "../../../../services/hooks/useAuth";
-import DashboardService from "@/services/api/dashboardApi";
+import { useSelector } from "react-redux";
 import Spinner from '@/components/Spinner';
 import AnalyticsPie from "./AnalyticsPie";
 import TransactionDetails from "./TransactionDetails";
 import { formatEncodedDate } from "../../../../utils/formatEncodedDate";
 import { formatNumber } from "../../../../utils/formatNumber";
+import { saveAs } from "file-saver";
 
 const columns = [
-    { header: "Period", render: row => formatEncodedDate(row.period) },
-    { header: "Channel", accessor: "channelCode" },
-    { header: "Revenue", render: row => `₦${formatNumber(row.averageAmount || 0)}` },
-    { header: "Growth", render: row => `${row.countPercentage || 0}%` },
-  ];
+  { header: "Period", render: row => formatEncodedDate(row.period) },
+  { header: "Channel", accessor: "channelCode" },
+  { header: "Revenue", render: row => `₦${formatNumber(row.averageAmount || 0)}` },
+  { header: "Growth", render: row => `${row.countPercentage || 0}%` },
+];
 
 const RevenueGrowthDashboard = () => {
 
-  const {auth} = useAuth();
-  const axiosPrivate = useAxiosPrivate();
-  const dispatch = useDispatch();
   const { analytics, analyticsLoading } = useSelector((state) => state.dashboard);
-  const dashboardService = useMemo(() => new DashboardService(axiosPrivate, auth), [axiosPrivate, auth]);
   const [interval, setInterval] = useState("Daily");
-  const [mode, setMode] = useState("REVENUE_GROWTH_RATE");
   const [isLoading, setIsLoading] = useState(analyticsLoading)
-   
-   const merchant = auth?.merchant
-   const merchantCode = merchant?.merchantCode;
-   const {env} = useSelector((state) => state.env)
 
-     useEffect(() => {
-     const fetchData = async () => {
-       try {
-         await dashboardService.fetchAnalytics(
-           merchantCode,
-           env,
-           interval,
-           mode,
-           dispatch
-         );
-       } catch (err) {
-         console.error(err);
-       }
-     };
-   
-     if (merchantCode) fetchData();
-   }, [merchantCode, env, mode, interval, dispatch, dashboardService]);
-   
-     useEffect(() => {
-       setIsLoading(analyticsLoading);
-     }, [analyticsLoading]);
-   
-   
-     // const handleModeChange = (newMode) => {
-     //   setMode(newMode);
-     // };
-   
-     const handleIntervalChange = (e) => {
-       setInterval(e.target.value);
-     };
-   
-     const formatNumber = (num) => {
-     if (num === null || num === undefined) return "0";
-     return Number(num).toLocaleString();
-   };
+  useEffect(() => {
+    setIsLoading(analyticsLoading);
+  }, [analyticsLoading]);
 
-   const exportToCSV = (data, filename = "analytics-details.csv") => {
-  if (!data || data.length === 0) return;
+  const handleIntervalChange = (e) => {
+    setInterval(e.target.value);
+  };
 
-  const headers = columns.map(col => col.header);
+  const exportToCSV = (data, filename = "analytics-details.csv") => {
+    if (!data || data.length === 0) return;
 
-  const csvRows = [
-    headers.join(","),
+    const headers = columns.map(col => col.header);
 
-    ...data.map(row =>
-      columns.map(col => {
-        let value = "";
+    const csvRows = [
+      headers.join(","),
 
-        if (col.render) {
-          value = col.render(row) ?? "";
-        } else if (col.accessor) {
-          value = row[col.accessor] ?? "";
-        }
+      ...data.map(row =>
+        columns.map(col => {
+          let value = "";
 
-        if (col.header === "Date") {
-          value = `'${value}'`;
-        }
+          if (col.render) {
+            value = col.render(row) ?? "";
+          } else if (col.accessor) {
+            value = row[col.accessor] ?? "";
+          }
 
-        value = value.toString().replace(/₦/g, "₦");
+          if (col.header === "Date") {
+            value = `'${value}'`;
+          }
 
-        return `"${value}"`;
-      }).join(",")
-    ),
-  ];
+          value = value.toString().replace(/₦/g, "₦");
 
-  const csvString = "\uFEFF" + csvRows.join("\n");
+          return `"${value}"`;
+        }).join(",")
+      ),
+    ];
 
-  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-  saveAs(blob, filename);
-}; 
+    const csvString = "\uFEFF" + csvRows.join("\n");
+
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, filename);
+  }; 
 
    const insight  = analytics?.paymentMethodBreakdown?.insight
 

@@ -5,19 +5,16 @@ import {
   DownloadIcon,
   TrendingUp,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../../../components/Card";
 import { Link } from "react-router-dom";
 import AnalyticsChart from "./AnalyticsChart";
-import { useDispatch, useSelector } from "react-redux";
-import useAxiosPrivate from "@/services/hooks/useFormAxios";
-import useAuth from "../../../../services/hooks/useAuth";
-import DashboardService from "@/services/api/dashboardApi";
+import { useSelector } from "react-redux";
 import Spinner from '@/components/Spinner';
 import AnalyticsPie from "./AnalyticsPie";
 import TransactionDetails from "./TransactionDetails";
 import { formatEncodedDate } from "../../../../utils/formatEncodedDate";
-import { formatNumber } from "../../../../utils/formatNumber";
+import { saveAs } from "file-saver";
 
 const columns = [
     { header: "Date", render: row => formatEncodedDate(row.period) },
@@ -30,54 +27,24 @@ const columns = [
   ];
 
 const TransactionVolumeDashboard = () => {
-  const {auth} = useAuth();
-  const axiosPrivate = useAxiosPrivate();
-  const dispatch = useDispatch();
   const { analytics, analyticsLoading } = useSelector((state) => state.dashboard);
-  const dashboardService = useMemo(() => new DashboardService(axiosPrivate, auth), [axiosPrivate, auth]);
   const [interval, setInterval] = useState("Daily");
-  const [mode, setMode] = useState("NET_SETTLED");
   const [isLoading, setIsLoading] = useState(analyticsLoading)
    
-   const merchant = auth?.merchant
-   const merchantCode = merchant?.merchantCode;
-   const {env} = useSelector((state) => state.env)
+  //  const merchant = auth?.merchant
+  //  const merchantCode = merchant?.merchantCode;
+  //  const {env} = useSelector((state) => state.env)
 
-  useEffect(() => {
-  const fetchData = async () => {
-    try {
-      await dashboardService.fetchAnalytics(
-        merchantCode,
-        env,
-        interval,
-        mode,
-        dispatch
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  if (merchantCode) fetchData();
-}, [merchantCode, env, mode, interval, dispatch, dashboardService]);
+  // Removed API calls - using WebSocket only from main Dashboard
+  // Data comes through Redux store via WebSocket connection
 
   useEffect(() => {
     setIsLoading(analyticsLoading);
   }, [analyticsLoading]);
 
-
-  const handleModeChange = (newMode) => {
-    setMode(newMode);
-  };
-
   const handleIntervalChange = (e) => {
     setInterval(e.target.value);
   };
-
-  const formatNumber = (num) => {
-  if (num === null || num === undefined) return "0";
-  return Number(num).toLocaleString();
-};
 
 const exportToCSV = (data, filename = "analytics-details.csv") => {
   if (!data || data.length === 0) return;
@@ -117,17 +84,17 @@ const exportToCSV = (data, filename = "analytics-details.csv") => {
 const insight  = analytics?.paymentMethodBreakdown?.insight
 
   if (isLoading) return (
-     <div className='h-[80vh] w-full'>
-       <Spinner />
-     </div>
+    <div className='h-[80vh] w-full'>
+      <Spinner />
+    </div>
    );
 
 
   return (
     <div>
       <Link to="/" className="flex gap-3 text-sm md:text-md w-40 py-3 rounded-lg hover:bg-green-300 hover:text-white">
-                <ArrowLeft size="18px" />
-                <p>Back to overview</p>
+        <ArrowLeft size="18px" />
+        <p>Back to overview</p>
       </Link>
 
       <div className="flex my-5 text-sm md:text-md gap-1">

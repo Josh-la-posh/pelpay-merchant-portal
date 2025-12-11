@@ -10,11 +10,18 @@ function DashboardChart({ graph = [], type = 'Count', title,}) {
         totalCounts
     } = processGraphData(graph || []);
 
+    // Validate data arrays
+    const rawData = type === 'Count' ? successfulGraphCount : successfulGraphVolume;
+    const validData = Array.isArray(rawData) 
+        ? rawData.map(val => {
+            const num = Number(val);
+            return isNaN(num) ? 0 : num;
+          })
+        : [];
+
     const chartSeries = [{
         name: "Total Processed Volume",
-        data: type === 'Count'
-            ? successfulGraphCount
-            : successfulGraphVolume
+        data: validData
     }];
 
     const chartOptions = {

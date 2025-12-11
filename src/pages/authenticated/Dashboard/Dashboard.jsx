@@ -8,15 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import DashboardCards from "./component/DashboardCards";
 import DashboardChart from "./component/DashboardChart";
 import DashboardPie from "./component/DashboardPie";
-import Spinner from "@/components/Spinner";
 import ErrorLayout from "@/components/ErrorLayout";
 import TransactionTable from "../Transaction/components/TransactionTable";
-import { ArrowRight, DownloadIcon, SendHorizontalIcon, Shield } from "lucide-react";
+import { ArrowRight, DownloadIcon, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import TransactionForm from "../Transaction/components/TransactionForm";
 import { toggleEnv, setEnv } from "../../../redux/slices/envSlice";
 import SettingsService from '@/services/api/settingsApi';
-import { use } from "react";
 import Card from "../../../components/Card";
 import AnalyticsChart from "./component/AnalyticsChart";
 import { saveAs } from "file-saver";
@@ -65,7 +63,7 @@ function Dashboard() {
   const [errMsg, setErrMsg] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
-    // const {transactionPageNumber, transactionPageSize, transactionTotalSize, } = useSelector((state) => state.transaction);
+  // const {transactionPageNumber, transactionPageSize, transactionTotalSize, } = useSelector((state) => state.transaction);
   // const [pageNumber, setPageNumber] = useState(transactionPageNumber);
   // const [pageSize, setPageSize] = useState(transactionPageSize);
   // const [totalSize, setTotalSize] = useState(transactionTotalSize);
@@ -150,34 +148,17 @@ function Dashboard() {
     }
   }, [lumpsumError, graphError, analyticsError]);
 
-  const loadData = useCallback(async () => {
-    // Only fetch from API if WebSocket is not connected or not providing realtime data
-    if (merchantCode && !wsConnected) {
-      await dashboardService.fetchLumpsum(
-        merchantCode,
-        env,
-        interval,
-        dispatch
-      );
-      await dashboardService.fetchGraph(merchantCode, env, interval, dispatch);
-      await dashboardService.fetchAnalytics(merchantCode, env, interval, mode, dispatch)
-    }
-  }, [dashboardService, merchantCode, env, interval, mode, dispatch, wsConnected]);
+  // Removed API fallback - using WebSocket only
 
-  useEffect(() => {
-    if (!merchant) return;
-    // Load API data on initial mount or when WebSocket disconnects
-    if (!wsConnected) {
-      loadData();
-    }
-  }, [merchant, interval, dispatch, dashboardService, loadData, wsConnected]);
+  // useEffect(() => {
+  //   if (!merchant) return;
+  //   // Load API data on initial mount or when WebSocket disconnects
+  //   if (!wsConnected) {
+  //     loadData();
+  //   }
+  // }, [merchant, interval, dispatch, dashboardService, loadData, wsConnected]);
 
-  const loadTransactions = useCallback(async () => {
-    // Only fetch from API if WebSocket is not connected or not providing realtime data
-    if (merchantCode && !wsConnected) {
-      await dashboardService.fetchtransactions(merchantCode, env, dispatch);
-    }
-  }, [dashboardService, merchantCode, env, dispatch, wsConnected]);
+  // Removed API fallback - using WebSocket only
 
 // Join room whenever env / merchant / interval / mode changes
 useEffect(() => {
@@ -224,7 +205,7 @@ useEffect(() => {
       env: env === "Live" ? "Live" : "Test",
       interval: interval || "Daily",
       mode: mode || "OVER_VIEW",
-    });
+    }, auth?.data?.accessToken);
   };
 
   const handleTransactionUpdate = () => {
@@ -235,7 +216,7 @@ useEffect(() => {
       env: env === "Live" ? "Live" : "Test",
       interval: interval || "Daily",
       mode: mode || "OVER_VIEW",
-    });
+    }, auth?.data?.accessToken);
   };
 
   // Initial fetch when params change
@@ -244,7 +225,7 @@ useEffect(() => {
     env: env === "Live" ? "Live" : "Test",
     interval: interval || "Daily",
     mode: mode || "OVER_VIEW",
-  });
+  }, auth?.data?.accessToken);
 
   on("analytics", handleAnalytics);
   on("dashboard:update", handleDashboardUpdate);
@@ -260,32 +241,22 @@ useEffect(() => {
     off("transaction:new", handleTransactionUpdate);
     off("transaction:update", handleTransactionUpdate);
   };
-}, [on, off, dispatch, wsConnected, merchantCode, env, interval, mode, fetchAnalysis]);
+}, [on, off, dispatch, wsConnected, merchantCode, env, interval, mode, fetchAnalysis, auth]);
 
 
-  useEffect(() => {
-    if (!merchant) return;
-    // Load API data on initial mount or when WebSocket disconnects
-    if (!wsConnected) {
-      loadTransactions();
-    }
-  }, [merchant, dispatch, dashboardService, loadTransactions, wsConnected]);
+  // Removed API fallback - using WebSocket only
 
   const handleRefresh = useCallback(() => {
+    // Only refresh via WebSocket
     if (wsConnected) {
-      // If connected to WebSocket, request fresh data
       fetchAnalysis({
         room_id: merchantCode,
         env: env === "Live" ? "Live" : "Test",
         interval: interval || "Daily",
         mode: mode || "OVER_VIEW",
-      });
-    } else {
-      // Fallback to API calls when disconnected
-      loadData();
-      loadTransactions();
+      }, auth?.data?.accessToken);
     }
-  }, [wsConnected, fetchAnalysis, merchantCode, env, interval, mode, loadData, loadTransactions]);
+  }, [wsConnected, fetchAnalysis, merchantCode, env, interval, mode, auth]);
 
   const handleOpenModal = (val) => {
     setSelectedTransactionData(val);
@@ -444,7 +415,7 @@ useEffect(() => {
           </div>
 
           <div className="">
-            <DashboardCards lumpsum={mergedLumpsum} analytics={mergedAnalytics} onModeChange={(m) => setMode(m)} isRealtime={isRealtime} isLoading={isLoading}/>
+            <DashboardCards analytics={mergedAnalytics} isLoading={isLoading}/>
           </div>
 
           <div className="xl:grid grid-cols-7 gap-4">

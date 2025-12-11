@@ -60,11 +60,16 @@ const useWebSocket = (url) => {
     socketRef.current.emit("join_room", payload);
   }, []);
 
-  const fetchAnalysis = useCallback((payload) => {
+  const fetchAnalysis = useCallback((payload, token) => {
     // if (!socketRef.current?.connected) return;
 
-    console.log("Fetching analysis:", payload);
-    socketRef.current.emit("fetch_analysis", payload);
+    const enhancedPayload = {
+      ...payload,
+      token: token, // Include the auth token so backend can use it for API requests
+    };
+
+    console.log("Fetching analysis:", enhancedPayload);
+    socketRef.current.emit("fetch_analysis", enhancedPayload);
   }, []);
 
   const on = useCallback((event, callback) => {

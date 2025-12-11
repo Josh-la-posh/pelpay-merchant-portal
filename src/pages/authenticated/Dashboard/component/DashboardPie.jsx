@@ -9,7 +9,15 @@ function DashboardPie({ graph = [], type = 'Count' }) {
         totalTransactionsCount
     } = processLumpsumData(graph || []);
 
-    const pieSeries = type === 'Count' ? finalLumpsumCount : finalLumpsumVolume;
+    const rawSeries = type === 'Count' ? finalLumpsumCount : finalLumpsumVolume;
+    
+    // Validate series data - ensure all values are valid numbers
+    const pieSeries = Array.isArray(rawSeries) 
+        ? rawSeries.map(val => {
+            const num = Number(val);
+            return isNaN(num) ? 0 : num;
+          })
+        : [];
     const pieOptions = {
         chart: {
             type: 'donut',

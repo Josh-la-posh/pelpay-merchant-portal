@@ -10,12 +10,48 @@ export const processAnalyticsData = (analytics = []) => {
         };
     }
 
-    const sortedTrend = [...analytics].sort((a, b) => {
-        return new Date(formatEncodedDate(a.period)) - new Date(formatEncodedDate(b.period));
+    // Helper function to safely parse dates
+    const parseDate = (dateString) => {
+        if (!dateString) return null;
+        
+        try {
+            // Try formatted encoded date first
+            const formatted = formatEncodedDate(dateString);
+            const date = new Date(formatted);
+            
+            // Check if date is valid
+            if (!isNaN(date.getTime())) {
+                return date;
+            }
+        } catch (e) {
+            // If that fails, try parsing directly
+            try {
+                const date = new Date(dateString);
+                if (!isNaN(date.getTime())) {
+                    return date;
+                }
+            } catch (e2) {
+                console.warn('Invalid date format:', dateString);
+            }
+        }
+        
+        return null;
+    };
+
+    // Filter out items with invalid dates and sort
+    const validItems = analytics
+        .map(item => ({
+            ...item,
+            parsedDate: parseDate(item.period)
+        }))
+        .filter(item => item.parsedDate !== null);
+
+    const sortedTrend = validItems.sort((a, b) => {
+        return a.parsedDate - b.parsedDate;
     });
 
-    const dates = sortedTrend.map(item => new Date(formatEncodedDate(item.period)).toISOString());
-    const counts = sortedTrend.map(item => Number(item.transactionCount || item.totalAmount || item.countPercentage));
+    const dates = sortedTrend.map(item => item.parsedDate.toISOString());
+    const counts = sortedTrend.map(item => Number(item.transactionCount || item.totalAmount || item.countPercentage || 0));
     const amounts = sortedTrend.map(item => Number(item.totalAmount || 0));
     const avgAmounts = sortedTrend.map(item => Number(item.averageAmount || 0));
 
