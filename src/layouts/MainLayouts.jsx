@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import TextButton from '../components/ui/text-button';
 import { X } from 'lucide-react';
 import { TitleProvider } from '../services/context/TitleProvider';
+import { WebSocketProvider } from '../services/context/WebSocketProvider';
 
 const MainLayout = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -16,6 +17,7 @@ const MainLayout = () => {
   };
   return (
     <TitleProvider>
+      <WebSocketProvider>
         <div className="w-full h-svh max-h-svh bg-gray-100 relative">
         {openSidebar && (
           <div className='fixed top-0 left-0 w-48 z-50 block md:hidden'>
@@ -42,6 +44,7 @@ const MainLayout = () => {
           </main>
         </div>
       </div>
+      </WebSocketProvider>
     </TitleProvider>
   );
 };

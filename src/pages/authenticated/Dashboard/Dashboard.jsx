@@ -1,14 +1,11 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
-// import useAxiosPrivate from "@/services/hooks/useAxiosPrivate";
 import useAxiosPrivate from "@/services/hooks/useFormAxios";
-import DashboardService from "@/services/api/dashboardApi";
 import { useDispatch, useSelector } from "react-redux";
 import DashboardCards from "./component/DashboardCards";
 import DashboardChart from "./component/DashboardChart";
 import DashboardPie from "./component/DashboardPie";
-import ErrorLayout from "@/components/ErrorLayout";
 import TransactionTable from "../Transaction/components/TransactionTable";
 import { ArrowRight, DownloadIcon, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,12 +13,9 @@ import TransactionForm from "../Transaction/components/TransactionForm";
 import { toggleEnv, setEnv } from "../../../redux/slices/envSlice";
 import SettingsService from '@/services/api/settingsApi';
 import Card from "../../../components/Card";
-import AnalyticsChart from "./component/AnalyticsChart";
 import { saveAs } from "file-saver";
-import AnalyticsPie from "./component/AnalyticsPie";
-import useWebSocket from "@/services/hooks/useWebSocket";
+import { useGlobalWebSocket } from "@/services/context/WebSocketProvider";
 import { useDashboardData } from "@/services/hooks/useDashboardData";
-import { updateRealtimeAnalytics, setConnectionStatus } from "@/redux/slices/realtimeSlice";
 
 function Dashboard() {
   const { setAppTitle } = useTitle();
@@ -30,44 +24,20 @@ function Dashboard() {
   const { auth } = useAuth();
   const [interval, setInterval] = useState("Daily");
   const [ mode, setMode] = useState("")
-  const [transactionMode, setTransactionMode] = useState("Count");
+  const [transactionMode] = useState("Count");
 
   const user = auth?.data.user;
   const merchant = auth?.merchant;
   const merchantCode = merchant?.merchantCode;
-  const dashboardService = useMemo(() => new DashboardService(axiosPrivate, auth), [axiosPrivate, auth]);
   const settingsService = useMemo(() => new SettingsService(axiosPrivate), [axiosPrivate]);
   
-  // WEB SOCKET SETUP
-  const wsUrl = import.meta.env.VITE_WEBSOCKET_URL;
-  const { on, off, joinRoom, fetchAnalysis, isConnected: wsConnected } = useWebSocket(wsUrl);
+  // Use global WebSocket - room is already joined
+  const { fetchAnalysis, isConnected: wsConnected } = useGlobalWebSocket();
 
   // Use merged data from realtime and API - pass WebSocket connection status
-  const { analytics: mergedAnalytics, lumpsum: mergedLumpsum, graph: mergedGraph, transactions: mergedTransactions, isRealtime } = useDashboardData();
-  
-  const {
-    lumpsumLoading,
-    lumpsumError,
-    graphLoading,
-    graphError,
-    transactionLoading,
-    transactionError,
-    analyticsLoading,
-    analyticsError,
-  } = useSelector((state) => state.dashboard);
-
-  const [isLumpsumLoading, setIsLumpsumLoading] = useState(lumpsumLoading);
-  const [isGraphLoading, setIsGraphLoading] = useState(graphLoading);
-  const [isAnalyticsLoading, setIsAnalyticsLoading] = useState(analyticsLoading)
-  const [isLoading, setIsLoading] = useState(analyticsLoading)
-  const [errMsg, setErrMsg] = useState("");
+  const { analytics: mergedAnalytics, transactions: mergedTransactions } = useDashboardData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
-  // const {transactionPageNumber, transactionPageSize, transactionTotalSize, } = useSelector((state) => state.transaction);
-  // const [pageNumber, setPageNumber] = useState(transactionPageNumber);
-  // const [pageSize, setPageSize] = useState(transactionPageSize);
-  // const [totalSize, setTotalSize] = useState(transactionTotalSize);
-  // const [currentFilters, setCurrentFilters] = useState({});
 
   const { env, token } = useSelector((state) => state.env);
   const { complianceStatus } = useSelector((state) => state.compliance || {});
@@ -100,7 +70,7 @@ function Dashboard() {
   
   useEffect(()=>{
     if(Array.isArray(getRolePermission) && getRolePermission.length > 0){
-        setRoleGotten(true);
+      setRoleGotten(true);
     }
   }, []) 
 
@@ -121,142 +91,17 @@ function Dashboard() {
     return () => { cancelled = true; };
   }, [settingsService, dispatch]);
 
+  // Fetch data when params change - room is already joined globally
   useEffect(() => {
-    setIsLumpsumLoading(lumpsumLoading);
-  }, [lumpsumLoading]);
+    if (!merchantCode || !wsConnected) return;
 
-  useEffect(() => {
-    setIsGraphLoading(graphLoading);
-  }, [graphLoading]);
-
-  useEffect(() => {
-    setIsAnalyticsLoading(analyticsLoading);
-  }, [analyticsLoading])
-
-  useEffect(() => {
-    setIsLoading(analyticsLoading);
-  }, [analyticsLoading])
-
-  useEffect(() => {
-    if (lumpsumError !== null) {
-      setErrMsg(lumpsumError);
-    } else if (graphError !== null) {
-      setErrMsg(graphError);
-    }
-    else{
-      setErrMsg(analyticsError)
-    }
-  }, [lumpsumError, graphError, analyticsError]);
-
-  // Removed API fallback - using WebSocket only
-
-  // useEffect(() => {
-  //   if (!merchant) return;
-  //   // Load API data on initial mount or when WebSocket disconnects
-  //   if (!wsConnected) {
-  //     loadData();
-  //   }
-  // }, [merchant, interval, dispatch, dashboardService, loadData, wsConnected]);
-
-  // Removed API fallback - using WebSocket only
-
-// Join room whenever env / merchant / interval / mode changes
-useEffect(() => {
-  if (!merchantCode) return;
-
-  joinRoom({
-    room_id: merchantCode,
-    env: env === "Live" ? "Live" : "Test",
-    interval: interval || "Daily",
-    mode: mode || "OVER_VIEW",
-  });
-
-}, [merchantCode, env, interval, mode, joinRoom, fetchAnalysis]);
-
-// Join room whenever env / merchant / interval / mode changes
-// useEffect(() => {
-//   if (!merchantCode) return;
-
-//   fetchAnalysis({
-//     room_id: merchantCode,
-//     env: env === "Live" ? "Live" : "Test",
-//     interval: interval || "Daily",
-//     mode: mode || "OVER_VIEW",
-//   });
-
-// }, [merchantCode, env, interval, mode, joinRoom, fetchAnalysis]);
-
-
-// Listen for real-time events
-useEffect(() => {
-  if (!on || !off) return;
-
-  const handleAnalytics = (data) => {
-    console.log("📊 Real-time analytics update:", data);
-    // Data is automatically processed in the realtimeSlice
-    dispatch(updateRealtimeAnalytics(data));
-  };
-
-  const handleDashboardUpdate = () => {
-    console.log("⚡ Real-time dashboard update received");
-    // Refresh analytics when dashboard updates
     fetchAnalysis({
       room_id: merchantCode,
       env: env === "Live" ? "Live" : "Test",
-      interval: interval || "Daily",
+      intervals: interval || "Daily",
       mode: mode || "OVER_VIEW",
-    }, auth?.data?.accessToken);
-  };
-
-  const handleTransactionUpdate = () => {
-    console.log("📡 Real-time transaction update");
-    // Fetch fresh analytics which includes transaction data
-    fetchAnalysis({
-      room_id: merchantCode,
-      env: env === "Live" ? "Live" : "Test",
-      interval: interval || "Daily",
-      mode: mode || "OVER_VIEW",
-    }, auth?.data?.accessToken);
-  };
-
-  // Initial fetch when params change
-  fetchAnalysis({
-    room_id: merchantCode,
-    env: env === "Live" ? "Live" : "Test",
-    interval: interval || "Daily",
-    mode: mode || "OVER_VIEW",
-  }, auth?.data?.accessToken);
-
-  on("analytics", handleAnalytics);
-  on("dashboard:update", handleDashboardUpdate);
-  on("transaction:new", handleTransactionUpdate);
-  on("transaction:update", handleTransactionUpdate);
-
-  // Update connection status
-  dispatch(setConnectionStatus(wsConnected));
-
-  return () => {
-    off("analytics", handleAnalytics);
-    off("dashboard:update", handleDashboardUpdate);
-    off("transaction:new", handleTransactionUpdate);
-    off("transaction:update", handleTransactionUpdate);
-  };
-}, [on, off, dispatch, wsConnected, merchantCode, env, interval, mode, fetchAnalysis, auth]);
-
-
-  // Removed API fallback - using WebSocket only
-
-  const handleRefresh = useCallback(() => {
-    // Only refresh via WebSocket
-    if (wsConnected) {
-      fetchAnalysis({
-        room_id: merchantCode,
-        env: env === "Live" ? "Live" : "Test",
-        interval: interval || "Daily",
-        mode: mode || "OVER_VIEW",
-      }, auth?.data?.accessToken);
-    }
-  }, [wsConnected, fetchAnalysis, merchantCode, env, interval, mode, auth]);
+    });
+  }, [wsConnected, merchantCode, env, interval, mode, fetchAnalysis]);
 
   const handleOpenModal = (val) => {
     setSelectedTransactionData(val);
@@ -270,7 +115,7 @@ useEffect(() => {
 
   const [updatingEnv, setUpdatingEnv] = useState(false);
   const handleToggleEnv = async () => {
-    if (complianceStatus !== 'approved' || updatingEnv) return; // guard
+    if (complianceStatus !== 'approved' || updatingEnv) return;
     const nextLive = !isLive;
     const newEnv = nextLive ? 'Live' : 'Test';
     setUpdatingEnv(true);
@@ -291,43 +136,27 @@ useEffect(() => {
     setInterval(selected);
   };
 
-  const exportToCSV = (data, filename = "transactions.csv", columns) => {
-  if (!data || data.length === 0) return;
+  const exportToCSV = (data, filename = "transactions.csv") => {
+    if (!data || data.length === 0) return;
 
-  const headers = Object.keys(data[0]);
+    const headers = Object.keys(data[0]);
 
-  const csvRows = [
-    headers.join(","), 
-    ...data.map(row => 
-      headers.map(field => `"${row[field] ?? ""}"`).join(",")
-    ),
-  ];
+    const csvRows = [
+      headers.join(","), 
+      ...data.map(row => 
+        headers.map(field => `"${row[field] ?? ""}"`).join(",")
+      ),
+    ];
 
-  const csvString = csvRows.join("\n");
+    const csvString = csvRows.join("\n");
 
-  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-  saveAs(blob, filename);
-};
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, filename);
+  };
 
-
-  if (errMsg !== null)
-    return <ErrorLayout errMsg={errMsg} handleRefresh={handleRefresh} />;
-
-  // if (isLoading) return (
-  //   <div className='h-[80vh] w-full '>
-  //     <Spinner />
-  //   </div>
-  // );
   return (
     <div>
       <div className="relative">
-        {/* <div
-          className={`absolute h-[100%] w-full bg-gray-100 ${
-              isAnalyticsLoading ? "block" : "hidden"
-          }`}
-        >
-          <Spinner />
-        </div> */}
         <div className="space-y-8">
           <div className="">
             {complianceStatus &&  !complianceIsApproved && (
@@ -394,7 +223,6 @@ useEffect(() => {
                   ) :(
                     ""
                 )}
-
                 <div className="mt-4">
                   <select
                     id="interval"
@@ -402,7 +230,7 @@ useEffect(() => {
                     value={interval}
                     className="border border-gray-300 p-1 md:p-2 rounded-md md:w-50 outline-green-300 z-40"
                   >
-                    <option value="Today">Today</option>
+                    <option value="Daily">Today</option>
                     <option value="Weekly">Last 7 days</option>
                     <option value="Monthly">Last 30 days</option>
                     <option value="Yearly">Yearly</option>
@@ -411,18 +239,17 @@ useEffect(() => {
                 </div>
               </div>
             </div>
-           
           </div>
 
           <div className="">
-            <DashboardCards analytics={mergedAnalytics} isLoading={isLoading}/>
+            <DashboardCards analytics={mergedAnalytics} onModeChange={setMode}/>
           </div>
 
-          <div className="xl:grid grid-cols-7 gap-4">
+          {/* <div className="xl:grid grid-cols-7 gap-4"> */}
           <div className="bg-white col-span-5 mb-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-4 sm:px-8 border-b border-b-gray-300 space-y-5 sm:space-y-0">
+            {/* <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-4 sm:px-8 border-b border-b-gray-300 space-y-5 sm:space-y-0">
               <p className="text-2xl md:text-xl lg:text-2xl font-[800]">
-                Transaction {transactionMode}
+                Revenue Trend Over Time
               </p>
               <div>
                 <button
@@ -466,61 +293,17 @@ useEffect(() => {
                   Yearly
                 </button>
               </div>
-            </div>
+            </div> */}
             <div className="xl:grid grid-cols-4">
               <div className="col-span-4 p-4 border-r border-r-gray-300">
-                <DashboardChart graph={mergedGraph} type={transactionMode} />
+                <DashboardChart trendLine={mergedAnalytics?.trendLine} type={transactionMode} title="Revenue Trend Over Time" subTitle="Total Processed Volume (₦M)" />
               </div>
-              {/* <div className="hidden xl:block py-4 px-5">
-                <DashboardCards lumpsum={lumpsum} />
-              </div> */}
             </div>
           </div>
-          <div className="bg-white col-span-2 border-b border-b-gray-300">
-            <p className="text-2xl md:text-xl lg:text-2xl font-[800] mb-5 py-5 px-6 border-b border-b-gray-300">
-              {transactionMode}
-            </p>
-            <div className="flex justify-center mb-5">
-              <button
-                onClick={() => setTransactionMode("Count")}
-                className={`${
-                  transactionMode === "Count"
-                    ? "bg-gray-200 shadow-md text-priColor font-[600]"
-                    : "font-[500] text-gray-300"
-                } text-sm px-5 py-2 rounded-md`}
-              >
-                Count
-              </button>
-              <button
-                onClick={() => setTransactionMode("Volume")}
-                className={`${
-                  transactionMode === "Volume"
-                    ? "bg-gray-200 shadow-md text-priColor font-[600]"
-                    : "font-[500] text-gray-300"
-                } text-sm px-5 py-2 rounded-md`}
-              >
-                Volume
-              </button>
-            </div>
-            <div className="border-b border-b-gray-300 pb-8">
-              <DashboardPie graph={mergedLumpsum} type={transactionMode} />
-            </div>
-          </div>
-          </div>
 
-
-          <div className="col-span-3 p-4 border-r border-r-gray-300 text-blue-300">
-            <AnalyticsChart 
-                analytics={mergedAnalytics?.trendLine}
-                type="count"
-                title="Total Processed Volume (₦M)"
-                name="Total Processed Volume"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
               <div className="col-span-2">
-                <AnalyticsPie analytics={mergedAnalytics?.paymentmethodBreakdown}  title={"Volume Breakdown by Payment Method"}/>
+                <DashboardPie graph={mergedAnalytics?.paymentmethodBreakdown} title={"Channel Performance Breakdown"}/>
               </div>
               <div className="h-full">
                 <Link to="/analytics/dispute-ratio" className="h-full block" >

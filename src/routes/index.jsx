@@ -2,7 +2,6 @@ import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayouts';
 import RequireAuth from '../services/hooks/RequiredAuth';
-import Spinner from '../components/Spinner';
 
 // unauthenticated pages
 const LoginPage = lazy(() => import('../pages/unauthenticated/Login/LoginPage'));
@@ -17,10 +16,7 @@ const MerchantLayout = lazy(() => import('../layouts/MerchantLayout'));
 
 // authenticated pages (lazy)
 const Dashboard = lazy(() => import('../pages/authenticated/Dashboard/Dashboard'));
-const TotalProcessedDashboard = lazy(() => import('../pages/authenticated/Dashboard/component/TotalProcessedDashboard'));
-const SettledVolumeDashboard = lazy(() => import('../pages/authenticated/Dashboard/component/SettledVolumeDashboard'));
-const TransactionVolumeDashboard = lazy(() => import('../pages/authenticated/Dashboard/component/TransactionVolumeDashboard'));
-const RevenueGrowthDashboard = lazy(() => import('../pages/authenticated/Dashboard/component/RevenueGrowthDashboard'));
+const AnalyticsDetailPage = lazy(() => import('../pages/authenticated/Dashboard/component/AnalyticsDetailPage'));
 const DisputeDashboard = lazy(() => import('../pages/authenticated/Dashboard/component/DisputeDashboard'));
 const CustomersPage = lazy(() => import('../pages/authenticated/Customers/Customers'));
 const DisputesPage = lazy(() => import('../pages/authenticated/Disputes/Disputes'));
@@ -81,10 +77,10 @@ const RoutesSystem = () => {
       <Route element={<RequireAuth />}>
         <Route path='/' element={<MainLayout />}>
           <Route path="/" element={<Dashboard />} ></Route>
-          <Route path='/analytics/total-processed-volume' element={<TotalProcessedDashboard/>}/>
-          <Route path='/analytics/net-settled-volume' element={<SettledVolumeDashboard/>}/>
-          <Route path='/analytics/average-transaction-value' element={<TransactionVolumeDashboard/>}/>
-          <Route path='/analytics/revenue-growth-rate' element={<RevenueGrowthDashboard/>}/>
+          <Route path='/analytics/total-processed-volume' element={<AnalyticsDetailPage mode="OVER_VIEW"/>}/>
+          <Route path='/analytics/net-settled-volume' element={<AnalyticsDetailPage mode="NET_SETTLED"/>}/>
+          <Route path='/analytics/average-transaction-value' element={<AnalyticsDetailPage mode="AVERAGE_TRANSACTION_VALUE"/>}/>
+          <Route path='/analytics/revenue-growth-rate' element={<AnalyticsDetailPage mode="REVENUE_GROWTH_RATE"/>}/>
           <Route path='/analytics/dispute-ratio' element={<DisputeDashboard/>}/>
           <Route path="customers" element={<CustomersPage />} />
           <Route path="disputes" element={<DisputesPage />} />

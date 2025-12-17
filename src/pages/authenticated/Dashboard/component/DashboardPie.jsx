@@ -1,23 +1,32 @@
 import ReactApexChart from "react-apexcharts";
-import { processLumpsumData } from "@/data/processedLumpsumData";
 import PropTypes from 'prop-types';
+import { formatNumber } from "../../../../utils/formatNumber";
 
-function DashboardPie({ graph = [], type = 'Count' }) {
-    const {
-        finalLumpsumCount,
-        finalLumpsumVolume,
-        totalTransactionsCount
-    } = processLumpsumData(graph || []);
+function DashboardPie({ graph = {}, type = 'Count', title }) {
+    const breakDown = graph?.BreakDown || graph?.breakDown || [];
 
-    const rawSeries = type === 'Count' ? finalLumpsumCount : finalLumpsumVolume;
-    
-    // Validate series data - ensure all values are valid numbers
-    const pieSeries = Array.isArray(rawSeries) 
-        ? rawSeries.map(val => {
-            const num = Number(val);
-            return isNaN(num) ? 0 : num;
-          })
-        : [];
+    // Extract data from breakDown array
+    const validData = breakDown.filter(item => {
+        if (!item) return false;
+        const channelCode = item.ChannelCode ?? item.channelCode;
+        return channelCode != null;
+    });
+
+    // Get series data based on type
+    const pieSeries = validData.map((item) => {
+        const rawValue = type === 'Count' 
+            ? (item.TransactionCount ?? item.transactionCount ?? 0)
+            : (item.TotalAmount ?? item.totalAmount ?? 0);
+        // Handle string values like "16356.00"
+        const num = Number(rawValue);
+        return isNaN(num) ? 0 : num;
+    });
+
+    const pieLabels = validData.map((item) => item.ChannelCode ?? item.channelCode ?? 'Unknown');
+
+    // Calculate total
+    const totalTransactionsCount = pieSeries.reduce((sum, val) => sum + val, 0);
+
     const pieOptions = {
         chart: {
             type: 'donut',
@@ -32,8 +41,7 @@ function DashboardPie({ graph = [], type = 'Count' }) {
             fontSize: '13px',
             width: 220           
         },
-        labels: ['Bank Transfer', 'Card Payments', 'USSD', 'Fund Transfer', 'Wallets', 'Other'],
-        // labels: ['Success', 'Processing', 'Failed', 'Pending', 'Otp', 'Cancel'],
+        labels: pieLabels.length > 0 ? pieLabels : ['Bank Transfer', 'Card Payments', 'USSD', 'Fund Transfer', 'Wallets', 'Other'],
         plotOptions: {
             pie: {
                 donut: {
@@ -79,14 +87,78 @@ function DashboardPie({ graph = [], type = 'Count' }) {
         ],
     };
 
-    if (totalTransactionsCount === 0) return (
+    if (validData.length === 0 || totalTransactionsCount === 0) return (
         <div className="text-md font-[600] w-full h-[32vh] flex items-center justify-center bg-white">No Data</div>
     )
 
+    if (breakDown.length === 0)
+        return (
+        <div className="text-md font-[600] w-full h-[32vh] flex items-center justify-center bg-white">
+            No Data
+        </div>
+        );
+
+    const colors = pieOptions?.fill?.colors || [];
+
+    const tableRows = breakDown.map((item, idx) => {
+        const rawPercentage = item.CountPercentage ?? item.countPercentage ?? "";
+        // Handle percentage strings like "36.36%"
+        const cleanPercentage = typeof rawPercentage === 'string' 
+            ? parseFloat(rawPercentage.replace('%', '')) 
+            : rawPercentage;
+        
+        return {
+            method: item.ChannelCode ?? item.channelCode,
+            value: Number(item.TotalAmount ?? item.totalAmount ?? item.AverageAmount ?? item.averageAmount ?? 0),
+            share: isNaN(cleanPercentage) ? 0 : cleanPercentage,
+            color: colors[idx % colors.length],
+        };
+    });
+
+    const finalTotal = tableRows.reduce((sum, row) => sum + row.value, 0);
+
     return (
-         <div className="bg-white rounded-lg p-8 mt-10">
-            <h3 className="text-xl font-bold">Volume Breakdown by Payment Method</h3>
-            <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
+         <div className="bg-white rounded-lg p-8">
+            <h3 className="text-xl font-semibold">{title}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+                <div className="md:col-span-2">
+                    <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
+                </div>
+                <div className="mt-8 overflow-x-auto scrollbar-none">
+                    <table className=" text-left">
+                    <thead className="text-gray-500">
+                        <tr>
+                        <th className="px-4 py-2 border-b">Method</th>
+                        <th className="px-4 py-2 border-b">Value</th>
+                        <th className="px-4 py-2 border-b">Share</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tableRows.map((row, idx) => (
+                        <tr key={idx} className="hover:bg-gray-50">
+                            <td className="px-4 py-2 border-b">
+                            <span
+                                className="w-3 h-3 rounded-full inline-block mr-2"
+                                style={{ backgroundColor: row.color }}
+                            ></span>
+                            {row.method}
+                            </td>
+                            <td className="px-4 py-2 border-b">
+                            ₦{formatNumber(row.value)}
+                            </td>
+                            <td className="px-4 py-2 border-b">{row.share}%</td>
+                        </tr>
+                        ))}
+
+                        <tr className="font-bold bg-gray-100/50">
+                        <td className="px-4 py-2 border-b">Total</td>
+                        <td className="px-4 py-2 border-b">₦{formatNumber(finalTotal)}</td>
+                        <td className="px-4 py-2 border-b">100%</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
          </div>
     );
   }
@@ -94,6 +166,7 @@ function DashboardPie({ graph = [], type = 'Count' }) {
   export default DashboardPie;
 
 DashboardPie.propTypes = {
-    graph: PropTypes.array,
+    graph: PropTypes.object,
     type: PropTypes.string,
+    title: PropTypes.string,
 };

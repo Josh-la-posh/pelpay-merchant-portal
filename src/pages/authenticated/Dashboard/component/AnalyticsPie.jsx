@@ -1,21 +1,28 @@
 import ReactApexChart from "react-apexcharts";
 
 function AnalyticsPie({ analytics = {}, type = "Count", title }) {
-  const breakDown = analytics?.breakDown || [];
+  // Handle both PascalCase (WebSocket) and camelCase keys
+  const breakDown = analytics?.BreakDown || analytics?.breakDown || [];
+  const insight = analytics?.Insight || analytics?.insight || "";
 
-  // Validate and filter out invalid data
-  const validData = breakDown.filter(item => 
-    item && 
-    item.channelCode && 
-    (item.transactionCount != null || item.countPercentage != null)
-  );
+  // Validate and filter out invalid data - handle both PascalCase and camelCase
+  const validData = breakDown.filter(item => {
+    if (!item) return false;
+    const channelCode = item.ChannelCode ?? item.channelCode;
+    const transactionCount = item.TransactionCount ?? item.transactionCount;
+    const countPercentage = item.CountPercentage ?? item.countPercentage;
+    return channelCode && (transactionCount != null || countPercentage != null);
+  });
 
   const pieSeries = validData.map((item) => {
-    const value = Number(item.transactionCount || item.countPercentage || 0);
+    const rawValue = item.TransactionCount ?? item.transactionCount ?? item.CountPercentage ?? item.countPercentage ?? 0;
+    // Handle percentage strings like "36.36%"
+    const cleanValue = typeof rawValue === 'string' ? parseFloat(rawValue.replace('%', '')) : rawValue;
+    const value = Number(cleanValue);
     return isNaN(value) ? 0 : value;
   });
 
-  const pieLabels = validData.map((item) => item.channelCode || 'Unknown');
+  const pieLabels = validData.map((item) => item.ChannelCode ?? item.channelCode ?? 'Unknown');
 
   //   const totalTransactionsCount = breakDown.reduce(
   //     (sum, item) =>
@@ -104,12 +111,20 @@ function AnalyticsPie({ analytics = {}, type = "Count", title }) {
 
   const colors = pieOptions?.fill?.colors || [];
 
-  const tableRows = breakDown.map((item, idx) => ({
-    method: item.channelCode,
-    value: Number(item.totalAmount || item.averageAmount),
-    share: Number(item.countPercentage || ""),
-    color: colors[idx % colors.length],
-  }));
+  const tableRows = breakDown.map((item, idx) => {
+    const rawPercentage = item.CountPercentage ?? item.countPercentage ?? "";
+    // Handle percentage strings like "36.36%"
+    const cleanPercentage = typeof rawPercentage === 'string' 
+      ? parseFloat(rawPercentage.replace('%', '')) 
+      : rawPercentage;
+    
+    return {
+      method: item.ChannelCode ?? item.channelCode,
+      value: Number(item.TotalAmount ?? item.totalAmount ?? item.AverageAmount ?? item.averageAmount ?? 0),
+      share: isNaN(cleanPercentage) ? 0 : cleanPercentage,
+      color: colors[idx % colors.length],
+    };
+  });
 
   const finalTotal = tableRows.reduce((sum, row) => sum + row.value, 0);
 

@@ -15,6 +15,22 @@ export const processAnalyticsData = (analytics = []) => {
         if (!dateString) return null;
         
         try {
+            // Handle year-month format like "2025-12"
+            if (/^\d{4}-\d{2}$/.test(dateString)) {
+                const date = new Date(dateString + '-01');
+                if (!isNaN(date.getTime())) {
+                    return date;
+                }
+            }
+            
+            // Handle year only format like "2025"
+            if (/^\d{4}$/.test(dateString)) {
+                const date = new Date(dateString + '-01-01');
+                if (!isNaN(date.getTime())) {
+                    return date;
+                }
+            }
+            
             // Try formatted encoded date first
             const formatted = formatEncodedDate(dateString);
             const date = new Date(formatted);
@@ -38,12 +54,15 @@ export const processAnalyticsData = (analytics = []) => {
         return null;
     };
 
-    // Filter out items with invalid dates and sort
+    // Filter out items with invalid dates and sort - handle both PascalCase and camelCase
     const validItems = analytics
-        .map(item => ({
-            ...item,
-            parsedDate: parseDate(item.period)
-        }))
+        .map(item => {
+            const period = item.Period ?? item.period;
+            return {
+                ...item,
+                parsedDate: parseDate(period)
+            };
+        })
         .filter(item => item.parsedDate !== null);
 
     const sortedTrend = validItems.sort((a, b) => {
@@ -51,9 +70,23 @@ export const processAnalyticsData = (analytics = []) => {
     });
 
     const dates = sortedTrend.map(item => item.parsedDate.toISOString());
-    const counts = sortedTrend.map(item => Number(item.transactionCount || item.totalAmount || item.countPercentage || 0));
-    const amounts = sortedTrend.map(item => Number(item.totalAmount || 0));
-    const avgAmounts = sortedTrend.map(item => Number(item.averageAmount || 0));
+    
+    // Handle both PascalCase (WebSocket) and camelCase keys
+    const counts = sortedTrend.map(item => {
+        const value = item.TransactionCount ?? item.transactionCount ?? item.TotalAmount ?? item.totalAmount ?? 0;
+        return Number(value) || 0;
+    });
+    
+    const amounts = sortedTrend.map(item => {
+        const value = item.TotalAmount ?? item.totalAmount ?? 0;
+        // Handle string amounts like "16356.00"
+        return Number(value) || 0;
+    });
+    
+    const avgAmounts = sortedTrend.map(item => {
+        const value = item.AverageAmount ?? item.averageAmount ?? 0;
+        return Number(value) || 0;
+    });
 
     return { dates, counts, amounts, avgAmounts };
 };

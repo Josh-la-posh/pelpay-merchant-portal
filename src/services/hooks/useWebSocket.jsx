@@ -5,9 +5,7 @@ const useWebSocket = (url) => {
   const socketRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  // --------------------------
   // INITIAL CONNECTION
-  // --------------------------
   useEffect(() => {
     if (!url) return;
 
@@ -27,18 +25,17 @@ const useWebSocket = (url) => {
     });
 
     socket.on("disconnect", (reason) => {
-      console.warn("❌ WebSocket disconnected:", reason);
+      console.warn("WebSocket disconnected:", reason);
       setIsConnected(false);
     });
 
     socket.on("connect_error", (error) => {
-      console.error("⚠️ WebSocket connection failed:", error.message);
+      console.error("WebSocket connection failed:", error.message);
       setIsConnected(false);
-      // DO NOT FORCE DISCONNECT — allow reconnection attempts
     });
 
     socket.on("error", (err) => {
-      console.error("❌ WebSocket error:", err);
+      console.error("WebSocket error:", err);
     });
 
     return () => {
@@ -50,9 +47,6 @@ const useWebSocket = (url) => {
     };
   }, [url]);
 
-  // -----------------------------------
-  // EMITTER: JOIN ROOM (Corrected API)
-  // -----------------------------------
   const joinRoom = useCallback((payload) => {
     // if (!socketRef.current?.connected) return;
 
@@ -60,16 +54,21 @@ const useWebSocket = (url) => {
     socketRef.current.emit("join_room", payload);
   }, []);
 
-  const fetchAnalysis = useCallback((payload, token) => {
-    // if (!socketRef.current?.connected) return;
+  const fetchAnalysis = useCallback((payload) => {
+    if (!socketRef.current) {
+      console.warn("Cannot fetch analysis, socket not initialized.");
+      return;
+    }
 
+    // Map 'interval' to 'intervals' as backend expects 'intervals'
     const enhancedPayload = {
       ...payload,
-      token: token, // Include the auth token so backend can use it for API requests
+      // intervals: payload.interval || payload.intervals,
     };
 
     console.log("Fetching analysis:", enhancedPayload);
-    socketRef.current.emit("fetch_analysis", enhancedPayload);
+    // Backend listens for "fetch-analysis" (with hyphen)
+    socketRef.current.emit("fetch-analysis", enhancedPayload);
   }, []);
 
   const on = useCallback((event, callback) => {
@@ -80,13 +79,13 @@ const useWebSocket = (url) => {
     if (socketRef.current) socketRef.current.off(event, callback);
   }, []);
 
-  const emit = useCallback((event, data) => {
+  const emit = (event, data) => {
     if (socketRef.current?.connected) {
       socketRef.current.emit(event, data);
     } else {
       console.warn("⚠️ Cannot emit, socket not connected.");
     }
-  }, []);
+  };
 
   return { socket: socketRef.current, on, off, emit, joinRoom, fetchAnalysis, isConnected };
 };
