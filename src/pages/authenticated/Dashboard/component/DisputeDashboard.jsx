@@ -3,10 +3,8 @@ import {
   ArrowLeft,
   CheckCircleIcon,
   ChevronRight,
-  DownloadIcon,
-  TrendingUp,
+  DownloadIcon
 } from "lucide-react";
-import React from "react";
 import DashboardChart from "./DashboardChart";
 import DashboardPie from "./DashboardPie";
 import TransactionTable from "../../Transaction/components/TransactionTable";

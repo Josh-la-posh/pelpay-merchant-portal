@@ -2,6 +2,7 @@ import { ArrowLeft, CheckCircleIcon, ChevronRight, DownloadIcon, TrendingUp } fr
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import Card from "../../../../components/Card";
+import PropTypes from 'prop-types';
 import { useSelector } from "react-redux";
 import useAuth from "../../../../services/hooks/useAuth";
 import TransactionDetails from "./TransactionDetails";
@@ -89,16 +90,16 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
   const initialInterval = searchParams.get('interval') || 'Daily';
 
   const columns = [
-    { header: "Date", render: row => formatEncodedDate(row.Period ?? row.period) },
-    { header: "Channel", render: row => row.ChannelCode ?? row.channelCode },
-    { header: "Transactions", render: row => row.TransactionCount ?? row.transactionCount },
+    { header: "Date", render: row => formatEncodedDate(row?.Period ?? row?.period) },
+    { header: "Channel", render: row => row?.ChannelCode ?? row?.channelCode },
+    { header: "Transactions", render: row => row?.TransactionCount ?? row?.transactionCount },
     { 
       header: "Volume", 
-      render: row => `₦${formatNumber(row.TotalAmount ?? row.totalAmount ?? 0)}`
+      render: row => `₦${formatNumber(row?.TotalAmount ?? row?.totalAmount ?? 0)}`
     },
     { 
       header: "Share", 
-      render: row => `${row.CountPercentage ?? row.countPercentage ?? 0}%`
+      render: row => `${row?.CountPercentage ?? row?.countPercentage ?? 0}%`
     }
   ];
 
@@ -114,7 +115,7 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
   const { fetchAnalysis, isConnected } = useGlobalWebSocket();
 
   // Get config for current mode
-  const config = MODE_CONFIG[mode] || MODE_CONFIG.OVER_VIEW;
+  const config = MODE_CONFIG[mode] || MODE_CONFIG?.OVER_VIEW;
 
   // Fetch data when params change
   useEffect(() => {
@@ -152,8 +153,8 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
           let value = "";
           if (col.render) {
             value = col.render(row) ?? "";
-          } else if (col.accessor) {
-            value = row[col.accessor] ?? "";
+          } else if (col?.accessor) {
+            value = row[col?.accessor] ?? "";
           }
           if (col.header === "Date") {
             value = `'${value}'`;
@@ -173,11 +174,11 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
   const renderCardValue = (cardConfig) => {
     if (isLoading) return '---';
     
-    const value = getNestedValue(mergedAnalytics, cardConfig.valueKey);
+    const value = getNestedValue(mergedAnalytics, cardConfig?.valueKey);
     if (value === null || value === undefined) return '₦0';
     
-    const prefix = cardConfig.prefix || '';
-    const suffix = cardConfig.suffix || '';
+    const prefix = cardConfig?.prefix || '';
+    const suffix = cardConfig?.suffix || '';
     
     if (prefix === '₦') {
       return `${prefix}${formatNumber(value)}${suffix}`;
@@ -187,9 +188,9 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
 
   // Render card subtitle
   const renderCardSubtitle = (cardConfig) => {
-    if (cardConfig.subtitle2) return undefined;
-    if (cardConfig.subtitleKey) {
-      const value = getNestedValue(mergedAnalytics, cardConfig.subtitleKey);
+    if (cardConfig?.subtitle2) return undefined;
+    if (cardConfig?.subtitleKey) {
+      const value = getNestedValue(mergedAnalytics, cardConfig?.subtitleKey);
       return value || '';
     }
     return undefined;
@@ -215,16 +216,16 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
           <span className="text-gray-500">Dashboard</span>
         </Link>
         <ChevronRight className="text-gray-500 mt-0.5" size="18px" />
-        <span className="font-bold">{config.title}</span>
+        <span className="font-bold">{config?.title}</span>
       </div>
 
       <div className="flex justify-between">
         <div className="my-2">
           <h2 className="text-lg font-bold sm:text-xl md:text-3xl md:font-bold">
-            {config.title} — Detailed Analytics
+            {config?.title} — Detailed Analytics
           </h2>
           <p className="text-gray-500 py-3 text-[11px] sm:text-[18px]">
-            {config.subtitle}
+            {config?.subtitle}
           </p>
         </div>
 
@@ -247,8 +248,8 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
         <DashboardChart 
           trendLine={mergedAnalytics?.trendLine} 
           type="Count" 
-          title={config.chartTitle}
-          subTitle={config.chartName}
+          title={config?.chartTitle}
+          subTitle={config?.chartName}
           mode={mode}
         />
       </div>
@@ -272,7 +273,7 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
                 <CheckCircleIcon size="25px" className="text-green-400" />
               </div>
               <div>
-                <h4 className="font-bold text-xl">{config.insightTitle}</h4>
+                <h4 className="font-bold text-xl">{config?.insightTitle}</h4>
                 <p className="pt-2 text-[13px] text-gray-500">{insight}</p>
               </div>
             </div>
@@ -282,9 +283,9 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
                 <TrendingUp size="25px" className="text-blue-500" />
               </div>
               <div>
-                <h4 className="font-bold text-xl">{config.insightSubtitle}</h4>
+                <h4 className="font-bold text-xl">{config?.insightSubtitle}</h4>
                 <p className="pt-2 text-[13px] text-gray-500">
-                  {config.insightText}
+                  {config?.insightText}
                 </p>
               </div>
             </div>
@@ -312,13 +313,13 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-        {config.cards.map((cardConfig) => (
+        {config?.cards.map((cardConfig) => (
           <Card
-            key={cardConfig.key}
-            title={cardConfig.title}
+            key={cardConfig?.key}
+            title={cardConfig?.title}
             value={renderCardValue(cardConfig)}
             subtitle={renderCardSubtitle(cardConfig)}
-            subtitle2={cardConfig.subtitle2}
+            subtitle2={cardConfig?.subtitle2}
           />
         ))}
       </div>
@@ -327,3 +328,7 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
 };
 
 export default AnalyticsDetailPage;
+
+AnalyticsDetailPage.propTypes = {
+  mode: PropTypes.string,
+};

@@ -135,19 +135,19 @@ function DashboardPie({ graph = {}, type = 'Count', title }) {
                     </thead>
                     <tbody>
                         {tableRows.map((row, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50">
-                            <td className="px-4 py-2 border-b">
-                            <span
-                                className="w-3 h-3 rounded-full inline-block mr-2"
-                                style={{ backgroundColor: row.color }}
-                            ></span>
-                            {row.method}
-                            </td>
-                            <td className="px-4 py-2 border-b">
-                            ₦{formatNumber(row.value)}
-                            </td>
-                            <td className="px-4 py-2 border-b">{row.share}%</td>
-                        </tr>
+                            <tr key={idx} className="hover:bg-gray-50">
+                                <td className="px-4 py-2 border-b">
+                                <span
+                                    className="w-3 h-3 rounded-full inline-block mr-2"
+                                    style={{ backgroundColor: row.color }}
+                                ></span>
+                                {row.method}
+                                </td>
+                                <td className="px-4 py-2 border-b">
+                                ₦{formatNumber(row.value)}
+                                </td>
+                                <td className="px-4 py-2 border-b">{row.share}%</td>
+                            </tr>
                         ))}
 
                         <tr className="font-bold bg-gray-100/50">
