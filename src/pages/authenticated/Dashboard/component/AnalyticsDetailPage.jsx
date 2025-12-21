@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircleIcon, ChevronRight, DownloadIcon, TrendingUp } from "lucide-react";
+import { ArrowLeft, ChevronRight, DownloadIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import Card from "../../../../components/Card";
@@ -137,9 +137,9 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
     setInterval(e.target.value);
   };
 
-  const insight = mergedAnalytics?.paymentmethodBreakdown?.Insight ?? 
-                  mergedAnalytics?.paymentmethodBreakdown?.insight ?? 
-                  "Insufficient data for insights";
+  // const insight = mergedAnalytics?.paymentmethodBreakdown?.Insight ?? 
+  //                 mergedAnalytics?.paymentmethodBreakdown?.insight ?? 
+  //                 "Insufficient data for insights";
 
   const exportToCSV = (data, filename = "analytics-details.csv") => {
     if (!data || data.length === 0) return;
@@ -236,8 +236,9 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
             onChange={handleIntervalChange}
             className="border px-2 py-1 rounded"
           >
-            <option value="Daily">Daily</option>
-            <option value="Weekly">Weekly</option>
+            <option value="Hourly">Last 24 Hours</option>
+            <option value="Daily">Last 7 days</option>
+            <option value="Weekly">Last 30 days</option>
             <option value="Monthly">Monthly</option>
             <option value="Yearly">Yearly</option>
           </select>
@@ -254,15 +255,15 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-10">
-        <div className="sm:col-span-3">
+      <div className="mt-10">
+        <div className="">
           <DashboardPie 
             graph={mergedAnalytics?.paymentmethodBreakdown} 
             type="Count" 
           />
         </div>
 
-        <div className="sm:col-span-1">
+        {/* <div className="sm:col-span-1">
           <div className="bg-white p-5 rounded-xl border border-gray-200">
             <h3 className="text-[18px] font-bold pt-4">
               Key Insights & Observations
@@ -290,7 +291,7 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-white p-5 mt-10 rounded-lg">

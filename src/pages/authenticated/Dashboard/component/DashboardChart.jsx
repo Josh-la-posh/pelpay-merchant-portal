@@ -40,34 +40,27 @@ function DashboardChart({ trendLine = [], title, subTitle, mode}) {
         // Helper to validate and fix date format
         const parseDate = (dateStr) => {
             if (!dateStr) return null;
-            
-            // Handle format like "2025-12-06-14" (invalid) -> "2025-12-06"
-            // Also handles "2025-12" -> "2025-12-01"
+
             const str = String(dateStr);
             
-            // Match patterns: YYYY-MM-DD-HH or YYYY-MM-DD or YYYY-MM
             const fullMatch = str.match(/^(\d{4}-\d{2}-\d{2})(?:-\d+)?$/);
             if (fullMatch) {
-                return fullMatch[1]; // Return just YYYY-MM-DD
+                return fullMatch[1];
             }
             
             const monthMatch = str.match(/^(\d{4}-\d{2})$/);
             if (monthMatch) {
-                return `${monthMatch[1]}-01`; // Convert YYYY-MM to YYYY-MM-01
+                return `${monthMatch[1]}-01`;
             }
             
-            // If it's already a valid date string, return as is
             const testDate = new Date(str);
             if (!isNaN(testDate.getTime())) {
                 return str;
             }
             
-            return null; // Invalid date
+            return null;
         };
         
-        // Handle both PascalCase and camelCase keys
-        // For REVENUE_GROWTH_RATE mode, use AverageAmount (strip % sign)
-        // For other modes, use TotalAmount
         const trendValues = data.map(item => {
             let value;
             
@@ -89,7 +82,7 @@ function DashboardChart({ trendLine = [], title, subTitle, mode}) {
         const trendDates = data.map(item => {
             const rawDate = item.Period ?? item.period ?? item.Date ?? item.date ?? item.Key ?? item.key ?? '';
             return parseDate(rawDate);
-        }).filter(date => date !== null); // Filter out invalid dates
+        }).filter(date => date !== null);
         
         // Ensure values and dates arrays are the same length
         const validLength = Math.min(trendValues.length, trendDates.length);
@@ -118,7 +111,6 @@ function DashboardChart({ trendLine = [], title, subTitle, mode}) {
 
     console.log('DashboardChart - validData:', chartDates);
 
-    // Determine if this is a percentage-based chart (for revenue growth)
     const isPercentageMode = mode === 'REVENUE_GROWTH_RATE';
 
     const chartSeries = [{
@@ -135,7 +127,16 @@ function DashboardChart({ trendLine = [], title, subTitle, mode}) {
         dataLabels: {enabled: false},
         stroke: {curve: 'smooth'},
         labels: chartDates,
-        xaxis: {type: 'datetime'},
+        xaxis: {
+            // type: 'datetime',
+            // min: new Date(chartDates[0]).getTime(),
+            // max: new Date(chartDates[chartDates.length - 1]).getTime(),
+            // labels: {
+            //     format: 'dd MMM'
+            // },
+            categories: chartDates,
+            tickAmount: 12
+        },
         yaxis: {
             opposite: false,
             labels: {
@@ -194,7 +195,7 @@ function DashboardChart({ trendLine = [], title, subTitle, mode}) {
             <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
 
             <ChartErrorBoundary>
-                <ReactApexChart options={chartOptions} series={chartSeries} type="area" height={350} />
+                <ReactApexChart options={chartOptions} series={chartSeries} type="bar" height={350} />
             </ChartErrorBoundary>
             
             <div className="flex items-center justify-center gap-2 text-priColor text-xs">

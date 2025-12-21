@@ -15,10 +15,11 @@ export const useGlobalWebSocket = () => {
   return context;
 };
 
-export const WebSocketProvider = ({ children }) => {
+export const WebSocketProvider = ({ children, defaultInterval = "Daily" }) => {
   const socketRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
   const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
+  const [currentInterval, setCurrentInterval] = useState(defaultInterval);
   const dispatch = useDispatch();
   const { auth } = useAuth();
   const { env } = useSelector((state) => state.env);
@@ -82,26 +83,43 @@ export const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     if (!socketRef.current || !isConnected || !merchantCode || hasJoinedRoom) return;
 
-    console.log("🚪 Joining room globally:", merchantCode);
+    console.log("🚪 Joining room globally:", merchantCode, "with interval:", currentInterval);
     socketRef.current.emit("join_room", {
       room_id: merchantCode,
       env: env === "Live" ? "Live" : "Test",
+      intervals: currentInterval,
     });
 
     setHasJoinedRoom(true);
     dispatch(setConnectionStatus(true));
-  }, [isConnected, merchantCode, hasJoinedRoom, env, dispatch]);
+  }, [isConnected, merchantCode, hasJoinedRoom, env, currentInterval, dispatch]);
 
   // Re-join room when env changes
   useEffect(() => {
     if (!socketRef.current || !isConnected || !merchantCode) return;
 
-    console.log("🔄 Re-joining room due to env change:", env);
+    console.log("🔄 Re-joining room due to env change:", env, "with interval:", currentInterval);
     socketRef.current.emit("join_room", {
       room_id: merchantCode,
+      intervals: currentInterval,
       env: env === "Live" ? "Live" : "Test",
     });
-  }, [env, isConnected, merchantCode]);
+  }, [env, isConnected, merchantCode, currentInterval]);
+
+  // Update interval and re-fetch
+  const updateInterval = useCallback((newInterval) => {
+    setCurrentInterval(newInterval);
+    
+    // Re-join room with new interval
+    if (socketRef.current && isConnected && merchantCode) {
+      console.log("🔄 Updating interval to:", newInterval);
+      socketRef.current.emit("join_room", {
+        room_id: merchantCode,
+        env: env === "Live" ? "Live" : "Test",
+        intervals: newInterval,
+      });
+    }
+  }, [isConnected, merchantCode, env]);
 
   const fetchAnalysis = useCallback((payload) => {
     if (!socketRef.current) {
@@ -139,6 +157,8 @@ export const WebSocketProvider = ({ children }) => {
     emit,
     merchantCode,
     env,
+    currentInterval,
+    updateInterval,
   };
 
   return (
@@ -152,4 +172,5 @@ export default WebSocketProvider;
 
 WebSocketProvider.propTypes = {
   children: PropTypes.node.isRequired,
+  defaultInterval: PropTypes.string,
 };

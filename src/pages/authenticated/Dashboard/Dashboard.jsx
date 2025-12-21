@@ -7,12 +7,11 @@ import DashboardCards from "./component/DashboardCards";
 import DashboardChart from "./component/DashboardChart";
 import DashboardPie from "./component/DashboardPie";
 import TransactionTable from "../Transaction/components/TransactionTable";
-import { ArrowRight, DownloadIcon, Shield } from "lucide-react";
+import { ArrowRight, DownloadIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import TransactionForm from "../Transaction/components/TransactionForm";
 import { toggleEnv, setEnv } from "../../../redux/slices/envSlice";
 import SettingsService from '@/services/api/settingsApi';
-import Card from "../../../components/Card";
 import { saveAs } from "file-saver";
 import { useGlobalWebSocket } from "@/services/context/WebSocketProvider";
 import { useDashboardData } from "@/services/hooks/useDashboardData";
@@ -198,51 +197,53 @@ function Dashboard() {
               {/* <p className={`hidden sm:block text-xs sm:text-sm font-semibold ${merchant?.status === 'Sandbox' ? 'text-red-500' : 'text-green-500'}`}>{merchant?.status === 'Sandbox' ? 'Test Mode' : 'Live'}</p> */}
               <div>
                 {roleGotten ? (
-                  <div className="flex items-center gap-2">
-                  <label className="flex items-center cursor-pointer select-none">
-                    <div className="relative">
-                      <input
-                        type="checkbox"
-                        checked={isLive}
-                        onChange={handleToggleEnv}
-                        className="sr-only peer"
-                        disabled={complianceStatus !== 'approved' || updatingEnv}
-                      />
-                      <div className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"></div>
-                      <div className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
-                    </div>
-                    <span
-                      className={`ml-3 text-xs font-bold ${
-                        isLive ? "text-green-700" : "text-red-700"
-                      }`}
-                    >
-                      {updatingEnv ? 'Updating…' : (isLive ? 'Live Mode' : 'Test Mode')}
-                    </span>
-                  </label>
+                  <div className={`flex items-center gap-2 ${isLive ? 'bg-green-100' : 'bg-red-100'} py-3 px-4 rounded-xl`}>
+                    <label className="flex items-center cursor-pointer select-none">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          checked={isLive}
+                          onChange={handleToggleEnv}
+                          className="sr-only peer"
+                          disabled={complianceStatus !== 'approved' || updatingEnv}
+                        />
+                        <div className="w-10 h-5 bg-red-200 rounded-full shadow-inner peer-checked:bg-green-200 transition-colors duration-200"></div>
+                        <div className="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
+                      </div>
+                      <span
+                        className={`ml-3 text-xs font-bold ${
+                          isLive ? "text-green-700" : "text-red-700"
+                        }`}
+                      >
+                        {updatingEnv ? 'Updating…' : (isLive ? 'Live Mode' : 'Test Mode')}
+                      </span>
+                    </label>
                 </div>
                   ) :(
                     ""
                 )}
-                <div className="mt-4">
-                  <select
-                    id="interval"
-                    onChange={handleIntervalChange}
-                    value={interval}
-                    className="border border-gray-300 p-1 md:p-2 rounded-md md:w-50 outline-green-300 z-40"
-                  >
-                    <option value="Daily">Today</option>
-                    <option value="Weekly">Last 7 days</option>
-                    <option value="Monthly">Last 30 days</option>
-                    <option value="Yearly">Yearly</option>
-                    <option value="">Custom Range</option>
-                  </select>
-                </div>
               </div>
+            </div>
+            
+            <div className="mt-4">
+              <select
+                id="interval"
+                onChange={handleIntervalChange}
+                value={interval}
+                className="border border-gray-300 p-1 md:p-2 rounded-md md:w-50 outline-green-300 z-40"
+              >
+                <option value="Hourly">Last 24 Hours</option>
+                <option value="Daily">Last 7 days</option>
+                <option value="Weekly">Last 30 days</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+                {/* <option value="">Custom Range</option> */}
+              </select>
             </div>
           </div>
 
           <div className="">
-            <DashboardCards analytics={mergedAnalytics} onModeChange={setMode}/>
+            <DashboardCards analytics={mergedAnalytics} onModeChange={setMode} interval={interval}/>
           </div>
 
           {/* <div className="xl:grid grid-cols-7 gap-4"> */}
@@ -301,15 +302,15 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
-              <div className="col-span-2">
+          <div className="mt-10">
+              <div className="">
                 <DashboardPie graph={mergedAnalytics?.paymentmethodBreakdown} title={"Channel Performance Breakdown"}/>
               </div>
-              <div className="h-full">
+              {/* <div className="h-full">
                 <Link to="/analytics/dispute-ratio" className="h-full block" >
                   <Card title="Dispute & Chargeback Ratio" value={`0.3%`} icon={<Shield size="40px" className="text-[#FFC107] bg-green-50  rounded-full p-2"/>} text="Within Safe range" subtitle2="12 active disputes"/>
                 </Link>
-            </div>
+            </div> */}
           </div>
 
           <div className="bg-white p-5 mt-10 rounded-lg">
