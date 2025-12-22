@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const Card = ({ title, value, icon, color, color2, subtitle, subtitle2, text, svg }) => {
+const Card = ({ title, value, icon, subColor, color2, subtitle, subtitle2, text, svg }) => {
 
 
     return (
@@ -14,7 +14,7 @@ const Card = ({ title, value, icon, color, color2, subtitle, subtitle2, text, sv
                     </div>
                     <h1 className="text-[#1D2739] text-2xl font-extrabold pl-2 ">{value}</h1>
                     <div className='pl-2'>
-                        <p className='text-green-500 text-xs pt-3 '>{subtitle}</p>
+                        <p className={`${subColor} text-green-500 text-xs pt-3`}>{subtitle}</p>
                         <p className='text-[#525864] text-xs  pt-2'>{subtitle2}</p>
                         <p className='text-gray-600 pt-3 text-sm font-semibold'>{text}</p>
                     </div>
@@ -51,7 +51,7 @@ Card.propTypes = {
     subtitle: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     icon: PropTypes.node,
-    color: PropTypes.string,
+    subColor: PropTypes.string,
     color2: PropTypes.string
 
 }

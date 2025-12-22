@@ -40,6 +40,7 @@ const handleCardClick = (mode) => {
           title="Total Processed Volume"
           value={`₦${formatNumber(totalProcessedVolume?.totalProcessedVolume ?? 0)}`}
           subtitle={`${totalProcessedVolume?.percentChange}% vs last ${interval === 'yearly' ? 'last year' : interval === 'monthly' ? 'last month' : interval === 'weekly' ? 'last week' : '24 hours'}`}
+          subColor={totalProcessedVolume?.percentChange > 0 ? 'text-priColor' : totalProcessedVolume?.percentChange < 0 ? 'text-red-500' : 'text-yellow-500'}
           icon={<NairaIcon size={40} className="text-priColor bg-green-50 rounded-full p-2" />}
           svg={
             Number(totalProcessedVolume?.percentChange) > 0
@@ -88,6 +89,7 @@ const handleCardClick = (mode) => {
         title="Average Transaction Value"
         value={`₦${averageTransactionVolume?.averageTransactionValue === 'NaN' ? 0 : averageTransactionVolume?.averageTransactionValue ?? 0}`}
         subtitle={`${averageTransactionVolume?.percentChange}% vs last ${interval === 'yearly' ? 'last year' : interval === 'monthly' ? 'last month' : interval === 'weekly' ? 'last week' : '24 hours'}`}
+        subColor={averageTransactionVolume?.percentChange > 0 ? 'text-priColor' : averageTransactionVolume?.percentChange < 0 ? 'text-red-500' : 'text-yellow-500'}
         icon={<NairaIcon size={40} className="text-priColor bg-green-50 rounded-full p-2" />}
         svg={
           Number(averageTransactionVolume?.percentChange) > 0
@@ -108,7 +110,7 @@ const handleCardClick = (mode) => {
         <Card
           title="Revenue Growth Rate"
           value={`${analytics?.revenueGrowth?.percentChange ?? 0}%`}
-          subtitle2="Mont-over-month growth"
+          subtitle2="Month-over-month growth"
           icon={
             analytics?.revenueGrowth?.percentChange > 0
               ? <TrendingUp size="40px" className="text-[#40B869] bg-green-50 rounded-full p-2" />
