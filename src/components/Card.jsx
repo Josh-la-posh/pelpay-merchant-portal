@@ -49,10 +49,13 @@ const Card = ({ title, value, icon, subColor, color2, subtitle, subtitle2, text,
 Card.propTypes = {
     title: PropTypes.string,
     subtitle: PropTypes.string,
+    subtitle2: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     icon: PropTypes.node,
     subColor: PropTypes.string,
-    color2: PropTypes.string
+    color2: PropTypes.string,
+    svg: PropTypes.node,
+    text: PropTypes.string,
 
 }
 

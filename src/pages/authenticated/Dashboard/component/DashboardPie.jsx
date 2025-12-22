@@ -30,7 +30,8 @@ function DashboardPie({ graph = {}, type = 'Count', title }) {
     const pieOptions = {
         chart: {
             type: 'donut',
-            width: 350,
+            width: 100,
+            height: 100
         },
         fill: {
             colors: ['#00A049', '#0000FF', '#FF0000', '#FFFF00', '#9C03C8', '#808080']
@@ -38,7 +39,7 @@ function DashboardPie({ graph = {}, type = 'Count', title }) {
         legend: {
             position: 'bottom',
             horizontalAlign: 'center',
-            fontSize: '13px',
+            fontSize: '12px',
             width: 220           
         },
         labels: pieLabels.length > 0 ? pieLabels : ['Bank Transfer', 'Card Payments', 'USSD', 'Fund Transfer', 'Wallets', 'Other'],
@@ -47,7 +48,7 @@ function DashboardPie({ graph = {}, type = 'Count', title }) {
                 donut: {
                   size: '70%',
                   labels: {
-                    show: true,
+                    show: false,
                     name: {
                       show: true,
                       fontSize: '22px',
@@ -120,9 +121,9 @@ function DashboardPie({ graph = {}, type = 'Count', title }) {
     return (
          <div className="bg-white rounded-lg p-8">
             <h3 className="text-xl font-semibold">{title}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
-                <div className="md:col-span-2">
-                    <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                <div className="md:col-span-1 h-56">
+                    <ReactApexChart options={pieOptions} series={pieSeries} type="donut" height='100%' />
                 </div>
                 <div className="mt-8 overflow-x-auto scrollbar-none">
                     <table className=" text-left">
