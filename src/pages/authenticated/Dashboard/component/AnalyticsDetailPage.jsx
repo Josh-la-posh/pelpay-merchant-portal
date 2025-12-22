@@ -1,7 +1,7 @@
 import { ArrowLeft, ChevronRight, DownloadIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
-import Card from "../../../../components/Card";
+// import Card from "../../../../components/Card";
 import PropTypes from 'prop-types';
 import { useSelector } from "react-redux";
 import useAuth from "../../../../services/hooks/useAuth";
@@ -76,10 +76,10 @@ const MODE_CONFIG = {
 };
 
 // Helper to get nested value from object
-const getNestedValue = (obj, path) => {
-  if (!obj || !path) return null;
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-};
+// const getNestedValue = (obj, path) => {
+//   if (!obj || !path) return null;
+//   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+// };
 
 const AnalyticsDetailPage = ({ mode: propMode }) => {
   const { mode: urlMode } = useParams();
@@ -171,30 +171,30 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
   };
 
   // Render card value
-  const renderCardValue = (cardConfig) => {
-    if (isLoading) return '---';
+  // const renderCardValue = (cardConfig) => {
+  //   if (isLoading) return '---';
     
-    const value = getNestedValue(mergedAnalytics, cardConfig?.valueKey);
-    if (value === null || value === undefined) return '₦0';
+  //   const value = getNestedValue(mergedAnalytics, cardConfig?.valueKey);
+  //   if (value === null || value === undefined) return '₦0';
     
-    const prefix = cardConfig?.prefix || '';
-    const suffix = cardConfig?.suffix || '';
+  //   const prefix = cardConfig?.prefix || '';
+  //   const suffix = cardConfig?.suffix || '';
     
-    if (prefix === '₦') {
-      return `${prefix}${formatNumber(value)}${suffix}`;
-    }
-    return `${prefix}${value}${suffix}`;
-  };
+  //   if (prefix === '₦') {
+  //     return `${prefix}${formatNumber(value)}${suffix}`;
+  //   }
+  //   return `${prefix}${value}${suffix}`;
+  // };
 
   // Render card subtitle
-  const renderCardSubtitle = (cardConfig) => {
-    if (cardConfig?.subtitle2) return undefined;
-    if (cardConfig?.subtitleKey) {
-      const value = getNestedValue(mergedAnalytics, cardConfig?.subtitleKey);
-      return value || '';
-    }
-    return undefined;
-  };
+  // const renderCardSubtitle = (cardConfig) => {
+  //   if (cardConfig?.subtitle2) return undefined;
+  //   if (cardConfig?.subtitleKey) {
+  //     const value = getNestedValue(mergedAnalytics, cardConfig?.subtitleKey);
+  //     return value || '';
+  //   }
+  //   return undefined;
+  // };
 
   if (isLoading && !mergedAnalytics) {
     return (
@@ -313,7 +313,7 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
         <TransactionDetails columns={columns} data={mergedAnalytics?.transactionDetails} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
         {config?.cards.map((cardConfig) => (
           <Card
             key={cardConfig?.key}
@@ -323,7 +323,7 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
             subtitle2={cardConfig?.subtitle2}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
