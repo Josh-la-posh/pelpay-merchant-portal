@@ -32,6 +32,8 @@ const handleCardClick = (mode) => {
   if (onModeChange) onModeChange(mode);
 };
 
+console.log('The interval is: ', interval)
+
   return (
     <>
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-8 md:mb-0">
@@ -39,7 +41,7 @@ const handleCardClick = (mode) => {
         <Card
           title="Total Processed Volume"
           value={`₦${formatNumber(totalProcessedVolume?.totalProcessedVolume ?? 0)}`}
-          subtitle={`${totalProcessedVolume?.percentChange}% vs last ${interval === 'yearly' ? 'last year' : interval === 'monthly' ? 'last month' : interval === 'weekly' ? 'last week' : '24 hours'}`}
+          subtitle={`${totalProcessedVolume?.percentChange}% vs last ${interval.toLowerCase() === 'yearly' ? '5 years' : interval.toLowerCase() === 'monthly' ? 'year' : interval.toLowerCase() === 'weekly' ? 'month' : interval.toLowerCase() === 'daily' ? 'week' : '24 hours'}`}
           subColor={totalProcessedVolume?.percentChange > 0 ? 'text-priColor' : totalProcessedVolume?.percentChange < 0 ? 'text-red-500' : 'text-yellow-500'}
           icon={<NairaIcon size={40} className="text-priColor bg-green-50 rounded-full p-2" />}
           svg={
@@ -88,7 +90,7 @@ const handleCardClick = (mode) => {
         <Card
         title="Average Transaction Value"
         value={`₦${averageTransactionVolume?.averageTransactionValue === 'NaN' ? 0 : averageTransactionVolume?.averageTransactionValue ?? 0}`}
-        subtitle={`${averageTransactionVolume?.percentChange}% vs last ${interval === 'yearly' ? 'last year' : interval === 'monthly' ? 'last month' : interval === 'weekly' ? 'last week' : '24 hours'}`}
+        subtitle={`${averageTransactionVolume?.percentChange}% vs last ${interval.toLowerCase() === 'yearly' ? '5 years' : interval.toLowerCase() === 'monthly' ? 'year' : interval.toLowerCase() === 'weekly' ? 'month' : interval.toLowerCase() === 'daily' ? 'week' : '24 hours'}`}
         subColor={averageTransactionVolume?.percentChange > 0 ? 'text-priColor' : averageTransactionVolume?.percentChange < 0 ? 'text-red-500' : 'text-yellow-500'}
         icon={<NairaIcon size={40} className="text-priColor bg-green-50 rounded-full p-2" />}
         svg={
