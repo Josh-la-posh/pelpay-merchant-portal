@@ -73,6 +73,20 @@ const MODE_CONFIG = {
       { key: "previousRevenue", title: "Previous Revenue", valueKey: "revenueGrowth.PreviousRevenue", subtitle2: "Last period", prefix: "₦" },
     ],
   },
+  TRANSACTION_COUNT: {
+    title: "Transaction Count",
+    subtitle: "Analysis of transaction volume and frequency",
+    chartTitle: "Transaction Count",
+    chartName: "Transaction Count",
+    insightTitle: "Transaction Volume Insights",
+    insightSubtitle: "Volume Trends",
+    insightText: "Monitor your transaction frequency and identify peak periods for better resource allocation.",
+    cards: [
+      { key: "currentCount", title: "Current Count", valueKey: "transactionCounts.CurrentTransactionCount", subtitleKey: "transactionCounts.PercentChange" },
+      { key: "previousCount", title: "Previous Count", valueKey: "transactionCounts.PreviousTransactionCount", subtitle2: "Previous period" },
+      { key: "percentChange", title: "Change", valueKey: "transactionCounts.PercentChange", subtitle2: "vs previous period", suffix: "%" },
+    ],
+  },
 };
 
 // Helper to get nested value from object

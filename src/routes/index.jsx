@@ -80,7 +80,7 @@ const RoutesSystem = () => {
           <Route path='/analytics/total-processed-volume' element={<AnalyticsDetailPage mode="OVER_VIEW"/>}/>
           <Route path='/analytics/net-settled-volume' element={<AnalyticsDetailPage mode="NET_SETTLED"/>}/>
           <Route path='/analytics/average-transaction-value' element={<AnalyticsDetailPage mode="AVERAGE_TRANSACTION_VALUE"/>}/>
-          <Route path='/analytics/revenue-growth-rate' element={<AnalyticsDetailPage mode="REVENUE_GROWTH_RATE"/>}/>
+          <Route path='/analytics/transaction-count' element={<AnalyticsDetailPage mode="TRANSACTION_COUNT"/>}/>
           <Route path='/analytics/dispute-ratio' element={<DisputeDashboard/>}/>
           <Route path="customers" element={<CustomersPage />} />
           <Route path="disputes" element={<DisputesPage />} />
