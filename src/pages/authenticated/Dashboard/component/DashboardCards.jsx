@@ -105,7 +105,7 @@ const getIntervalText = () => {
     'Daily': 'last 24 hours',
     'Weekly': 'last 7 days',
     'Monthly': 'last 30 days',
-    'Yearly': 'last year',
+    // 'Yearly': 'last year',
   };
   return intervalMap[interval] || 'previous period';
 };

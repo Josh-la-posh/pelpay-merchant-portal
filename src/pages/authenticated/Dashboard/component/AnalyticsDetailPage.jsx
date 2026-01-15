@@ -254,7 +254,7 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
             <option value="Daily">Last 7 days</option>
             <option value="Weekly">Last 30 days</option>
             <option value="Monthly">Monthly</option>
-            <option value="Yearly">Yearly</option>
+            {/* <option value="Yearly">Yearly</option> */}
           </select>
         </div>
       </div>
