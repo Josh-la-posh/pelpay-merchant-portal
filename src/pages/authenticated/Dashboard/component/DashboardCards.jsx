@@ -99,11 +99,23 @@ const formatDateRange = (dateStr) => {
   }
 };
 
+// Map interval to display text
+const getIntervalText = () => {
+  const intervalMap = {
+    'Daily': 'last 24 hours',
+    'Weekly': 'last 7 days',
+    'Monthly': 'last 30 days',
+    'Yearly': 'last year',
+  };
+  return intervalMap[interval] || 'previous period';
+};
+
 // Format subtitle text based on percent change
 const formatSubtitle = (percent) => {
-  if (percent === 0) return 'no change';
-  if (percent > 0) return `+${percent.toFixed(2)}% increase`;
-  return `${percent.toFixed(2)}% decrease`;
+  const periodText = getIntervalText();
+  if (percent === 0) return `no change vs ${periodText}`;
+  if (percent > 0) return `+${percent.toFixed(2)}% increase vs ${periodText}`;
+  return `${percent.toFixed(2)}% decrease vs ${periodText}`;
 };
 
 // Handle mode change when card is clicked
