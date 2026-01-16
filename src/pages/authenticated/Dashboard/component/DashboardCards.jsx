@@ -102,9 +102,10 @@ const formatDateRange = (dateStr) => {
 // Map interval to display text
 const getIntervalText = () => {
   const intervalMap = {
-    'Daily': 'last 24 hours',
-    'Weekly': 'last 7 days',
-    'Monthly': 'last 30 days',
+    'Hourly': 'previous 24 hours',
+    'Daily': 'previous 7 days',
+    'Weekly': 'previous 30 days',
+    'Monthly': 'previous month',
     // 'Yearly': 'last year',
   };
   return intervalMap[interval] || 'previous period';
