@@ -119,32 +119,64 @@ class TransactionService {
   }
 }
 
-
-  async fetchTransactionReceipt(transactionId) {
-    const getFileExtention = (data) => {
-      const type = { 'image/png': '.png', 'application/pdf': '.pdf' };
-      return type[data];
-    };
-    try {
-      const response = await this.axiosPrivate.get(
-        `api/Transaction/receipt/${transactionId}`,
-        { responseType: 'blob' }
-      );
-      const contentType = response.headers['content-type'];
-      const fileExt = getFileExtention(contentType);
-      if (!response.data) throw new Error('No data received from the server.');
-      const fileName = `Pelpay_transaction_receipt_${Date.now()}${fileExt}`;
-      saveAs(response.data, fileName);
-      toast('Transaction receipt downloaded successfully');
-    } catch (err) {
-      if (!err.response) {
-        toast('No response from server');
-      } else {
-        toast('Failed to download transaction receipt. Try again.');
+ async fetchTransactionReceipt(merchantCode, env, transactionReference){
+    try{
+      const response = await this.axiosPrivate.get(`/api/Transaction/receipts/download?env=${env}&transactionReference=${transactionReference}&merchantCode=${merchantCode}`,
+      {
+        responseType: 'blob',
+        skipErrorHandler: true, 
+        headers: {
+          Accept: 'application/pdf',
+        },
       }
-      console.error('fetchTransactionReceipt error:', err);
+    );
+    // if (!response.data) throw new Error('No data received from the server.');
+  if (response.data.type === 'application/json') {
+      const text = await response.data.text();
+      const error = JSON.parse(text);
+      throw new Error(error.message || 'Failed to download receipt');
     }
+
+    const fileBlob = new Blob([response.data], {
+      type: 'application/pdf',
+    });
+    const fileName = `Pelpay_transaction_${transactionReference}_${Date.now()}.pdf`;
+    saveAs(fileBlob, fileName);
+    toast('Transaction downloaded successfully');
+    }catch(err){
+      // if (!err.response || err.response.status >= 500) {
+      //   toast.error('Service temporarily unavailable. Please try again later.');
+      // } else {
+        toast('Failed to download transaction. Try again.');
+      }
+    // }
   }
+
+  // async fetchTransactionReceipt(transactionId) {
+  //   const getFileExtention = (data) => {
+  //     const type = { 'image/png': '.png', 'application/pdf': '.pdf' };
+  //     return type[data];
+  //   };
+  //   try {
+  //     const response = await this.axiosPrivate.get(
+  //       `api/Transaction/receipt/${transactionId}`,
+  //       { responseType: 'blob' }
+  //     );
+  //     const contentType = response.headers['content-type'];
+  //     const fileExt = getFileExtention(contentType);
+  //     if (!response.data) throw new Error('No data received from the server.');
+  //     const fileName = `Pelpay_transaction_receipt_${Date.now()}${fileExt}`;
+  //     saveAs(response.data, fileName);
+  //     toast('Transaction receipt downloaded successfully');
+  //   } catch (err) {
+  //     if (!err.response) {
+  //       toast('No response from server');
+  //     } else {
+  //       toast('Failed to download transaction receipt. Try again.');
+  //     }
+  //     console.error('fetchTransactionReceipt error:', err);
+  //   }
+  // }
 }
   
   export default TransactionService;

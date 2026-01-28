@@ -3,7 +3,8 @@ import CustomModal from "@/components/Modal";
 import { dateFormatter } from "@/utils/dateFormatter";
 import { Cloud } from "lucide-react";
 import axios from "axios";
-import useAxiosPrivate from "@/services/hooks/useAxiosPrivate";
+// import useAxiosPrivate from "@/services/hooks/useAxiosPrivate";
+import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import useAuth from "@/services/hooks/useAuth";
 import TransactionService from "@/services/api/transactionApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,8 +57,9 @@ function TransactionForm({ handleCloseModal, data = {} }) {
 
  
   const downloadTransaction = async () => {
-    const transactionId = transactionData?.id;
-    await transactionService.fetchTransactionReceipt(transactionId, dispatch);
+    const transactionReference = transactionData?.merchantReference;
+    const merchantCode = auth?.merchant?.merchantCode;
+    await transactionService.fetchTransactionReceipt(merchantCode, env, transactionReference, dispatch);
   };
 
   const resendNotification = async () => {

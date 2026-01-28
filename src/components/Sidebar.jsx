@@ -54,9 +54,9 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
         {
             id: 7,
             icon: <History size={isSidebarTextVisible ? '18' : '22'} />,
-            name: 'Activities',
+            title: 'Activity',
             url: '/activity',
-            title: 'Activities'
+            openSidebar: true
         }
         // {
         //     id: 7,

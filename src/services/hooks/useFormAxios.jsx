@@ -41,7 +41,17 @@ const useAxiosPrivate = () => {
           }
         }
 
-        return Promise.reject(error);
+        if (error?.response?.status >= 500) {
+          toast.error('Service temporarily unavailable. Please try again later.');
+          // return Promise.reject(error);
+          }
+          
+          if (!error.response) {
+          toast.error('Network error. Please check your connection.');
+          // return Promise.reject(error);
+        }
+
+        // return Promise.reject(error);
       }
     );
 

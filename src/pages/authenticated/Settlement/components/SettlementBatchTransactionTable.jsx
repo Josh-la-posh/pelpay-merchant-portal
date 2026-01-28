@@ -120,7 +120,7 @@ const SettlementBatchTransactionTable = ({
       <div className="flex justify-end mb-2 mx-5">
           <button
               onClick={onDownload}
-              className="text-priColor flex items-center gap-2 text-xs px-2 py-1 rounded-[4px]"
+              className="text-priColor flex items-center gap-2 text-xs px-2 py-1 rounded-[4px] cursor-pointer"
           >
               <Cloud size={'18px'} />
               Download

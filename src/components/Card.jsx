@@ -4,7 +4,7 @@ const Card = ({ title, value, icon, subColor, color2, subtitle, subtitle2, text,
 
 
     return (
-        <div className='p-3 sm:p-4 md:p-5 md:mb-2 rounded-[8px] border bg-white min-h-[180px] border-[#E4E7EC] text-white bg-priColor/10 hover:shadow-lg transition duration-200 overflow-hidden'>
+        <div className='p-3 sm:p-4 md:p-5 md:mb-2 rounded-[8px] border bg-white min-h-[180px] border-[#E4E7EC] text-white bg-priColor/10 hover:shadow-lg transition duration-200 overflow-hidden h-60 md:h-75 lg:h-60'>
             <div className="flex justify-between gap-2">
                 
                 <div className="flex-1 min-w-0">

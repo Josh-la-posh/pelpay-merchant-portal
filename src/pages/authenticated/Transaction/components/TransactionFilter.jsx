@@ -58,9 +58,27 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
         // handleRefresh();
     };
 
+    // useEffect(() => {
+    //     setFilterStatus('All');
+    // }, []);
+
     useEffect(() => {
+    if (currentFilters?.status) {
+        setFilterStatus(currentFilters.status);
+    } else {
         setFilterStatus('All');
-    }, []);
+    }
+    }, [currentFilters]);
+
+    const STATUS_OPTIONS = [
+    { label: 'All', value: 'All' },
+    { label: 'Successful', value: 'Successful' },
+    { label: 'Pending', value: 'Pending' },
+    { label: 'Processing', value: 'Processing' },
+    { label: 'Failed', value: 'Failed' },
+];
+
+
 
     const handleFilter = async () => {
         setIsSubmitting(true);
@@ -210,8 +228,22 @@ const downloadTransaction = async () => {
                 </div>
                 <div className="flex flex-col gap-2 w-full md:w-auto">
                     <div className="flex gap-1 overflow-x-auto no-scrollbar py-1 -mx-1 px-1" aria-label='Status filters'>
-                        {['All', 'Successful', 'Pending', 'Processing', 'Failed'].map(st => (
+                        {/* {['All', 'Successful', 'Pending', 'Processing', 'Failed'].map(st => (
                             <button key={st} onClick={() => handleFilteredDataChange(st)} className={`flex-shrink-0 px-3 py-1 text-[11px] rounded-full border transition-colors ${filterStatus === st ? 'bg-priColor text-white border-priColor' : 'text-gray-600 border-gray-300 hover:bg-gray-100'}`}>{st}</button>
+                        ))} */}
+
+                        {STATUS_OPTIONS.map(({ label, value }) => (
+                            <button
+                                key={value}
+                                onClick={() => handleFilteredDataChange(value)}
+                                className={`flex-shrink-0 px-3 py-1 text-[11px] rounded-full border transition-colors
+                                    ${filterStatus === value
+                                        ? 'bg-priColor text-white border-priColor'
+                                        : 'text-gray-600 border-gray-300 hover:bg-gray-100'
+                                    }`}
+                            >
+                                {label}
+                            </button>
                         ))}
                     </div>
                     <div className='flex flex-wrap items-center gap-2'>

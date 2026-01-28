@@ -128,7 +128,7 @@ console.log('The interval is: ', interval)
 
   return (
     <>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-8 md:mb-0">
+    <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 md:mb-0">
       <Link to="/analytics/total-processed-volume" onClick={() => handleCardClick("OVER_VIEW")}>
         <Card
           title="Total Processed Volume"

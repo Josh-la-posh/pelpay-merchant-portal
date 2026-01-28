@@ -14,7 +14,7 @@ const transactionSlice = createSlice({
   initialState,
   reducers: {
     transactionStart: (state) => {
-      state.transactionLoading = true;
+      state.transactionLoading = true; 
       state.transactionError = null;
     },
     transactionSuccess: (state, action) => {
@@ -22,8 +22,8 @@ const transactionSlice = createSlice({
       state.transactions = action.payload?.data ?? action.payload;
     },
     transactionSecondSuccess: (state, action) => {
-      state.transactionPageNumber = action.payload.pageNumber;
-      state.transactionPageSize = action.payload.pageSize;
+      // state.transactionPageNumber = action.payload.pageNumber;
+      // state.transactionPageSize = action.payload.pageSize;
       state.transactionTotalSize = action.payload.totalSize;
       // if (action.payload.pageNumber != null && 
       //     !isNaN(action.payload.pageNumber) && 
@@ -47,9 +47,16 @@ const transactionSlice = createSlice({
       state.transactionPageNumber = action.payload;
     },
     setTransactionPageSize: (state, action) => {
-      state.transactionPageSize = action.payload;
-      state.transactionPageNumber = 1;
-    },
+  if (state.transactionPageSize !== action.payload) {
+    state.transactionPageSize = action.payload;
+    state.transactionPageNumber = 1; 
+  }
+}
+
+    // setTransactionPageSize: (state, action) => {
+    //   state.transactionPageSize = action.payload;
+    //   state.transactionPageNumber = 1;
+    // },
   },
 });
 
