@@ -63,8 +63,8 @@ import PropTypes from 'prop-types';
     return (
         <>
             <div className="overflow-x-auto scrollbar-none">
-                <table className="divide-y-6 divide-white dark:divide-[#2C2C3E] min-w-full border-collapse rounded-lg">
-                    <thead className="bg-gray-300 dark:bg-[#20263D]">
+                <table className="divide-y-6 divide-gray-100 dark:divide-[#2C2C3E] min-w-full border-collapse rounded-lg">
+                    <thead className="bg-gray-200 dark:bg-[#20263D]">
                         <tr>
                             <th className="px-4 py-3 text-left text-[9px] md:text-xs font-medium text-gray-500 tracking-wider">S.No</th>
                             {columns.map((column, colIndex) => (
@@ -107,7 +107,7 @@ import PropTypes from 'prop-types';
             </div>
 
             {drpp !== '' && (
-                <div className="flex flex-col sm:flex-row sm:justify-between md:items-center mt-4 ml-3 gap-4">
+                <div className="flex flex-row justify-between  sm:flex-row sm:justify-between md:items-center mt-4 ml-3 gap-4">
                     <div className="text-[12px] lg:text-[13px] text-gray-500">
                         <span className="mr-2">Items per page:</span>
                         <select

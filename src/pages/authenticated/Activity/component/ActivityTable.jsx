@@ -42,8 +42,7 @@ const ActivityTable = ({data, totalSize, currentPage, setCurrentPage, rowsPerPag
                 <span className="whitespace-normal break-words">
                     {value}
                 </span>
-            ),
-             
+            ),    
         }
 
     ];

@@ -2,7 +2,6 @@ import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayouts';
 import RequireAuth from '../services/hooks/RequiredAuth';
-import Spinner from '../components/Spinner';
 
 // unauthenticated pages
 const LoginPage = lazy(() => import('../pages/unauthenticated/Login/LoginPage'));
@@ -17,6 +16,8 @@ const MerchantLayout = lazy(() => import('../layouts/MerchantLayout'));
 
 // authenticated pages (lazy)
 const Dashboard = lazy(() => import('../pages/authenticated/Dashboard/Dashboard'));
+const AnalyticsDetailPage = lazy(() => import('../pages/authenticated/Dashboard/component/AnalyticsDetailPage'));
+const DisputeDashboard = lazy(() => import('../pages/authenticated/Dashboard/component/DisputeDashboard'));
 const CustomersPage = lazy(() => import('../pages/authenticated/Customers/Customers'));
 const DisputesPage = lazy(() => import('../pages/authenticated/Disputes/Disputes'));
 const Aggregator = lazy(() => import('../pages/authenticated/Aggregator/Aggregator'));
@@ -48,6 +49,7 @@ const UserManagement = lazy(() => import('../pages/authenticated/Settings/UserMa
 const RolesAndPermission = lazy(() => import('../pages/authenticated/Settings/Roles'));
 const ManagePermission = lazy(() => import('../pages/authenticated/Settings/ManagePermission'));
 const RoleAssignment = lazy(() => import('../pages/authenticated/Settings/RoleAssignment'));
+const Branding = lazy(() => import('../pages/authenticated/Settings/Branding'));
 
 // alias variables removed - use direct lazy imports where needed
 
@@ -56,7 +58,7 @@ const SuccessPage = lazy(() => import('../pages/authenticated/SuccessPage'));
 
 const RoutesSystem = () => {
   return (
-    <Suspense fallback={<div className="p-6"><Spinner /></div>}>
+    <Suspense fallback={<div className="p-6"></div>}>
       <Routes>
 
       {/* public routes */}
@@ -74,7 +76,12 @@ const RoutesSystem = () => {
 
       <Route element={<RequireAuth />}>
         <Route path='/' element={<MainLayout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} ></Route>
+          <Route path='/analytics/total-processed-volume' element={<AnalyticsDetailPage mode="OVER_VIEW"/>}/>
+          <Route path='/analytics/net-settled-volume' element={<AnalyticsDetailPage mode="NET_SETTLED"/>}/>
+          <Route path='/analytics/average-transaction-value' element={<AnalyticsDetailPage mode="AVERAGE_TRANSACTION_VALUE"/>}/>
+          <Route path='/analytics/transaction-count' element={<AnalyticsDetailPage mode="TRANSACTION_COUNT"/>}/>
+          <Route path='/analytics/dispute-ratio' element={<DisputeDashboard/>}/>
           <Route path="customers" element={<CustomersPage />} />
           <Route path="disputes" element={<DisputesPage />} />
           
@@ -110,6 +117,7 @@ const RoutesSystem = () => {
               <Route path="role" element={<RolesAndPermission />} />
               <Route path="role/:id/managePermission" element={<ManagePermission />} />
               <Route path="user/:id/roleAssign" element={<RoleAssignment />} />
+              <Route path='branding' element={<Branding/>} />
             </Route>
           </Route>
           <Route path="/activity" element={<ActivityPage />} />

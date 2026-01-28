@@ -4,9 +4,8 @@ import useTitle from '../services/hooks/useTitle';
 import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck, Activity, History  } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
-import { useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
 
 const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     const [sidebarItems, setSideBarItems] = useState([
@@ -139,7 +138,7 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     return (
         <div className="relative h-[100vh] flex flex-col text-sm lg:text-[14px] bg-white shadow-lg pb-2">
             <button
-                className="sm:hidden border-2 border-priColor rounded-full p-1 absolute right-[-15px] top-3"
+                className="sm:hidden border-2 border-priColor rounded-full p-1 absolute right-[-6px] top-3"
                 onClick={() => handleSidebar(false)}
             >
                 <X />

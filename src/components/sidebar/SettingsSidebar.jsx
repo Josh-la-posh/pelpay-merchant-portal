@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
-import { BookUser, GroupIcon, LockOpen, User } from 'lucide-react';
+import { BadgeCheck, BookUser, CloudSnow, GroupIcon, LockOpen, Palette, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const SettingsSidebar = () => {
@@ -55,6 +55,13 @@ const SettingsSidebar = () => {
             name: 'Roles',
             url: '/settings/role',
             title: 'Roles'
+        },
+        {
+            id: 7,
+            icon: <Palette size={'15px'} />,
+            name: 'Branding',
+            url: '/settings/branding',
+            title: 'Branding'
         },
     ])
 

@@ -21,7 +21,7 @@ const Header = ({ openSidebar = true, setOpenSidebar, setIsSidebarTextVisible })
       <div className="flex items-center">
         
         {/* { openSidebar === false && */}
-        <button className="" onClick={handleSidebar}>
+        <button className="md:hidden" onClick={handleSidebar}>
           <AlignJustify />
         </button>
     

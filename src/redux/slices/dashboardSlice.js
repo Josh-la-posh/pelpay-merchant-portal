@@ -11,6 +11,9 @@ const initialState = {
   transactionLoading: false,
   transactionError: null,
   transactions: [],
+  analyticsLoading: false,
+  analyticsError: null,
+  analytics: {}
 };
 
 const dashboardSlice = createSlice({
@@ -52,10 +55,22 @@ const dashboardSlice = createSlice({
     transactionFailure: (state, action) => {
       state.transactionLoading = false;
       state.transactionError = action.payload;
+    },
+    analyticsStart: (state) => {
+      state.analyticsLoading = true;
+      state.analyticsError = null;
+    },
+    analyticsSuccess: (state, action) => {
+      state.analyticsLoading = false;
+      state.analytics = action.payload?.data ?? action.payload;
+    },
+    analyticsFailure: (state, action) => {
+      state.analyticsLoading = false;
+      state.analyticsError = action.payload;
     }
   },
 });
 
-export const { lumpsumStart, lumpsumSuccess, lumpsumFailure, graphStart, graphSuccess, graphFailure, transactionStart, transactionSuccess, transactionFailure } = dashboardSlice.actions;
+export const { lumpsumStart, lumpsumSuccess, lumpsumFailure, graphStart, graphSuccess, graphFailure, transactionStart, transactionSuccess, transactionFailure, analyticsStart, analyticsSuccess, analyticsFailure } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;
