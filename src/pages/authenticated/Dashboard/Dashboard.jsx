@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import useTitle from "@/services/hooks/useTitle";
 import useAuth from "@/services/hooks/useAuth";
 import useAxiosPrivate from "@/services/hooks/useFormAxios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import DashboardCards from "./component/DashboardCards";
 import DashboardChart from "./component/DashboardChart";
 import DashboardPie from "./component/DashboardPie";
@@ -10,7 +10,7 @@ import TransactionTable from "../Transaction/components/TransactionTable";
 import { ArrowRight, DownloadIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import TransactionForm from "../Transaction/components/TransactionForm";
-import { toggleEnv, setEnv } from "../../../redux/slices/envSlice";
+// import { toggleEnv, setEnv } from "../../../redux/slices/envSlice";
 import SettingsService from '@/services/api/settingsApi';
 import { saveAs } from "file-saver";
 import { useGlobalWebSocket } from "@/services/context/WebSocketProvider";
@@ -38,30 +38,31 @@ function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransactionData, setSelectedTransactionData] = useState({});
 
-  const { env, token } = useSelector((state) => state.env);
-  const { complianceStatus } = useSelector((state) => state.compliance || {});
-  const tokenizationStatus = token
+  // const { env, token } = useSelector((state) => state.env);
+  const env = 'Live';
+  // const { complianceStatus } = useSelector((state) => state.compliance || {});
+  // const tokenizationStatus = token
 
-  const [isLive, setIsLive] = useState(false);
+  // const [isLive, setIsLive] = useState(true);
 
-  useEffect(() => {
-    const newData = env === "Live" ? true : false;
-    setIsLive(newData);
-  }, [env]);
+  // useEffect(() => {
+  //   const newData = env === "Live" ? true : false;
+  //   setIsLive(newData);
+  // }, [env]);
 
-  const [complianceIsApproved, setComplianceIsApproved] = useState(false)
-  useEffect(() =>{
-    const approved = localStorage.getItem('complianceStatus');
-    if(approved === 'approved' ){
-      setComplianceIsApproved(true);
-    }
-    const timer = setTimeout(() => {
-      setComplianceIsApproved(true);
-      localStorage.setItem('complianceApprovedSeen', 'true'); 
-    }, 60000);
+  // const [complianceIsApproved, setComplianceIsApproved] = useState(false)
+  // useEffect(() =>{
+  //   const approved = localStorage.getItem('complianceStatus');
+  //   if(approved === 'approved' ){
+  //     setComplianceIsApproved(true);
+  //   }
+  //   const timer = setTimeout(() => {
+  //     setComplianceIsApproved(true);
+  //     localStorage.setItem('complianceApprovedSeen', 'true'); 
+  //   }, 60000);
 
-    return () => clearTimeout(timer);
-  }, [])
+  //   return () => clearTimeout(timer);
+  // }, [])
 
   const storedAuth = JSON.parse(localStorage.getItem("auth"));
   const getRolePermission = storedAuth?.data?.rolePermissions || [];
@@ -112,23 +113,23 @@ function Dashboard() {
     setSelectedTransactionData(null);
   };
 
-  const [updatingEnv, setUpdatingEnv] = useState(false);
-  const handleToggleEnv = async () => {
-    if (complianceStatus !== 'approved' || updatingEnv) return;
-    const nextLive = !isLive;
-    const newEnv = nextLive ? 'Live' : 'Test';
-    setUpdatingEnv(true);
-    try {
-      await settingsService.updateEnv(newEnv, tokenizationStatus, dispatch);
-      dispatch(toggleEnv(newEnv));
-      setIsLive(nextLive);
-    } catch {
-      // revert visual toggle if failed
-      dispatch(setEnv(isLive ? 'Live' : 'Test'));
-    } finally {
-      setUpdatingEnv(false);
-    }
-  };
+  // const [updatingEnv, setUpdatingEnv] = useState(false);
+  // const handleToggleEnv = async () => {
+  //   if (complianceStatus !== 'approved' || updatingEnv) return;
+  //   const nextLive = !isLive;
+  //   const newEnv = nextLive ? 'Live' : 'Test';
+  //   setUpdatingEnv(true);
+  //   try {
+  //     await settingsService.updateEnv(newEnv, tokenizationStatus, dispatch);
+  //     dispatch(toggleEnv(newEnv));
+  //     setIsLive(nextLive);
+  //   } catch {
+  //     // revert visual toggle if failed
+  //     dispatch(setEnv(isLive ? 'Live' : 'Test'));
+  //   } finally {
+  //     setUpdatingEnv(false);
+  //   }
+  // };
 
   const handleIntervalChange = (e) => {
     const selected = e.target.value;
@@ -158,9 +159,9 @@ function Dashboard() {
       <div className="relative">
         <div className="space-y-8">
           <div className="">
-            {complianceStatus &&  !complianceIsApproved && (
-            // {/* {complianceStatus && ( */}
-              <div className="mb-4">
+            {/* {complianceStatus &&  !complianceIsApproved && ( */}
+            {/* // {complianceStatus && ( */}
+              {/* <div className="mb-4">
                 {complianceStatus === 'pending' && (
                   <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs sm:text-sm px-3 py-2 rounded-md">Your compliance registration is not completed.</div>
                 )}
@@ -176,8 +177,9 @@ function Dashboard() {
                 {complianceStatus === 'started' && (
                   <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs sm:text-sm px-3 py-2 rounded-md">You have started compliance, please continue your registration.</div>
                 )}
-              </div>
-            )}
+              </div> */}
+            {/* )} */}
+            
             {!roleGotten && (
               <div className="bg-blue-50 border border-blue-200 text-blue-800 text-xs sm:text-sm px-3 py-2 rounded-md">
                 Please reach out to the admin for assistance!
@@ -195,7 +197,7 @@ function Dashboard() {
               </div>
               
               {/* <p className={`hidden sm:block text-xs sm:text-sm font-semibold ${merchant?.status === 'Sandbox' ? 'text-red-500' : 'text-green-500'}`}>{merchant?.status === 'Sandbox' ? 'Test Mode' : 'Live'}</p> */}
-              <div>
+              {/* <div>
                 {roleGotten ? (
                   <div className={`flex items-center gap-2 ${isLive ? 'bg-green-100' : 'bg-red-100'} py-3 px-4 rounded-xl`}>
                     <label className="flex items-center cursor-pointer select-none">
@@ -222,7 +224,7 @@ function Dashboard() {
                   ) :(
                     ""
                 )}
-              </div>
+              </div> */}
             </div>
             
             <div className="mt-4">

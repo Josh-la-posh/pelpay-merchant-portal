@@ -9,16 +9,17 @@ class SettingsService {
 
   async fetchEnv(dispatch) {
     try {
-      const response = await this.axiosPrivate.get('api/settings');
-      const env = response?.data?.responseData?.env;
-      const tokenizationStatus = response?.data?.responseData?.tokenizationStatus
-      const merchantLogo = response?.data?.responseData?.merchantLogo
+      const env = 'Live';
+      // const response = await this.axiosPrivate.get('api/settings');
+      // const env = response?.data?.responseData?.env;
+      // const tokenizationStatus = response?.data?.responseData?.tokenizationStatus
+      // const merchantLogo = response?.data?.responseData?.merchantLogo
       if (env) {
         // Backend returns 'None', 'Test', 'Live' etc. Normalize if needed
         dispatch(setEnv(env === 'None' ? 'Test' : env));
       }
-      localStorage.setItem("tokenizationStatus", tokenizationStatus)
-      localStorage.setItem("merchantLogo", merchantLogo)
+      // localStorage.setItem("tokenizationStatus", tokenizationStatus)
+      // localStorage.setItem("merchantLogo", merchantLogo)
       return env;
     } catch {
       // silent fail; could add toast.debug
