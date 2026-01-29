@@ -1,21 +1,25 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState,
+    //  useMemo 
+    } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
-import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X, ShieldCheck, Activity, History  } from 'lucide-react';
+import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X,
+    //  ShieldCheck, Activity,
+      History  } from 'lucide-react';
 // import Logo from "../assets/logo.jpg";
 import { Tooltip } from 'react-tooltip';
-import {  useSelector } from 'react-redux';
+// import {  useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     const [sidebarItems, setSideBarItems] = useState([
-         {
-            id: 1,
-            icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />,
-            title: 'Compliance',
-            url: '/compliance',
-            openSidebar: true
-        },
+        //  {
+        //     id: 1,
+        //     icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />,
+        //     title: 'Compliance',
+        //     url: '/compliance',
+        //     openSidebar: true
+        // },
         {
             id: 2,
             icon: <LayoutDashboard size={isSidebarTextVisible ? '18' : '22'} />,
@@ -68,32 +72,32 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     ])
 
     const { appTitle } = useTitle();
-    const { complianceStatus } = useSelector((state) => state.compliance || {});
-    const storedStatus = (() => { try { return localStorage.getItem('complianceStatus'); } catch { return null; } })();
-    const effectiveStatus = complianceStatus || storedStatus;
+    // const { complianceStatus } = useSelector((state) => state.compliance || {});
+    // const storedStatus = (() => { try { return localStorage.getItem('complianceStatus'); } catch { return null; } })();
+    // const effectiveStatus = complianceStatus || storedStatus;
 
-    useEffect(() => {
-        const hideStatuses = ['approved'];
-        setSideBarItems(prevItems => {
-            const hasCompliance = prevItems.some(i => i.title === 'Compliance');
-            if (hideStatuses.includes(effectiveStatus)) {
-                return prevItems.filter(i => i.title !== 'Compliance');
-            } else {
-                if (!hasCompliance) {
-                    // Reinsert Compliance at the top (id 1 semantics maintained)
-                    return [
-                        { id: 1, icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />, title: 'Compliance', url: '/compliance', openSidebar: true },
-                        ...prevItems.map((p, idx) => ({ ...p, id: idx + 2 }))
-                    ];
-                }
-            }
-            return prevItems;
-        });
-    }, [effectiveStatus, isSidebarTextVisible]);
+    // useEffect(() => {
+    //     const hideStatuses = ['approved'];
+    //     setSideBarItems(prevItems => {
+    //         const hasCompliance = prevItems.some(i => i.title === 'Compliance');
+    //         if (hideStatuses.includes(effectiveStatus)) {
+    //             return prevItems.filter(i => i.title !== 'Compliance');
+    //         } else {
+    //             if (!hasCompliance) {
+    //                 // Reinsert Compliance at the top (id 1 semantics maintained)
+    //                 return [
+    //                     { id: 1, icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />, title: 'Compliance', url: '/compliance', openSidebar: true },
+    //                     ...prevItems.map((p, idx) => ({ ...p, id: idx + 2 }))
+    //                 ];
+    //             }
+    //         }
+    //         return prevItems;
+    //     });
+    // }, [effectiveStatus, isSidebarTextVisible]);
 
-    const filteredSideBar = useMemo(()=>{
-        return sidebarItems.filter
-    })
+    // const filteredSideBar = useMemo(()=>{
+    //     return sidebarItems.filter
+    // })
 
     const storedAuth = JSON.parse(localStorage.getItem("auth"));
     const getRolePermission = storedAuth?.data?.rolePermissions || [];

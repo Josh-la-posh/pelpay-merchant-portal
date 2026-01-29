@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import TextButton from '../components/ui/text-button';
-import { X } from 'lucide-react';
 import { TitleProvider } from '../services/context/TitleProvider';
 import { WebSocketProvider } from '../services/context/WebSocketProvider';
 
