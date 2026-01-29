@@ -1,6 +1,6 @@
-import { useEffect, useState,
+// import { useEffect, useState,
     //  useMemo 
-    } from 'react';
+    // } from 'react';
 import { Link } from 'react-router-dom';
 import useTitle from '../services/hooks/useTitle';
 import { ArrowLeftRight, Handshake, LayoutDashboard, LogOut, Settings, Warehouse, X,
@@ -12,7 +12,8 @@ import { Tooltip } from 'react-tooltip';
 import PropTypes from 'prop-types';
 
 const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
-    const [sidebarItems, setSideBarItems] = useState([
+    // const [sidebarItems, setSideBarItems] = useState([
+    const sidebarItems = [
         //  {
         //     id: 1,
         //     icon: <ShieldCheck size={isSidebarTextVisible ? '18' : '22'} />,
@@ -69,7 +70,7 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
         //     url: '/help-center',
         //     openSidebar: true
         // },
-    ])
+    ];
 
     const { appTitle } = useTitle();
     // const { complianceStatus } = useSelector((state) => state.compliance || {});
@@ -99,44 +100,44 @@ const Sidebar = ({ handleSidebar, isSidebarTextVisible = true }) => {
     //     return sidebarItems.filter
     // })
 
-    const storedAuth = JSON.parse(localStorage.getItem("auth"));
-    const getRolePermission = storedAuth?.data?.rolePermissions || [];
+    // const storedAuth = JSON.parse(localStorage.getItem("auth"));
+//     const getRolePermission = storedAuth?.data?.rolePermissions || [];
 
-    const permissionMap = getRolePermission.reduce((acc, item) => {
-    const name = item?.permission?.permissionName?.trim()?.toLowerCase();
-    if (name) {
-        acc[name] = {
-            canRead: item.canRead,
-            canAdd: item.canAdd,
-            canEdit: item.canEdit,
-            canDelete: item.canDelete
-        };
-    }
-    return acc;
-}, {});
+//     const permissionMap = getRolePermission.reduce((acc, item) => {
+//     const name = item?.permission?.permissionName?.trim()?.toLowerCase();
+//     if (name) {
+//         acc[name] = {
+//             canRead: item.canRead,
+//             canAdd: item.canAdd,
+//             canEdit: item.canEdit,
+//             canDelete: item.canDelete
+//         };
+//     }
+//     return acc;
+// }, {});
 
-    useEffect(() => {
-        setSideBarItems(prev => {
+    // useEffect(() => {
+    //     setSideBarItems(prev => {
 
-            if (!Array.isArray(getRolePermission) || getRolePermission.length === 0) {
-                return prev.filter(item => item.title === "Dashboard");
-            }
+    //         if (!Array.isArray(getRolePermission) || getRolePermission.length === 0) {
+    //             return prev.filter(item => item.title === "Dashboard");
+    //         }
 
-            return prev.filter(item => {
-                const title = item.title.toLowerCase();
+    //         return prev.filter(item => {
+    //             const title = item.title.toLowerCase();
 
-                if (title === "transaction") {
-                    return permissionMap["transaction"]?.canRead === true;
-                }
+    //             if (title === "transaction") {
+    //                 return permissionMap["transaction"]?.canRead === true;
+    //             }
 
-                if (title === "settlements") {
-                    return permissionMap["allsettlement"]?.canRead === true;
-                }
+    //             if (title === "settlements") {
+    //                 return permissionMap["allsettlement"]?.canRead === true;
+    //             }
 
-                return true;
-            });
-        });
-    }, []);
+    //             return true;
+    //         });
+    //     });
+    // }, []);
   
 
     return (
