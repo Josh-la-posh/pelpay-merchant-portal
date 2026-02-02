@@ -42,30 +42,26 @@ export const WebSocketProvider = ({ children, defaultInterval = "Daily" }) => {
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("✅ Global WebSocket connected:", socket.id);
       setIsConnected(true);
       setHasJoinedRoom(false); // Reset so we rejoin on reconnect
     });
 
     socket.on("disconnect", (reason) => {
-      console.warn("Global WebSocket disconnected:", reason);
       setIsConnected(false);
       setHasJoinedRoom(false);
       dispatch(setConnectionStatus(false));
     });
 
     socket.on("connect_error", (error) => {
-      console.error("Global WebSocket connection failed:", error.message);
       setIsConnected(false);
     });
 
-    socket.on("error", (err) => {
-      console.error("Global WebSocket error:", err);
-    });
+    // socket.on("error", (err) => {
+    //   console.error("Global WebSocket error:", err);
+    // });
 
     // Listen for analytics events globally
     socket.on("analytics", (data) => {
-      console.log("Global WebSocket - analytics received:", data);
       dispatch(updateRealtimeAnalytics(data));
     });
 

@@ -25,8 +25,8 @@ class AuthService {
 
       const data = response?.data?.responseData;
       const merchant = data?.merchants?.[0];
-      // const merchantCode = merchant?.merchantCode;
-      // const token = data?.accessToken;
+      const merchantCode = merchant?.merchantCode;
+      const token = data?.accessToken;
       const rawStatus = data?.complianceStatus || null; // may be missing for brand new account
 
       // Determine routing & whether we need an immediate compliance fetch.

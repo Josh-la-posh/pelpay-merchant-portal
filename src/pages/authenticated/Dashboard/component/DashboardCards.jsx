@@ -88,7 +88,6 @@ const formatSingleDate = (dateStr) => {
 
 // Format date range for display - converts "2026-01-14 - 2026-01-06" to "Jan 14 - Jan 06"
 const formatDateRange = (dateStr) => {
-  console.log('Formatting date range: ', dateStr);
   if (!dateStr) return '';
   try {
     const parts = dateStr.split(' - ');
@@ -122,8 +121,6 @@ const formatSubtitle = (percent) => {
 const handleCardClick = (mode) => {
   if (onModeChange) onModeChange(mode);
 };
-
-console.log('The interval is: ', interval)
 
   return (
     <>
