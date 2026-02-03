@@ -129,7 +129,6 @@ const ManagePermissionTable = ({
 
     const createPermission = async () => {
         try {
-            console.log('formData', formData);  
             await permissionService.createRolePermission(               
                 merchantCode,
                 formData,

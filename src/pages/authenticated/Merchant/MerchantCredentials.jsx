@@ -16,7 +16,8 @@ import ErrorLayout from '@/components/ErrorLayout';
 function MerchantCredential() {
   const { auth } = useAuth();
   const merchantCode = auth?.merchant?.merchantCode;
-  const {env} = useSelector((state) => state.env)
+  // const {env} = useSelector((state) => state.env)
+  const env = 'Live';
   const { setAppTitle } = useTitle();
   const { setSettingsTitle } = useSettingsTitle();
   const axiosPrivate = useAxiosPrivate();

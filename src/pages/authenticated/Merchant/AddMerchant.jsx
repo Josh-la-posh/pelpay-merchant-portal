@@ -161,7 +161,6 @@ function AddMerchantPage() {
                 setShowIndustryCategoryListReload(true);
             }
         } catch (err) {
-            console.error(err);
             setShowIndustryCategoryListReload(true);
         }
     }, [axiosPrivate]);
@@ -195,7 +194,6 @@ function AddMerchantPage() {
                 setShowIndustryListReload(true);
             }
         } catch (err) {
-            console.error(err);
             setShowIndustryListReload(true);
         }
     }, [axiosPrivate, getIndustryCategories]);
@@ -343,7 +341,6 @@ function AddMerchantPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Merchant Ye Submitted', formData);
         const v1 = BUSINESS_REGEX.test(formData.businessName);
         const v2 = EMAIL_REGEX.test(formData.contactEmail);
         const v3 = PHONE_REGEX.test(formData.phoneNumber);
@@ -352,7 +349,6 @@ function AddMerchantPage() {
 
 
         if (!v1 || !v2 || !v3) {
-            console.log('Merchant error is here', v1, v2, v3);
             setErrMsg('Invalid Entry');
             return;
         }
@@ -360,7 +356,6 @@ function AddMerchantPage() {
 
         try {
             await merchantService.createMerchant(formData, dispatch);
-            console.log('Merchant Ye Registered Successfully');
             setSuccess(true);
             toast.success("Registration successful! Please check your email to confirm your account.");
 
@@ -387,7 +382,6 @@ function AddMerchantPage() {
             });
 
         } catch (err) {
-            console.error('Merchant Registration Error:', err);
             if (err.response.status === 400) {
                 toast(err.response.data.message);
             } else if (!err.response) {

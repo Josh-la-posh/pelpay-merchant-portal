@@ -25,7 +25,6 @@ class RoleService {
         } else {
             dispatch(rolesFailure('Failed to load user role. Try again.'));
         }
-        console.error('fetchRolesByAggregatorCode error:', err);
       }
     }
   
@@ -45,7 +44,7 @@ class RoleService {
           toast('Failed to fetch user roles');
             dispatch(userRolesFailure('Failed to fetch user roles'));
         }
-        console.error('fetchRolesByUserId error:', err);
+        
       }
     }
   
@@ -57,7 +56,7 @@ class RoleService {
         );
         
         const data = response.data.responseData;
-        // console.log('Fetched roles data:', data);
+        // 
         dispatch(rolesSuccess(data));
       } catch (err) {
         if (!err.response) {
@@ -65,12 +64,12 @@ class RoleService {
         } else {
             dispatch(rolesFailure('Failed to load Customer permission. Try again.'));
         }
-        console.error('fetchRoles error:', err);
+        
       }
     }
   
     async createRole(aggregatorCode, formData,  dispatch) {
-      console.log("createRole payload:",  JSON.stringify(formData));
+      
       try {
         await this.axiosPrivate.post(
           `api/Roles/${aggregatorCode}`,
@@ -83,14 +82,14 @@ class RoleService {
         );
         toast('Role created successfully');
         await this.fetchRoles(aggregatorCode, dispatch);
-        console.log('createRole success', aggregatorCode);
+        
       } catch (err) {
         if (!err.response) {
           dispatch(updateRolesFailure('No response from server'));
         } else {
           dispatch(updateRolesFailure('Failed to update role details. Try again.'));
         }
-        console.error('createRole error:', err);
+        
       }
     }
   
@@ -110,7 +109,7 @@ class RoleService {
         } else {
           dispatch(updateRolesFailure('Failed to update role details. Try again.'));
         }
-        console.error('updateRolesById error:', err);
+        
       }
     }
   
@@ -127,7 +126,7 @@ class RoleService {
         } else {
             toast('Failed to activate role. Try again.');
         }
-        console.error('activateRole error:', err);
+        
       }
     }
   
@@ -144,7 +143,7 @@ class RoleService {
         } else {
             toast('Failed to deactivate role. Try again.');
         }
-        console.error('deactivateRole error:', err);
+        
       }
     }
   
@@ -161,7 +160,7 @@ class RoleService {
           
             // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
         }
-        console.error('removeRole error:', err);
+        
       }
     }
 
@@ -180,7 +179,7 @@ class RoleService {
           } else {
               // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
           }
-          console.error('fetchAllUserRoles error:', err);
+          
         }
       }
   
@@ -202,7 +201,7 @@ class RoleService {
           } else {            
             toast.error(err.response.data.message)
           }
-          console.error('addUserRole error:', err);
+          
         }
     }
   
@@ -218,7 +217,7 @@ class RoleService {
           } else {
               // dispatch(invoiceFailure('Failed to load Customer permission. Try again.'));
           }
-          console.error('removeUserRole error:', err);
+          
         }
       }
   
@@ -238,7 +237,7 @@ class RoleService {
             } else {
               dispatch(rolesFailure('Failed to load user role. Try again.'));
             }
-            console.error('fetchUserRoleByMerchantCode error:', err);
+            
           }
         }
 

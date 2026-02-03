@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { io } from "socket.io-client";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import useAuth from "../hooks/useAuth";
 import { updateRealtimeAnalytics, setConnectionStatus } from "@/redux/slices/realtimeSlice";
 
@@ -22,7 +22,8 @@ export const WebSocketProvider = ({ children, defaultInterval = "Daily" }) => {
   const [currentInterval, setCurrentInterval] = useState(defaultInterval);
   const dispatch = useDispatch();
   const { auth } = useAuth();
-  const { env } = useSelector((state) => state.env);
+  // const { env } = useSelector((state) => state.env);
+  const env = 'Live';
 
   const merchant = auth?.merchant;
   const merchantCode = merchant?.merchantCode;
@@ -42,30 +43,30 @@ export const WebSocketProvider = ({ children, defaultInterval = "Daily" }) => {
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("✅ Global WebSocket connected:", socket.id);
+
       setIsConnected(true);
       setHasJoinedRoom(false); // Reset so we rejoin on reconnect
     });
 
-    socket.on("disconnect", (reason) => {
-      console.warn("Global WebSocket disconnected:", reason);
+    socket.on("disconnect", () => {
+
       setIsConnected(false);
       setHasJoinedRoom(false);
       dispatch(setConnectionStatus(false));
     });
 
-    socket.on("connect_error", (error) => {
-      console.error("Global WebSocket connection failed:", error.message);
+    socket.on("connect_error", () => {
+
       setIsConnected(false);
     });
 
-    socket.on("error", (err) => {
-      console.error("Global WebSocket error:", err);
+    socket.on("error", () => {
+
     });
 
     // Listen for analytics events globally
     socket.on("analytics", (data) => {
-      console.log("Global WebSocket - analytics received:", data);
+
       dispatch(updateRealtimeAnalytics(data));
     });
 
@@ -83,7 +84,6 @@ export const WebSocketProvider = ({ children, defaultInterval = "Daily" }) => {
   useEffect(() => {
     if (!socketRef.current || !isConnected || !merchantCode || hasJoinedRoom) return;
 
-    console.log("🚪 Joining room globally:", merchantCode, "with interval:", currentInterval);
     socketRef.current.emit("join_room", {
       room_id: merchantCode,
       env: env === "Live" ? "Live" : "Test",

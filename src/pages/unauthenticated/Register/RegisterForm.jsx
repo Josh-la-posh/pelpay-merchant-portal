@@ -149,7 +149,6 @@ const RegisterForm = () => {
             });
 
         } catch (err) {
-            console.error(err);
             if (err?.response?.status === 400) {
                 setErrMsg(err.response?.data?.responseData?.message || err.response?.data?.message);
             } else if (!err?.response) {

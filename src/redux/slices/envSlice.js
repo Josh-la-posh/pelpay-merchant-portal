@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    env: 'Test',
+    env: 'Live',
     token: false
 };
 

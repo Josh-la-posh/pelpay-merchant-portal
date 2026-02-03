@@ -109,8 +109,6 @@ function DashboardChart({ trendLine = [], title, subTitle, mode}) {
         
     const chartDates = trendDates;
 
-    console.log('DashboardChart - validData:', chartDates);
-
     const isPercentageMode = mode === 'REVENUE_GROWTH_RATE';
 
     const chartSeries = [{

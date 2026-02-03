@@ -31,7 +31,8 @@ function AllSettlementPage() {
   // const pageNumber = 1;
   //   const pageSize = 20;
   const [totalSize, setTotalSize] = useState(settlementTotalSize);
-  const { env } = useSelector((state) => state.env);
+  // const { env } = useSelector((state) => state.env);
+  const env = 'Live';
 
    const [formData, setFormData] = useState({
       merchantName: merchantName || "",

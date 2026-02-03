@@ -25,42 +25,44 @@ class AuthService {
 
       const data = response?.data?.responseData;
       const merchant = data?.merchants?.[0];
-      const merchantCode = merchant?.merchantCode;
-      const token = data?.accessToken;
+      // const merchantCode = merchant?.merchantCode;
+      // const token = data?.accessToken;
       const rawStatus = data?.complianceStatus || null; // may be missing for brand new account
 
       // Determine routing & whether we need an immediate compliance fetch.
       // Treat missing status as brand new -> route to compliance and mark status 'pending' locally.
       let effectiveStatus = rawStatus;
-      let shouldFetchCompliance = false;
+      // let shouldFetchCompliance = false;
       let targetRoute = '/';
 
-      if (!effectiveStatus) {
-        effectiveStatus = 'pending';
-        targetRoute = '/compliance';
-      } else if (['pending', 'started'].includes(effectiveStatus)) {
-        // Need progress & data details -> fetch
-        shouldFetchCompliance = true;
-        targetRoute = '/compliance';
-      } else if (effectiveStatus === 'rejected') {
-        targetRoute = '/compliance';
-      } else if (effectiveStatus === 'under_review') {
-        targetRoute = '/success';
-      } else if (effectiveStatus === 'approved') {
-        targetRoute = '/';
-      }
+      // if (!effectiveStatus) {
+      //   effectiveStatus = 'pending';
+      //   targetRoute = '/compliance';
+      // } else if (['pending', 'started'].includes(effectiveStatus)) {
+      //   // Need progress & data details -> fetch
+      //   shouldFetchCompliance = true;
+      //   targetRoute = '/compliance';
+      // } else if (effectiveStatus === 'rejected') {
+      //   targetRoute = '/compliance';
+      // } else if (effectiveStatus === 'under_review') {
+      //   targetRoute = '/success';
+      // } else if (effectiveStatus === 'approved') {
+      //   targetRoute = '/';
+      // }
 
       // Set auth state early so app has base identity & status
       await setAuth({ data, merchant, complianceStatus: effectiveStatus });
-      dispatch(setComplianceStatus(effectiveStatus));
-      try { localStorage.setItem('complianceStatus', effectiveStatus); } catch { /* ignore */ }
+      // dispatch(setComplianceStatus(effectiveStatus));
+      // try { localStorage.setItem('complianceStatus', effectiveStatus); } catch { /* ignore */ }
 
-      if (shouldFetchCompliance && merchantCode && token) {
-        // This call will navigate internally; override targetRoute after fetch logic
-        await this.fetchComplianceData(dispatch, merchantCode, navigate, token);
-      } else {
-        navigate(targetRoute, { replace: true });
-      }
+      // if (shouldFetchCompliance && merchantCode && token) {
+      //   // This call will navigate internally; override targetRoute after fetch logic
+      //   await this.fetchComplianceData(dispatch, merchantCode, navigate, token);
+      // } else {
+      //   navigate(targetRoute, { replace: true });
+      // }
+      
+      navigate(targetRoute, { replace: true });
 
       dispatch(loginSuccess(data));
       toast.success('Login successful');

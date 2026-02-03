@@ -140,7 +140,7 @@ class userService {
         } else {
             dispatch(newUserFailure('Failed to update user data. Try again.'));
         }
-  console.error('updateUserData error:', err);
+          console.error('updateUserData error:', err);
       }
     }
   

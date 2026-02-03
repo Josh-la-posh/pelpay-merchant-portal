@@ -14,7 +14,7 @@ import TransactionService from '@/services/api/transactionApi';
 import useAxiosPrivate from '@/services/hooks/useFormAxios';
 import useAuth from '@/services/hooks/useAuth';
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 // import { dateFormatter } from '../../../../utils/dateFormatter';
 import { formatEncodedDate } from '../../../../utils/formatEncodedDate';
@@ -30,12 +30,12 @@ function TransactionFilter({ handleRefresh = () => {}, pageNumber, pageSize, set
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const transactionService = new TransactionService(axiosPrivate, auth);
-    const [showAdvanced, setShowAdvanced] = useState(false); // desktop inline (md+)
+    const [setShowAdvanced] = useState(false); // desktop inline (md+)
     const [showDrawer, setShowDrawer] = useState(false); // mobile drawer (< md)
     const [isSubmitting, setIsSubmitting] = useState(false);
     const debounceRef = useRef(null);
-    // const env = 'None';
-    const env = useSelector((state) => state.env.env);
+    // const env = useSelector((state) => state.env.env);
+    const env = 'Live';
     const [filters, setFilters] = useState(currentFilters || {});
 
     const handleRefreshAllTransctions = async () => {

@@ -52,7 +52,6 @@ class TransactionService {
       } else {
         dispatch(transactionFailure('Failed to load Customer transactions. Try again.'));
       }
-      console.error('fetchtransactions error:', err);
     }
   }
 

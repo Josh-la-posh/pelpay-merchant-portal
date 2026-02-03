@@ -10,7 +10,6 @@ import TransactionService from "@/services/api/transactionApi";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
-import { use } from "react";
 
 function TransactionForm({ handleCloseModal, data = {} }) {
   const axiosPrivate = useAxiosPrivate();
@@ -21,7 +20,8 @@ function TransactionForm({ handleCloseModal, data = {} }) {
   const [transactionData, settransactionData] = useState(data);
   const transactionService = new TransactionService(axiosPrivate, auth);
   const merchantTransactions = useSelector((state) => state.transaction.transactions);
-  const env = useSelector((state) => state.env.env);
+  // const env = useSelector((state) => state.env.env);
+  const env = 'Live';
 
   useEffect(() => {
     settransactionData(data);

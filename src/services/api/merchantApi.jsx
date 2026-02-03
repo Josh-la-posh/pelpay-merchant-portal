@@ -24,7 +24,6 @@ class MerchantService {
         } else {
             dispatch(merchantDocumentTypeFailure('Failed to fetch merchant data. Try again.'));
         }
-        console.error('fetchMerchantDocumentTypes error:', err);
       }
     }
   
@@ -44,7 +43,7 @@ class MerchantService {
         } else {
             dispatch(merchantDocumentFailure('Failed to create merchant document. Try again.'));
         }
-        console.error('createMerchantDocument error:', err);
+    
       }
     }
   
@@ -63,7 +62,7 @@ class MerchantService {
         } else {
             dispatch(merchantDocumentFailure('Failed to create merchant document. Try again.'));
         }
-        console.error('createMerchantDocumentType2 error:', err);
+    
       }
     }
   
@@ -81,7 +80,7 @@ class MerchantService {
         } else {
             dispatch(merchantDocumentFailure('Failed to fetch merchant data. Try again.'));
         }
-        console.error('fetchMerchantDocument error:', err);
+    
       }
     }
   
@@ -124,7 +123,7 @@ class MerchantService {
         } else {
             toast('Failed to fetch merchant data. Try again.');
         }
-        console.error('downloadMerchantDocument error:', err);
+    
       }
     }
   
@@ -139,7 +138,7 @@ class MerchantService {
         } else {
             dispatch(merchantDocumentFailure('Failed to delete Merchant document. Try again.'));
         }
-        console.error('deleteMerchantDocument error:', err);
+    
       }
     }
 
@@ -151,9 +150,7 @@ class MerchantService {
         const response = await this.axiosPrivate.get(
           `api/Merchant/Credentials/${merchantCode}?env=${env}`
         );
-        console.log("Merch Creds", response)
         const data = response.data.responseData;
-       console.log("Merchant Credentials", data)
 
         dispatch(merchantCredentialsSuccess(data));
       } catch (err) {
@@ -162,13 +159,11 @@ class MerchantService {
         } else {
             dispatch(merchantCredentialsFailure('Failed to fetch merchant data. Try again.'));
         }
-        console.error('fetchMerchantCredentials error:', err);
       }
     }
   
     async createMerchant(formData, dispatch) {
         dispatch(merchantStart());
-        console.log("Create Merchant Data", formData);
       try {
         const response = await this.axiosPrivate.post(
           'api/Merchant/AddMerchant',
@@ -179,7 +174,6 @@ class MerchantService {
             }
           }
         );
-        console.log("Create Merchant Response", response.data);
         toast.success('Merchant created successfully');
         return response.data;
       } catch (err) {
@@ -188,7 +182,6 @@ class MerchantService {
         } else {
             dispatch(merchantFailure('Failed to create merchant. Try again.'));
         }
-        console.error('createMerchant error:', err);
       }
     }
   
@@ -210,7 +203,7 @@ class MerchantService {
           const errMsg = err.response.data.message;
           dispatch(merchantAdduserFailure(errMsg));
         }
-        console.error('addUserMerchant error:', err);
+    
       }
     }
   
@@ -234,7 +227,7 @@ class MerchantService {
             // dispatch(aggregatorFailure('Failed to create merchant. Try again.'));
             dispatch(aggregatorMerchantFailure('Failed to create merchant. Try again.'));
         }
-        console.error('searchMerchantAggregator error:', err);
+    
       }
     }
   
@@ -253,7 +246,7 @@ class MerchantService {
         } else {
             dispatch(merchantFailure('Failed to delete merchant. Try again.'));
         }
-        console.error('deleteMerchant error:', err);
+    
       }
     }
   
@@ -290,7 +283,7 @@ class MerchantService {
         } else {
             dispatch(merchantAccountFailure('Failed to create merchant account. Try again.'));
         }
-        console.error('createMerchantAccount error:', err);
+    
       }
     }
   
@@ -308,7 +301,7 @@ class MerchantService {
         } else {
             dispatch(merchantAccountFailure('Failed to update merchant account. Try again.'));
         }
-        console.error('updateMerchantAccount error:', err);
+    
       }
     }
   
@@ -326,7 +319,7 @@ class MerchantService {
         } else {
             dispatch(merchantAccountFailure('Failed to fetch merchant account. Try again.'));
         }
-        console.error('fetchMerchantAccount error:', err);
+    
       }
     }
   
@@ -344,7 +337,7 @@ class MerchantService {
         } else {
             dispatch(merchantAccountFailure('Failed to fetch merchant account. Try again.'));
         }
-        console.error('fetchMerchantAccountByAccountNumber error:', err);
+    
       }
     }
   
@@ -363,7 +356,7 @@ class MerchantService {
         } else {
             dispatch(merchantAccountFailure('Failed to fetch merchant account. Try again.'));
         }
-        console.error('fetchMerchantAccountByPage error:', err);
+    
       }
     }
   
@@ -381,7 +374,7 @@ class MerchantService {
         } else {
             dispatch(merchantAccountFailure('Failed to set merchant account as default. Try again.'));
         }
-        console.error('setMerchantAccountAsDefault error:', err);
+    
       }
     }
 
@@ -401,7 +394,7 @@ class MerchantService {
         } else {
             dispatch(merchantAddressFailure('Failed to fetch merchant address. Try again.'));
         }
-        console.error('fetchMerchantAddress error:', err);
+    
       }
     }
   
@@ -422,7 +415,7 @@ class MerchantService {
         } else {
             dispatch(merchantProfileFailure('Failed to update merchant address. Try again.'));
         }
-        console.error('updateMerchantAddress error:', err);
+    
       }
     }
 
@@ -442,7 +435,7 @@ class MerchantService {
         } else {
             dispatch(merchantContactFailure('Failed to fetch merchant contact. Try again.'));
         }
-        console.error('fetchMerchantContact error:', err);
+    
       }
     }
   
@@ -461,7 +454,7 @@ class MerchantService {
         } else {
             dispatch(merchantContactFailure('Failed to update merchant Contact. Try again.'));
         }
-        console.error('updateMerchantContact error:', err);
+    
       }
     }
 
@@ -481,7 +474,7 @@ class MerchantService {
         } else {
             dispatch(merchantDomainFailure('Failed to create merchant domain. Try again.'));
         }
-        console.error('createMerchantDomain error:', err);
+    
       }
     }
   
@@ -500,7 +493,7 @@ class MerchantService {
         } else {
             dispatch(merchantDomainFailure('Failed to update merchant donin. Try again.'));
         }
-        console.error('updateMerchantDomain error:', err);
+    
       }
     }
   
@@ -518,7 +511,7 @@ class MerchantService {
         } else {
             dispatch(merchantDomainFailure('Failed to fetch merchant Domain. Try again.'));
         }
-        console.error('fetchMerchantDomain error:', err);
+    
       }
     }
   
@@ -551,7 +544,7 @@ class MerchantService {
   dispatch(merchantBusinessTypesSucess(response.data.responseData));
       } catch (err) {
         toast('Couldn\'t fetch business types');
-        console.error('fetchMerchantProfileBusinessType error:', err);
+    
       }
     }
   
@@ -564,7 +557,7 @@ class MerchantService {
         dispatch(merchantRegistrationTypesSucess(response.data.responseData));
       } catch (err) {
         toast('Couldn\'t fetch registration types');
-        console.error('fetchMerchantProfileRegistrationType error:', err);
+    
       }
     }
   
@@ -581,7 +574,7 @@ class MerchantService {
         } else {
             dispatch(merchantProfileFailure('Failed to update merchant profile. Try again.'));
         }
-        console.error('updateMerchantProfile error:', err);
+    
       }
     }
   
@@ -598,7 +591,7 @@ class MerchantService {
         } else {
             dispatch(merchantProfileFailure('Failed to fetch merchant profile. Try again.'));
         }
-        console.error('fetchMerchantProfile error:', err);
+    
       }
     }
   }

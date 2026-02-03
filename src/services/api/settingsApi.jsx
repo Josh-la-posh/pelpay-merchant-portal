@@ -40,7 +40,6 @@ class SettingsService {
       return env;
     } catch (err) {
       toast.error('Failed to update environment');
-      console.log("error", err)
       throw err;
     }
   }

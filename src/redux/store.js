@@ -72,7 +72,7 @@ export const store = configureStore({
 store.subscribe(() => {
   try {
     const state = store.getState();
-    const current = state.env?.env || 'Test';
+    const current = state.env?.env || 'Live';
     localStorage.setItem('env', JSON.stringify(current));
   } catch (e) {
     console.warn('Failed to persist env to localStorage', e);

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 // import Card from "../../../../components/Card";
 import PropTypes from 'prop-types';
-import { useSelector } from "react-redux";
 import useAuth from "../../../../services/hooks/useAuth";
 import TransactionDetails from "./TransactionDetails";
 import { formatEncodedDate } from "../../../../utils/formatEncodedDate";
@@ -124,7 +123,8 @@ const AnalyticsDetailPage = ({ mode: propMode }) => {
    
   const merchant = auth?.merchant;
   const merchantCode = merchant?.merchantCode;
-  const { env } = useSelector((state) => state.env);
+  // const { env } = useSelector((state) => state.env);
+  const env = 'Live';
 
   const { fetchAnalysis, isConnected } = useGlobalWebSocket();
 

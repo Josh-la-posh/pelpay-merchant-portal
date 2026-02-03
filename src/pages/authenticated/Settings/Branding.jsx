@@ -22,7 +22,8 @@ const Branding = () => {
     const settingsService = useMemo(() => new SettingsService(axiosPrivate), [axiosPrivate]);
     const storedStatus = localStorage.getItem("tokenizationStatus");
     const tokenizationStatus = storedStatus === "true" || storedStatus === true; 
-    const { env }= useSelector((state) => state.env);
+    // const { env }= useSelector((state) => state.env);
+    const env = 'Live';
 
     const[file, setFile] = useState(null)
     const [preview, setPreview] = useState("../assets/logo.jpg");

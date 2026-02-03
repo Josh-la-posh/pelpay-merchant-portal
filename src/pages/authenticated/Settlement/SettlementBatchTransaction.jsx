@@ -26,7 +26,8 @@ function SettlementBatchTransaction() {
   const [pageNumber, setPageNumber] = useState(batchSettlementPageNumber);
   const [pageSize, setPageSize] = useState(batchSettlementPageSize);
   const [totalSize, setTotalSize] = useState(batchSettlementTotalSize);
-  const {env} = useSelector((state) => state.env);
+  // const {env} = useSelector((state) => state.env);
+  const env = 'Live';
 
   const [formData, setFormData] = useState({
       merchantName: merchantName || "",

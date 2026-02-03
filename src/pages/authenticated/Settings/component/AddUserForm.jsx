@@ -34,7 +34,6 @@ function AddUserForm({ handleModalClose }) {
     const addNewUser = async () => {
         const merchantCode = auth?.merchant?.merchantCode;
         await userService.createUser(merchantCode, formData, dispatch);
-        console.log('New user added:', formData);
     };
 
     const handleSubmit = (e) => {

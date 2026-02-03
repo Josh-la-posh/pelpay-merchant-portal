@@ -79,11 +79,10 @@ class SettlementService {
       }
       catch (err){
         if (!err.response) {
-              toast('No response from server');
-            } else {
-              toast('Failed to download transactions data. Try again.');
-            }
-        console.log("Download Batch Settlement error", err)
+          toast('No response from server');
+        } else {
+          toast('Failed to download transactions data. Try again.');
+        }
       }
     }
 

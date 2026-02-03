@@ -7,7 +7,6 @@ import { setBusinessRepresentatives } from "../../../../redux/slices/complianceS
 const FormFive = ({ handlePrevStep, handleNextStep, handleEditRepresentative }) => {
 const { businessRepresentatives, complianceData} = useSelector((state) => state.compliance);
 const dispatch = useDispatch();
-console.log("getComplianceData", complianceData?.owners);
 
 const hasLoadedOwners = useRef(false);
 
@@ -16,7 +15,6 @@ const hasLoadedOwners = useRef(false);
     if (complianceData && complianceData.owners && !hasLoadedOwners.current) {
       try {
         const existingOwners = complianceData.owners;
-        console.log("existingOwners", existingOwners);
         
         if (Array.isArray(existingOwners) && existingOwners.length > 0) {
        

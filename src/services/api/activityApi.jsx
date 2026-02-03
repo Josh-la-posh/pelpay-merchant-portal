@@ -32,7 +32,6 @@ class ActivityService {
             const response = await this.axiosPrivate.get(url);
             const data = response.data.responseData;
             dispatch(activitySuccess(data));
-            console.log("Activity Api data", data)
         }
         catch(err){
             if (!err.response) {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import useSettingsTitle from '@/services/hooks/useSettingsTitle';
-import { Boxes, File, Paperclip, User, UserPlus } from 'lucide-react';
+import { Boxes, File, User } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 
 const MerchantSidebar = () => {
