@@ -62,7 +62,7 @@ function PaymentForm({ selectedIntegrationKey, accessToken, setIsModalOpen }) {
     try {
         setIsLoading(true);
         const response = await axios.post(
-          'https://api.pelpay.ng/payment/advice',
+          `${import.meta.env.VITE_PAYMENT_BASE_URL}/payment/advice`,
           formData,
           { headers },
         );

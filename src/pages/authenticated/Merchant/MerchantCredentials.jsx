@@ -76,7 +76,7 @@ function MerchantCredential() {
   const handlePayment = async (index) => {
     try {
       const response = await axios.post(
-        'https://api.pelpay.ng/api/account/login',
+        `${import.meta.env.VITE_PAYMENT_BASE_URL}/api/account/login`,
         {
           clientId: merchantCredentials?.clientId,
           clientSecret: merchantCredentials?.clientSecret

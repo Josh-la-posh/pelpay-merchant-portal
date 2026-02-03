@@ -66,7 +66,7 @@ function TransactionForm({ handleCloseModal, data = {} }) {
     const id = transactionData?.paymentReference;
     try {
       const response = await axios.post(
-        `https://api.pelpay.ng/api/WebHook/push/${id}`
+        `${import.meta.env.VITE_PAYMENT_BASE_URL}/api/WebHook/push/${id}`
       );
       const data = response.data.responseData;
       toast(data);
